@@ -1,0 +1,20 @@
+{
+    "defaults": {
+        "area": [           
+            "area"
+        ],
+        "line": [           
+            "line"
+        ],
+        "point": [           
+            "point"
+        ],
+        "vertex": [           
+            "vertex"
+        ],
+        "relation": [
+            "type/multipolygon",
+            "relation"
+        ]
+    }
+}
