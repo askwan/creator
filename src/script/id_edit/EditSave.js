@@ -24,8 +24,8 @@ class EditSave {
 
     console.log(context.history());
     console.log(context.history().changes())
-
-    return;
+    console.log(osmChanges)
+    // return;
     let osmCollection = [];
     osmChanges.forEach(change => {
       

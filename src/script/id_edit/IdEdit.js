@@ -13,6 +13,7 @@ import editsave from './EditSave'
 
 const TYPE = {
   point: 21,
+  vertex:21,
   line: 22,
   area: 23,
   relation:24
@@ -41,6 +42,7 @@ class IdEdit {
   initEdit (osmContent) {
     this.osmContent = osmContent
     osmContent.on('selectEle', ele => {
+      osmContent.entity(ele).mergeTags({name:'456'})
       let relations = relationArr();
       relations = JSON.stringify(relations);
       relations = JSON.parse(relations);
@@ -84,7 +86,7 @@ class IdEdit {
       vm.$emit(operate.currentForm,entity);
       if (!aimSobject) {
         let type = TYPE[osmContent.geometry(entityId)]
-        
+        console.log(type,'333333',osmContent.geometry(entityId))
         vm.$emit(operate.getOsmType, {
           type: type,
           entityId: entityId

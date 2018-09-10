@@ -160,7 +160,7 @@
 					});
 					return diagram.otypes.length > 0;
 				});
-				console.log(arr,'arr')
+				// console.log(arr,'arr')
 				return arr;
 			}
 		},

@@ -27,7 +27,6 @@ class SObjectGraph {
    */
   updateSObject (sobject) {
     this.sobjectList[sobject.id] = sobject
-    console.log(sobject, '更新sobject')
     sobject.modifyObject(sobject)
   }
   /**
