@@ -3,13 +3,12 @@ import _assign from 'lodash-es/assign'
 import _cloneDeep from 'lodash-es/cloneDeep'
 import { objectQuery } from '../../psde/objectService'
 import SObjectGraph from '../mapbox/SObjectGraph'
-// import * as allotype from '../allOtype'
 import { vm, operate } from '@/script/operate'
-import osm from '@/psde/form/osm'
 import { select as d3_select } from 'd3-selection'
 // import {operationDelete} from '@/iD-2.7.1/modules/operations/delete'
-import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
+import { relationArr } from '@/script/allOtype'
 import editsave from './EditSave'
+import {actionChangeTags} from '@/iD-2.7.1/modules/actions/change_tags'
 
 const TYPE = {
   point: 21,
@@ -42,7 +41,11 @@ class IdEdit {
   initEdit (osmContent) {
     this.osmContent = osmContent
     osmContent.on('selectEle', ele => {
-      osmContent.entity(ele).mergeTags({name:'456'})
+      // let tags = {name:'askwan'};
+      // if(ele){
+      //   console.log(osmContent.entity(ele));
+      //   osmContent.perform(actionChangeTags(ele,tags), '修改属性');
+      // }
       let relations = relationArr();
       relations = JSON.stringify(relations);
       relations = JSON.parse(relations);

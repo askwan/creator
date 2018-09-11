@@ -35,6 +35,7 @@ export function uiField(context, presetField, entity, options) {
 
     field.impl = uiFields[field.type](field, context)
         .on('change', function(t, onInput) {
+            console.log(field,t,onInput,888888)
             dispatch.call('change', field, t, onInput);
         });
 

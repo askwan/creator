@@ -1,6 +1,6 @@
 <template>
 	<div class='property-root'>
-		 <div class='property-root' id="property-root" style="display:none" ref="sliderBox"></div> 
+		 <div class='property-root' id="property-root" style="none" ref="sliderBox"></div> 
 		<!--<otype-list v-show="showList" :diagrams="diagrams" @enterDetail='updateProper'></otype-list>-->
 		<!--<transition name="public">-->
 			<div class="object-attributes" v-show="showproperty">

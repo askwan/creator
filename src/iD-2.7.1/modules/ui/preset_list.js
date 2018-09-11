@@ -255,7 +255,7 @@ export function uiPresetList(context) {
 
         item.choose = function() {
             context.presets().choose(preset);
-console.log(id,currentPreset,preset,'choose')
+
             context.perform(
                 actionChangePreset(id, currentPreset, preset),
                 t('operations.change_tags.annotation')
