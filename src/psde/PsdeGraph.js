@@ -29,7 +29,7 @@ class PsdeGraph {
   saveObjects (context) {
     let token = localStorage.getItem('token');
     let json = idedit.saveEdit(context);//formate.compairOsm(context)
-    
+    console.log(json)
     return
     if (!json.length) return
     if (isAjax) {

@@ -274,6 +274,7 @@
 					});
 				}
 				this.objectDetail.modifyAttr(attr);
+				console.log(attr,123123)
 				idEdit.modifySobject(this.objectDetail);
 			},
 			lastValue(item, index) {
@@ -308,10 +309,12 @@
 					});
 				}
 
-				this.objectDetail.modifyAttr(attr);
+				// this.objectDetail.modifyAttr(attr);
 				// console.log(this.objectDetail,'detail')
 				// EditManage.getGeometryEdit().modifySobject(this.objectDetail);
-				idEdit.modifySobject(this.objectDetail);
+				// console.log(attr);
+				// idEdit.modifySobject(this.objectDetail);
+				idEdit.modifyAttr(attr,this.objectDetail);
 			},
 			addProperty() {
 				// console.log(this.objectAttrLists);

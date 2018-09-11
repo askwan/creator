@@ -20,12 +20,14 @@ const TYPE = {
 
 let nodeType = {
   node: 1,
+  vertex:1,
   way: 2,
   relation: 3
 }
 
 let geomType = {
   node: 21,
+  vertex:21,
   way: 22,
   area: 23,
   relation:24
@@ -70,7 +72,6 @@ class IdEdit {
           }
 
         })
-        // console.log(this.currentSobject,'current')
         this.updateAndHistory(this.currentSobject)
         this.aimForm = null
         return vm.$emit(operate.currentObject, this.currentSobject)
@@ -83,13 +84,13 @@ class IdEdit {
       let entityId = ele;
 
       let aimSobject = this.getSObjectByOsmEntity(entityId);
-      console.log(aimSobject)
+      // console.log(aimSobject,55555555);
+      // console.log(osmContent.entity(ele))
       vm.$emit(operate.currentObject, aimSobject);
       let entity = ele.replace(/[^0-9]/ig, '')
       vm.$emit(operate.currentForm,entity);
       if (!aimSobject) {
         let type = TYPE[osmContent.geometry(entityId)]
-        console.log(type,'333333',osmContent.geometry(entityId))
         vm.$emit(operate.getOsmType, {
           type: type,
           entityId: entityId
@@ -119,6 +120,16 @@ class IdEdit {
     this.currentGraph.updateSObject(sobject)    
     console.log('更新', this.currentGraph)
   // console.log(this.sobjectlist)
+  }
+  modifyAttr(attr,sobject){
+    let tags = {};
+    let ele = sobject.forms[0].geom;
+    let bool = sobject.forms.find(el=>el.geotype == 23);
+    if(bool) tags.area = 'yes';
+    attr.forEach(el=>tags[el.name]=el.value);
+    this.osmContent.perform(actionChangeTags(ele,tags), '修改属性');
+    sobject.modifyAttr(attr)
+    this.modifySobject(sobject);
   }
   loadBoxSObject (minx, maxx, miny, maxy, callback) {
     objectQuery.getBoxSObject(minx, maxx, miny, maxy).then(res => {

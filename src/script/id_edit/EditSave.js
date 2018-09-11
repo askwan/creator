@@ -20,18 +20,11 @@ class EditSave {
   获取osm变化集
    */
   getOsmChanges (context) {
-    var osmChanges = context.history().difference().summary()
-
-    console.log(context.history());
-    console.log(context.history().changes())
-    console.log(osmChanges)
+    var osmChanges = context.history().difference().summary();
+    console.log(context.changes(),888888);
     // return;
     let osmCollection = [];
     osmChanges.forEach(change => {
-      
-      
-      
-
       let flag = flagType[change.changeType]
 
       let entity = null
@@ -69,12 +62,73 @@ class EditSave {
     return osmCollection
   }
 
+  formateOsm(context,arr,flag){
+    let result = [];
+    arr.forEach(el=>{
+      let entity;
+      if(el.type==='node'){
+        if(context.geometry(el.id)==='vertex'){
+          if(!el.orgData) return
+          el.orgData.forms.forEach(ev=>{
+            if(ev.geotype==21){
+              let node = new osm.OsmNode(context.entity(ev.geom));
+              addObj(result,node);
+            }else{
+              let way = new osm.OsmWay();
+              way.setOsmWay(context,context.entity(ev.geom));
+              addObj(result,way)
+            }
+          })
+        }
+        entity = new osm.OsmNode(el);
+      }else if(el.type ==='way'){
+        entity = new osm.OsmWay();
+        entity.setOsmWay(context,el)
+      }else if(el.type==='relation'){
+        entity = new osm.OsmRelation();
+        entity.setOsmRelation(context,el)
+      }
+      entity.updateFlag(flag);
+      addObj(result,entity);
+    });
+    return result
+  }
+
+  getOsmChanges1(context){
+    let changes = context.changes();
+    let _osmChange = [];
+    //created
+    let created = this.formateOsm(context,changes.created,flagType.created);
+    //modified
+    let modified = this.formateOsm(context,changes.modified,flagType.modified);
+    //deleted
+    let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
+
+    _osmChange = _osmChange.concat(created,modified,deleted);
+
+    let ways = _osmChange.filter(el=>el.type == 'way');
+
+    ways.forEach(way=>{
+      way.nodes.forEach((el,k)=>{
+        let i = _osmChange.findIndex(ev=>ev.id==el.id);
+        if(i>-1){
+          let node = _osmChange.splice(i,1)[0];
+          way.nodes.splice(k,1,node);
+        }; 
+      })
+    })
+
+    return _osmChange
+
+  }
+
   getSaveSObject (context, idedit) {
     let currentGraph = idedit.currentGraph
     let resultSobjectList = []
 
-    let osmCollection = this.getOsmChanges(context)
-
+    // let osmCollection = this.getOsmChanges(context);
+    let osmCollection = this.getOsmChanges1(context);
+    console.log(osmCollection,456)
     // 检测osm变化，currentgraph未检测到的变化
 
     for (let key in currentGraph.sobjectList) {
@@ -93,7 +147,7 @@ class EditSave {
         this.addSObjectList(resultSobjectList, sobject)
       }
     };
-    //删除没有form的sobject
+    //删除没有form的sobject;
     resultSobjectList.forEach(el=>{
       if(el.forms.length==0){
         el.deleteObject();
@@ -123,14 +177,14 @@ class EditSave {
       })
     });
 
-    console.log(resultSobjectList, osmCollection, currentGraph, '保存');
+    // console.log(resultSobjectList, osmCollection, currentGraph, '保存');
     return resultSobjectList
   }
   updateSObjectForm (sobject, entity) {
     let entityId = entity.id.replace(/[^0-9]/ig, '')
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
-    console.log(form,'save')
+
     if (form.type < 30) {
       form.formref.refid = entityId
       form.geomref = entityId;
@@ -174,6 +228,15 @@ const getRelationByMember=(member)=>{
     })
   })
   return aimRelation
+}
+
+const addObj=(arr,obj)=>{
+  let index = arr.findIndex(el=>el.id==obj.id);
+  if(index>-1){
+    arr.splice(index,1,obj);
+  }else{
+    arr.push(obj);
+  }
 }
 
 let editSave = new EditSave()

@@ -14,17 +14,33 @@ import { allOtype, getOtypeById,clearRelationArr,relationArr } from '@/script/al
 var jsonObjectsList
 var allDatas = {}
 var netData = []
+const TYPE = {
+  node:1,
+  way:2,
+  relation:3
+}
 
 function parseObjectToOsm (jsonObjects, callback) {
   if (jsonObjects.status !== 200) return
 
-  let entities = []
   jsonObjectsList = jsonObjects.data.list
+  let entities = []
 
-  for (var i = 0; i < jsonObjectsList.length; i++) {
-    parseObject(entities, jsonObjectsList[i])
-  // allDatas[jsonObjectsList[i].id] = jsonObjectsList[i]
+  for (let i = 0; i < jsonObjectsList.length; i++) {
+    let arr = [];
+    arr = parseObject(arr, jsonObjectsList[i]);
+    // entities = entities.concat(arr);
+    arr.forEach(el=>{
+      let k = entities.findIndex(ev=>ev.id==el.id);
+      if(k>=0){
+        entities.splice(k,1,el);
+      }else{
+        entities.push(el);
+      }
+    })
+    // allDatas[jsonObjectsList[i].id] = jsonObjectsList[i]
   }
+  entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type])
   callback(null, entities)
 }
 
@@ -36,7 +52,6 @@ function parseObject (entities, sobject) {
   if (!sobject.forms) return
   for (let i = 0; i < sobject.forms.length; i++) {
     let form = sobject.forms[i];
-    // console.log(form.geom,sobject)
     let geom = parse(form.geom)
     if (!geom) {
       continue
@@ -46,9 +61,9 @@ function parseObject (entities, sobject) {
       // 编辑节点
       // console.log(geom,sobject)
       if (geom.id) {
-        let oNode = createOsmNode(geom, tags, sobject)
-        entities.push(oNode)
-        form.geom = oNode.id
+        let oNode = createOsmNode(geom, tags, sobject);
+        entities.push(oNode);
+        form.geom = oNode.id;
       }
     } else if ((form.geotype == osm.SORTINDEX_EXT_WAY)&&(geom.type=="WAY")) {
       let nodeids = []
@@ -56,13 +71,11 @@ function parseObject (entities, sobject) {
       if(geom.nodes.length==0) continue;
       for (let i = 0; i < geom.nodes.length; i++) {
         let node = geom.nodes[i]
-        // console.log(sobject)
-        let oNode = createOsmNode(node, [], sobject)
+        let oNode = createOsmNode(node, {}, sobject)
         nodeids.push(oNode.id)
         entities.push(oNode)
       // form.geom = oNode.id
       }
-      // let way = createWay(nodeids, geom.id, tags, sobject)
       // let way = createWay(nodeids, geom.id, {highway:'bridleway',name:tags.name}, sobject)
       let way = createWay(nodeids, geom.id, {name:tags.name}, sobject)
       entities.push(way)
@@ -106,7 +119,8 @@ function parseObject (entities, sobject) {
             arr.push(tags[key])
           }
 
-          let oNode = createOsmNode(node, [], sobject)
+          let oNode = createOsmNode(node, {}, sobject);
+          
           nodeids.push(oNode.id)
           entities.push(oNode)
           form.geom = oNode.id
@@ -132,10 +146,12 @@ function parseObject (entities, sobject) {
   sobject.otype = getOtypeById(sobject.otype.id)
   let sobj = new psde.SObject()
   sobj.copyObject(sobject)
-  IdEdit.addSobject(sobj)
+  IdEdit.addSobject(sobj);
+  return entities;
 }
 
 function createOsmNode (geom, tags, org) {
+  
   org = org || {}
   let nid = 'n' + geom.id
   let node = new osmNode({
@@ -150,7 +166,25 @@ function createOsmNode (geom, tags, org) {
     tags: tags,
     orgData: org
   })
-  allDatas[nid] = node
+  // if(geom.id=='5224388132865'){
+  //   if(tags.name=='askwan'){
+  //     return node
+  //   }else{
+  //     return new osmNode({
+  //       id: nid,
+  //       visible: true,
+  //       version: 1,
+  //       changeset: 11668672,
+  //       timestamp: '2012-05-22T07:13:23Z',
+  //       user: 'min',
+  //       uid: 0,
+  //       loc: geom.coord,
+  //       tags: {name:'askwan'},
+  //       orgData: org
+  //     })
+  //   }
+  // }
+  allDatas[nid] = node;
   return node
 }
 

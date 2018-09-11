@@ -46,12 +46,12 @@ class OsmNode extends OsmEntity {
     this.flag = node.flag || 0
     this.z = 0
     this.id = node.id || 0
-
+    this.refOb = node.orgData
     this.record()
   }
 
   setOsmNode (node, flag) {
-    this.refOb = node
+    this.refOb = node.orgData;
     this.id = node.id
     this.flag = flag | 0
     this.x = node.loc[0]
@@ -102,20 +102,22 @@ class OsmWay extends OsmEntity {
   setOsmWay (context, way) {
     // console.log(context,way,'sdfsf')
     this.id = way.id;
-
+    console.log(way,88888888)
     way.nodes.forEach(el => {
-      // console.log(context.graph().hasEntity(el));
-      // console.log(context.entity(el),'entity')
-      let node = new OsmNode(context.entity(el))
+      let node = new OsmNode(context.entity(el));
+      if(node.id.includes('-')) node.updateFlag(1);
       this.nodes.push(node)
     })
+    this.refOb = way.orgData;
     let change = false
     this.nodes.forEach(node => {
       if (node.flag !== 0) {
         change = true
       }
     })
-    if (change) this.updateFlag(2)
+    if (change) this.updateFlag(2);
+    if(this.id.includes('-')) this.updateFlag(1);
+    if(!this.id.includes('-')) this.updateFlag(2);
     this.record()
   }
   toJSON () {
@@ -150,13 +152,13 @@ class OsmRelation extends OsmEntity {
     this.members = []
     relation.entity.members.forEach(el => {
       let entity = collection.find(member => member.id == el.id);
-      console.log(el,entity,'relatio');
+
       if(entity){
         entity.role = el.role||'';
         this.members.push(entity)
       }else{
         entity = context.graph().entity(el.id);
-        console.log(entity,'choose');
+
         if(entity){
         	if(entity.type=='way'){
 	          let way = new OsmWay()
@@ -179,9 +181,8 @@ class OsmRelation extends OsmEntity {
     // console.log(relation,'relation')
     relation.members.forEach(el => {
       
-      let way = collection.find(member => member.id == el.id)
+      let way = collection.find(member => member.id == el)
       if (way) {
-        
         this.members.push(way)
       }else {
         if (el.type === 'node') {
@@ -189,11 +190,12 @@ class OsmRelation extends OsmEntity {
           this.members.push(node)
         }else if (el.type === 'way') {
           way = new OsmWay()
-          way.setOsmWay(context, context.entity(el.id))
+          way.setOsmWay(context, context.entity(el))
           this.members.push(way)
         }
       }
-    })
+    });
+    this.refOb = relation.orgData;
     this.record()
   }
   updateMember (member) {
