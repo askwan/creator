@@ -13,13 +13,13 @@
 					<div>
                         <p class="text-ellipsis" :title="item.name">{{item.name}}</p>
 
-						<p class="text-ellipsis">
+						<p class="text-ellipsis" v-if="typeof item.mdef =='object'">
 							<el-tooltip effect="dark" :content="filtersName(item.mdef.type)" placement="bottom" v-if="item.mdef.type">
-                                <span class="h-tags h-tags-blue">{{filtersName(item.mdef.type)}}</span>
-                            </el-tooltip>
-                            <el-tooltip effect="dark" :content="'所属类别：'+item.mdef.name" placement="bottom" v-if="item.mdef.name">
-                                <span class="h-tags h-tags-yellow">{{item.mdef.name}}</span>
-                            </el-tooltip>
+									<span class="h-tags h-tags-blue">{{filtersName(item.mdef.type)}}</span>
+							</el-tooltip>
+							<el-tooltip effect="dark" :content="'所属类别：'+item.mdef.name" placement="bottom" v-if="item.mdef.name">
+									<span class="h-tags h-tags-yellow">{{item.mdef.name}}</span>
+							</el-tooltip>
 						</p>
 					</div>
 				</li>

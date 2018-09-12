@@ -29,7 +29,7 @@
 					    <el-tooltip effect="dark" :content="'行为：'+relation.model.name" placement="bottom" v-if="relation.model&&relation.model.name">
 							<span class="h-tags h-tags-yellow">{{relation.model.name}}</span>
 					    </el-tooltip>
-					    <el-tooltip effect="dark" :content="'字段：'+toName(relation.fields.fields)" placement="bottom" v-if="relation.fields.fields&&relation.fields.fields.length">
+					    <el-tooltip effect="dark" :content="'字段：'+toName(relation.fields.fields)" placement="bottom" v-if="typeof relation.fields=='object'&&relation.fields.fields&&relation.fields.fields.length">
 							<span class="h-tags h-tags-green">{{relation.fields.fields|toGetName}}</span>
 					    </el-tooltip>
 					</div>
@@ -79,6 +79,7 @@
 				return str;
 			},
 			initialName(str){
+				if(typeof str !='string') return 'null'
 				if(str.length) {
 					return str.slice(0,2).toUpperCase();
 				} else {

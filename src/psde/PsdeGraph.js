@@ -28,9 +28,11 @@ class PsdeGraph {
    */
   saveObjects (context) {
     let token = localStorage.getItem('token');
-    let json = idedit.saveEdit(context);//formate.compairOsm(context)
-    console.log(json)
-    return
+    let json = idedit.saveEdit(context);//formate.compairOsm(context);
+    console.log(json);
+    // json[0].forms[0].geom = {};
+    console.log(JSON.stringify(json))
+    // return
     if (!json.length) return
     if (isAjax) {
       isAjax = false;

@@ -2,7 +2,10 @@ import { osmEntity, osmNode, osmRelation, osmWay } from '../iD-2.7.1/modules/osm
 
 import { actionAddMember } from '../iD-2.7.1/modules/actions/add_member'
 
-import parse from '@/script/wkt'
+// import parse from '@/script/wkt'
+
+import parse from './wkt1'
+
 import osm from '../psde/form/osm'
 import psde from '@/psde/index'
 
@@ -40,23 +43,22 @@ function parseObjectToOsm (jsonObjects, callback) {
     })
     // allDatas[jsonObjectsList[i].id] = jsonObjectsList[i]
   }
-  entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type])
+  entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type]);
+  console.log(entities,4444444444444)
   callback(null, entities)
 }
 
 function parseObject (entities, sobject) {
   // console.log(sobject,'sobject')
-  
   let tags = getAttributeTag(sobject)
   // 循环形态列表
   if (!sobject.forms) return
   for (let i = 0; i < sobject.forms.length; i++) {
     let form = sobject.forms[i];
-    let geom = parse(form.geom)
+    let geom = form.geom;
     if (!geom) {
       continue
     }
-
     if (form.geotype == osm.SORTINDEX_EXT_NODE) {
       // 编辑节点
       // console.log(geom,sobject)
@@ -65,7 +67,7 @@ function parseObject (entities, sobject) {
         entities.push(oNode);
         form.geom = oNode.id;
       }
-    } else if ((form.geotype == osm.SORTINDEX_EXT_WAY)&&(geom.type=="WAY")) {
+    } else if ((form.geotype == osm.SORTINDEX_EXT_WAY)) {
       let nodeids = []
       // console.log(geom,sobject)
       if(geom.nodes.length==0) continue;
@@ -80,7 +82,7 @@ function parseObject (entities, sobject) {
       let way = createWay(nodeids, geom.id, {name:tags.name}, sobject)
       entities.push(way)
       form.geom = way.id
-    }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)&&(geom.type=="WAY")) {
+    }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)) {
       let nodeids = []
       if(geom.nodes.length==0) continue;
       // console.log(geom,sobject)
@@ -151,9 +153,9 @@ function parseObject (entities, sobject) {
 }
 
 function createOsmNode (geom, tags, org) {
-  
   org = org || {}
-  let nid = 'n' + geom.id
+  let nid = 'n' + geom.id;
+  console.log(geom.id)
   let node = new osmNode({
     id: nid,
     visible: true,
@@ -162,7 +164,7 @@ function createOsmNode (geom, tags, org) {
     timestamp: '2012-05-22T07:13:23Z',
     user: 'min',
     uid: 0,
-    loc: geom.coord,
+    loc: [geom.x,geom.y],
     tags: tags,
     orgData: org
   })
@@ -190,6 +192,7 @@ function createOsmNode (geom, tags, org) {
 
 function createWay (nodes, id, tags, org) {
   org = org || {}
+  console.log(nodes,'nodes')
   let wid = 'w' + id
   let way = new osmWay({
     id: wid,
@@ -261,6 +264,7 @@ function findRelations () {
   }
   return aim
 }
+
 
 export { findByNodeId, findRelations }
 

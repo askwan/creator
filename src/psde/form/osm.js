@@ -34,6 +34,12 @@ class OsmEntity {
       }
     }
   }
+  clearId(){
+
+    delete this.refOb;
+    this.id = this.id.replace(/[^0-9]/ig,"")
+    if(this.flag==1) this.id = 0;
+  }
 }
 
 class OsmNode extends OsmEntity {
@@ -46,7 +52,9 @@ class OsmNode extends OsmEntity {
     this.flag = node.flag || 0
     this.z = 0
     this.id = node.id || 0
-    this.refOb = node.orgData
+    this.refOb = node.orgData;
+    this.tags = {}
+    this['@type'] = 'Node'
     this.record()
   }
 
@@ -61,18 +69,21 @@ class OsmNode extends OsmEntity {
 
   // 转换为btwkt
 
-  toJSON () {
-    let nid = this.id.replace('n-', '')
-    nid = nid.replace('n', '')
-    return `NODE(ID(${nid}),POINT(${this.x} ${this.y} 0.000000),FLAG(${this.flag}))`
-  }
+  // toJSON () {
+  //   return this;
+
+  //   let nid = this.id.replace('n-', '')
+  //   nid = nid.replace('n', '')
+  //   return `NODE(ID(${nid}),POINT(${this.x} ${this.y} 0.000000),FLAG(${this.flag}))`
+  // }
 }
 
 class OsmWay extends OsmEntity {
   constructor (way) {
     super()
     this.nodes = []
-    this.type = 'way';
+    this.type = 'Way';
+    this['@type'] = 'Way'
     if(!way) return
     if (way.entity.tags.area == 'yes') {
       this.type = 'area'
@@ -102,7 +113,6 @@ class OsmWay extends OsmEntity {
   setOsmWay (context, way) {
     // console.log(context,way,'sdfsf')
     this.id = way.id;
-    console.log(way,88888888)
     way.nodes.forEach(el => {
       let node = new OsmNode(context.entity(el));
       if(node.id.includes('-')) node.updateFlag(1);
@@ -120,23 +130,33 @@ class OsmWay extends OsmEntity {
     if(!this.id.includes('-')) this.updateFlag(2);
     this.record()
   }
-  toJSON () {
+  // toJSON () {
+  //   return this;
 
-    // 获取way对应的所有节点
-    let nodeWkt = ''
-    for (let i = 0; i < this.nodes.length; i++) {
-      let node = this.nodes[i]
-      nodeWkt += ',' + node.toJSON()
-    }
+  //   // 获取way对应的所有节点
+  //   let nodeWkt = ''
+  //   for (let i = 0; i < this.nodes.length; i++) {
+  //     let node = this.nodes[i]
+  //     nodeWkt += ',' + node.toJSON()
+  //   }
 
 
-    let nid = this.id.replace('w-', '')
+  //   let nid = this.id.replace('w-', '')
 
-    nid = nid.replace('w', '')
-    return `WAY(ID(${nid})${nodeWkt},FLAG(${this.flag}))`
-  }
+  //   nid = nid.replace('w', '')
+  //   return `WAY(ID(${nid})${nodeWkt},FLAG(${this.flag}))`
+  // }
   getOrgin (_) {
     return _
+  }
+
+  clearId(){
+    delete this.refOb;
+    this.id = this.id.replace(/[^0-9]/ig,"")
+    if(this.flag==1) this.id = 0;
+    this.nodes.forEach(node=>{
+      node.clearId();
+    })
   }
 
 
@@ -147,6 +167,7 @@ class OsmRelation extends OsmEntity {
   constructor (context,relation) {
     super()
     this.type = 'relation'
+    this['@type'] = 'Relation'
     if (!relation) return
     this.id = relation.entity.id
     this.members = []
@@ -206,18 +227,19 @@ class OsmRelation extends OsmEntity {
       this.members.splice(index, 1, member)
     }
   }
-  toJSON () {
-    let id = this.id.replace('r-', '').replace('r', '')
-    let str = `RELATION(ID(${id}),`
+  // toJSON () {
+  //   return this;
+  //   let id = this.id.replace('r-', '').replace('r', '')
+  //   let str = `RELATION(ID(${id}),`
 
-    this.members.forEach(member => {
-      str += member.toJSON() + ','
-    })
-    str = str.slice(0, -1)
-    str += `,FLAG(${this.flag}))`
-    // console.log(str)
-    return str
-  }
+  //   this.members.forEach(member => {
+  //     str += member.toJSON() + ','
+  //   })
+  //   str = str.slice(0, -1)
+  //   str += `,FLAG(${this.flag}))`
+  //   // console.log(str)
+  //   return str
+  // }
 }
 
 const clearCollection = ()=>{

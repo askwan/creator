@@ -18,7 +18,10 @@ class AForm extends CoreData {
     this.defineProperty('minGrain', 0)
     this.defineProperty('maxGrain', 0)
     this.style = '';
-    this.formref = {};
+    this.formref = {
+      refid:0,
+      geometry:{}
+    };
   }
 }
 export default AForm

@@ -24,13 +24,13 @@ let apiConfig = {
 //const psdeBaseUrl = "http://10.17.18.27:8080";
 //const psdeBaseUrl = "http://192.168.1.113:8080";
 //const psdeBaseUrl = "http://47.104.96.210:8080";
-const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api/dae';
+// const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api/dae';
 
 //const psdeBaseUrl = "http://192.168.1.113:8001";
 //const psdeBaseUrl = "http://localhost:8001";
-// const psdeBaseUrl = "http://192.168.1.188:8001";
-// const psdeHost = psdeBaseUrl;
-const psdeHost = psdeBaseUrl + '/datastore';
+const psdeBaseUrl = "http://192.168.1.188:8080";
+const psdeHost = psdeBaseUrl;
+// const psdeHost = psdeBaseUrl + '/datastore';
 
 const psdeUrl = psdeHost + "/rest/v0.1.0/datastore/";
 

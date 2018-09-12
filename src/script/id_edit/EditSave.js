@@ -19,48 +19,7 @@ class EditSave {
   /**
   获取osm变化集
    */
-  getOsmChanges (context) {
-    var osmChanges = context.history().difference().summary();
-    console.log(context.changes(),888888);
-    // return;
-    let osmCollection = [];
-    osmChanges.forEach(change => {
-      let flag = flagType[change.changeType]
-
-      let entity = null
-      if (change.entity.type === 'node') {
-        entity = new osm.OsmNode(change.entity)
-        entity.updateFlag(flag)
-      }else if (change.entity.type === 'way') {
-	  		entity = new osm.OsmWay(change)
-	  		entity.updateFlag(flag)   
-      }else if (change.entity.type === 'relation') {
-        entity = new osm.OsmRelation(context,change)
-        entity.updateFlag(flag)
-      }
-
-      osmCollection.push(entity)
-
-
-      let relationModify = getRelationByMember(change.entity);
-
-      if(relationModify&&change.changeType!="deleted"){
-        relationModify.members.forEach(el=>{
-          let wa = context.graph().hasEntity(el.id);
-          let en = new osm.OsmWay();
-          en.setOsmWay(context,wa);
-          let rela = new osm.OsmRelation();
-          rela.setOsmRelation(context,relationModify);
-          rela.updateFlag(2)
-          osmCollection.push(rela);
-        })
-      };
-
-
-    })
-
-    return osmCollection
-  }
+  
 
   formateOsm(context,arr,flag){
     let result = [];
@@ -96,6 +55,7 @@ class EditSave {
 
   getOsmChanges1(context){
     let changes = context.changes();
+    console.log(changes)
     let _osmChange = [];
     //created
     let created = this.formateOsm(context,changes.created,flagType.created);
@@ -106,7 +66,7 @@ class EditSave {
 
     _osmChange = _osmChange.concat(created,modified,deleted);
 
-    let ways = _osmChange.filter(el=>el.type == 'way');
+    let ways = _osmChange.filter(el=>el.type == 'Way');
 
     ways.forEach(way=>{
       way.nodes.forEach((el,k)=>{
@@ -116,7 +76,7 @@ class EditSave {
           way.nodes.splice(k,1,node);
         }; 
       })
-    })
+    });
 
     return _osmChange
 
@@ -128,11 +88,11 @@ class EditSave {
 
     // let osmCollection = this.getOsmChanges(context);
     let osmCollection = this.getOsmChanges1(context);
-    console.log(osmCollection,456)
+    // console.log(osmCollection,456664)
     // 检测osm变化，currentgraph未检测到的变化
 
     for (let key in currentGraph.sobjectList) {
-      let sobject = currentGraph.sobjectList[key]
+      let sobject = currentGraph.sobjectList[key];
       this.addSObjectList(resultSobjectList, sobject)
     }
 
@@ -153,10 +113,10 @@ class EditSave {
         el.deleteObject();
       }
     })
+    
+    // let trans = JSON.stringify(resultSobjectList);
 
-    let trans = JSON.stringify(resultSobjectList);
-
-    resultSobjectList = JSON.parse(trans);
+    // resultSobjectList = JSON.parse(trans);
 
     resultSobjectList.forEach(obj => {
       obj.otype = {id: obj.otype.id};
@@ -168,22 +128,23 @@ class EditSave {
         }
       })
     })
-    resultSobjectList.forEach(obj=>{
-      obj.forms.forEach(form=>{
-        if(form.geom && form.geom.includes('RELATION')){
-          form.geotype= 24;
-        };
+    // resultSobjectList.forEach(obj=>{
+    //   obj.forms.forEach(form=>{
+    //     if(form.geom && form.geom.includes('RELATION')){
+    //       form.geotype= 24;
+    //     };
         
-      })
-    });
+    //   })
+    // });
 
     // console.log(resultSobjectList, osmCollection, currentGraph, '保存');
     return resultSobjectList
   }
   updateSObjectForm (sobject, entity) {
-    let entityId = entity.id.replace(/[^0-9]/ig, '')
+    let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
+    form.formref.geometry = entity;
 
     if (form.type < 30) {
       form.formref.refid = entityId
@@ -198,15 +159,13 @@ class EditSave {
     }
     // console.log(typeof form.id =='number',form.id)
     if (entity.flag == 1) {
-      
-      // sobject.addForm(form)
-      // form.geomref = 0;
       sobject.modifyForm(form)
     }else if (entity.flag == 2) {
       sobject.modifyForm(form)
     }else if (entity.flag == 3) {
       sobject.deleteForm(form)
     }
+    entity.clearId();
   }
   addSObjectList (sobjectlist, sobject) {
     let idx = sobjectlist.findIndex(el => el.id == sobject.id)
