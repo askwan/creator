@@ -28,6 +28,14 @@ class EditSave {
       if(el.type==='node'){
         if(context.geometry(el.id)==='vertex'){
           if(!el.orgData) return
+          let ways = context.getParents(el.id);
+
+          ways.forEach(w=>{
+            let way = new osm.OsmWay();
+            way.setOsmWay(context,context.entity(w));
+            addObj(result,way)
+          })
+
           el.orgData.forms.forEach(ev=>{
             if(ev.geotype==21){
               let node = new osm.OsmNode(context.entity(ev.geom));
@@ -72,12 +80,19 @@ class EditSave {
       way.nodes.forEach((el,k)=>{
         let i = _osmChange.findIndex(ev=>ev.id==el.id);
         if(i>-1){
-          let node = _osmChange.splice(i,1)[0];
+          let node = _osmChange[i];
           way.nodes.splice(k,1,node);
         }; 
       })
     });
-
+    deleted.forEach(el=>{
+      if(el['@type']==='Node'){
+        let way = _osmChange.find(ev=>ev.refOb.id==el.refOb.id);
+        if(way){
+          way.nodes.push(el);
+        }
+      }
+    })
     return _osmChange
 
   }
@@ -85,28 +100,39 @@ class EditSave {
   getSaveSObject (context, idedit) {
     let currentGraph = idedit.currentGraph
     let resultSobjectList = []
-
     // let osmCollection = this.getOsmChanges(context);
     let osmCollection = this.getOsmChanges1(context);
-    // console.log(osmCollection,456664)
+    console.log(osmCollection,456664)
     // 检测osm变化，currentgraph未检测到的变化
-
     for (let key in currentGraph.sobjectList) {
       let sobject = currentGraph.sobjectList[key];
       this.addSObjectList(resultSobjectList, sobject)
     }
 
-    for (let key in osmCollection) {
-      let entity = osmCollection[key]
-      let sobject = idedit.getSObjectByListOsmEntity(resultSobjectList, entity.id)
+    for (var key in osmCollection) {
+      let entity = osmCollection[key];
+      console.log(entity.id,55555555)
+      // let sobject = idedit.getSObjectByListOsmEntity(resultSobjectList, entity.id);
+      let sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
       if (sobject == null) {
-        sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
-      }
-      if (sobject != null) {
+        // sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
+      }else{
+        console.log(entity.id,sobject)
+        let bool = adjustChange(entity);
+        if(!bool) continue;
         this.updateSObjectForm(sobject, entity)
-        this.addSObjectList(resultSobjectList, sobject)
+        this.addSObjectList(resultSobjectList, sobject);
+        // entity.clearId();
       }
+      // if (sobject != null) {
+      //   console.log(sobject,99999999999)
+      //   let bool = adjustChange(entity);
+      //   if(!bool) continue;
+      //   this.updateSObjectForm(sobject, entity)
+      //   this.addSObjectList(resultSobjectList, sobject)
+      // }
     };
+
     //删除没有form的sobject;
     resultSobjectList.forEach(el=>{
       if(el.forms.length==0){
@@ -126,6 +152,7 @@ class EditSave {
       	} else{
       		form.style = "";
         }
+        form.geom.clearId();
       })
     })
     // resultSobjectList.forEach(obj=>{
@@ -165,7 +192,7 @@ class EditSave {
     }else if (entity.flag == 3) {
       sobject.deleteForm(form)
     }
-    entity.clearId();
+    
   }
   addSObjectList (sobjectlist, sobject) {
     let idx = sobjectlist.findIndex(el => el.id == sobject.id)
@@ -196,6 +223,19 @@ const addObj=(arr,obj)=>{
   }else{
     arr.push(obj);
   }
+}
+
+const adjustChange = (entity)=>{
+  let bool = true;
+  if(entity['@type']==='Way'){
+    let n = entity.nodes.find(node=>node.flag>0);
+    if(n){
+      bool = true
+    }else{
+      bool = false;
+    }
+  }
+  return bool;
 }
 
 let editSave = new EditSave()

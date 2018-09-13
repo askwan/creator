@@ -10,7 +10,7 @@ class OsmEntity {
      * 3:删除*/
     this.flag = 0
     // 引用对象
-    this.refOb = null
+    this.refOb = {}
     this.type = ''
   }
   /**
@@ -38,7 +38,7 @@ class OsmEntity {
 
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"")
-    if(this.flag==1) this.id = 0;
+    // if(this.flag==1) this.id = 0;
   }
 }
 
@@ -47,20 +47,24 @@ class OsmNode extends OsmEntity {
     super()
     this.type = 'node'
     if (!node) return
+    this.uuid = node.uuid;
+    this.vid = node.vid;
     this.x = node.loc[0]
     this.y = node.loc[1]
     this.flag = node.flag || 0
     this.z = 0
     this.id = node.id || 0
-    this.refOb = node.orgData;
+    this.refOb = node.orgData||{};
     this.tags = {}
     this['@type'] = 'Node'
     this.record()
   }
 
   setOsmNode (node, flag) {
-    this.refOb = node.orgData;
-    this.id = node.id
+    this.refOb = node.orgData||{};
+    this.id = node.id;
+    thid.uuid = node.uuid;
+    this.vid = node.vid;
     this.flag = flag | 0
     this.x = node.loc[0]
     this.y = node.loc[1]
@@ -113,12 +117,14 @@ class OsmWay extends OsmEntity {
   setOsmWay (context, way) {
     // console.log(context,way,'sdfsf')
     this.id = way.id;
+    this.uuid = way.uuid;
+    this.vid = way.vid;
     way.nodes.forEach(el => {
       let node = new OsmNode(context.entity(el));
       if(node.id.includes('-')) node.updateFlag(1);
       this.nodes.push(node)
     })
-    this.refOb = way.orgData;
+    this.refOb = way.orgData||{};
     let change = false
     this.nodes.forEach(node => {
       if (node.flag !== 0) {
@@ -146,14 +152,11 @@ class OsmWay extends OsmEntity {
   //   nid = nid.replace('w', '')
   //   return `WAY(ID(${nid})${nodeWkt},FLAG(${this.flag}))`
   // }
-  getOrgin (_) {
-    return _
-  }
 
   clearId(){
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"")
-    if(this.flag==1) this.id = 0;
+    // if(this.flag==1) this.id = 0;
     this.nodes.forEach(node=>{
       node.clearId();
     })
@@ -197,7 +200,9 @@ class OsmRelation extends OsmEntity {
   }
   setOsmRelation (context, relation) {
 
-    this.id = relation.id
+    this.id = relation.id;
+    this.uuid = relation.uuid;
+    this.vid = relation.vid;
     this.members = [];
     // console.log(relation,'relation')
     relation.members.forEach(el => {
@@ -216,7 +221,7 @@ class OsmRelation extends OsmEntity {
         }
       }
     });
-    this.refOb = relation.orgData;
+    this.refOb = relation.orgData||{};
     this.record()
   }
   updateMember (member) {

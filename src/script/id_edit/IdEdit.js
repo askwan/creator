@@ -82,7 +82,6 @@ class IdEdit {
         return
       }
       let entityId = ele;
-
       let aimSobject = this.getSObjectByOsmEntity(entityId);
       // console.log(aimSobject,55555555);
       // console.log(osmContent.entity(ele))
@@ -130,6 +129,7 @@ class IdEdit {
     this.osmContent.perform(actionChangeTags(ele,tags), '修改属性');
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
+    console.log(sobject,77777777)
   }
   loadBoxSObject (minx, maxx, miny, maxy, callback) {
     objectQuery.getBoxSObject(minx, maxx, miny, maxy).then(res => {
@@ -157,7 +157,10 @@ class IdEdit {
     for (let key in sobjects) {
       let sobject = sobjects[key]
       for (let i = 0;i < sobject.forms.length;i++) {
-        let form = sobject.forms[i]
+        let form = sobject.forms[i];
+        if(!form.geom) continue
+        // console.log(id,entityId);
+        // let id = form.geom.replace(/[^0-9]/ig,"");
         if (form.geom == entityId) {
           aimobj = sobject
         }
@@ -197,7 +200,8 @@ class IdEdit {
     this.aimForm = modeOptions.form
   }
   addObjectForm (sobject, form) {
-    sobject.addForm(form)
+    sobject.addForm(form);
+    // console.log(sobject);
     this.updateAndHistory(sobject)
   }
   updateAndHistory (sobject) {

@@ -179,17 +179,17 @@
 					vm.$emit(operate.changeSlider, {
 						hideRight: false
 					});
-					if(obj == null) {
-						this.currentCom = 'propertyTab';
-						if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
-							document.getElementsByTagName("body")[0].lastChild.style.display = "none";
-						}
-					} else if(obj !== null && !obj.id) {
-						this.currentCom = 'propertyTab';
-						if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
-							document.getElementsByTagName("body")[0].lastChild.style.display = "none";
-						}
-					}
+					// if(obj == null) {
+					// 	this.currentCom = 'propertyTab';
+					// 	if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
+					// 		document.getElementsByTagName("body")[0].lastChild.style.display = "none";
+					// 	}
+					// } else if(obj !== null && !obj.id) {
+					// 	this.currentCom = 'propertyTab';
+					// 	if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
+					// 		document.getElementsByTagName("body")[0].lastChild.style.display = "none";
+					// 	}
+					// }
 					if(obj && obj.otype) {
 						let otypeDetail = allotypemgr.getOtypeById(obj.otype.id);
 						Object.assign(obj.otype, otypeDetail);

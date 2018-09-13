@@ -22,6 +22,7 @@ class AForm extends CoreData {
       refid:0,
       geometry:{}
     };
+    this.geom = null;
   }
 }
 export default AForm

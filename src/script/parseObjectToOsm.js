@@ -79,7 +79,9 @@ function parseObject (entities, sobject) {
       // form.geom = oNode.id
       }
       // let way = createWay(nodeids, geom.id, {highway:'bridleway',name:tags.name}, sobject)
-      let way = createWay(nodeids, geom.id, {name:tags.name}, sobject)
+      let way = createWay(nodeids, geom.id, {name:tags.name}, sobject);
+      way.uuid = geom.uuid;
+      way.vid = geom.vid;
       entities.push(way)
       form.geom = way.id
     }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)) {
@@ -97,7 +99,9 @@ function parseObject (entities, sobject) {
       }
       // let way = createWay(nodeids, geom.id, tags, sobject);
       // let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name,natural:'water'}, sobject)
-      let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name}, sobject)
+      let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name}, sobject);
+      way.uuid = geom.uuid;
+      way.vid = geom.vid;
       entities.push(way)
       form.geom = way.id
     }else if (form.geotype == osm.SORTINDEX_EXT_RELATION) {
@@ -127,7 +131,9 @@ function parseObject (entities, sobject) {
           entities.push(oNode)
           form.geom = oNode.id
         }
-        let obj = createWay(nodeids, way.id, {area:'yes',name:tags.name}, sobject)
+        let obj = createWay(nodeids, way.id, {area:'yes',name:tags.name}, sobject);
+        obj.uuid = way.uuid;
+        obj.vid = way.vid;
         members.push({
           id: obj.id,
           type: 'way',
@@ -155,18 +161,20 @@ function parseObject (entities, sobject) {
 function createOsmNode (geom, tags, org) {
   org = org || {}
   let nid = 'n' + geom.id;
-  console.log(geom.id)
+  // console.log(geom,'geom')
   let node = new osmNode({
     id: nid,
     visible: true,
     version: 1,
     changeset: 11668672,
-    timestamp: '2012-05-22T07:13:23Z',
+    timestamp: org.realTime,
     user: 'min',
     uid: 0,
     loc: [geom.x,geom.y],
     tags: tags,
-    orgData: org
+    orgData: org,
+    uuid:geom.uuid,
+    vid:geom.vid
   })
   // if(geom.id=='5224388132865'){
   //   if(tags.name=='askwan'){
@@ -192,14 +200,13 @@ function createOsmNode (geom, tags, org) {
 
 function createWay (nodes, id, tags, org) {
   org = org || {}
-  console.log(nodes,'nodes')
   let wid = 'w' + id
   let way = new osmWay({
     id: wid,
     visible: true,
     version: 1,
     changeset: 11668672,
-    timestamp: '2012-05-22T07:13:23Z',
+    timestamp: org.realTime,
     user: 'min',
     uid: 0,
     tags: tags,
@@ -219,7 +226,7 @@ function createRelation (members, id, tags, org) {
     visible: true,
     version: 1,
     changeset: 11668672,
-    timestamp: '2012-05-22T07:13:23Z',
+    timestamp: org.realTime,
     user: 'min',
     uid: 0,
     tags: tags,

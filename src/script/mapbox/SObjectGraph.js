@@ -146,7 +146,6 @@ class SObjectGraph {
     // 创建自动增长id
     sobject.id = idcount++
     this.sobjectList[sobject.id] = sobject
-
     // feature.id = 'f' + form.id + '_' + sobject.id
 
     return sobject

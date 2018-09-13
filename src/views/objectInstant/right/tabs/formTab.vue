@@ -660,6 +660,7 @@
 
 					//根据样式创建形态
 					let form = IdEdit.currentGraph.createFormByStyle(style);
+					console.log(form,this.objectDetail)
 					//添加形态
 					IdEdit.addObjectForm(this.objectDetail, form);
 				}
