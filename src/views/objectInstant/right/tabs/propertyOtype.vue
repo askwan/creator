@@ -259,15 +259,18 @@
 				});*/
 			},
 			addObject(m, it) {
-				console.log(m, it, "abd");
+				
 				//let style = otype.formStyles.styles[0];
 				let fromtype = m.type;
 				let geotype = m.positions[0];
 				let otype = getOtypeById(it.id);
+				console.log(this.entityId, otype, fromtype, geotype,m);
+				if(IdEdit.osmContent.entity(this.entityId).type=='relation') geotype = 24;
+				console.log(IdEdit.osmContent.entity(this.entityId).type)
+				// return 
 				IdEdit.createSobject(this.entityId, otype, fromtype, geotype);
 
 				this.$emit("enterDetail", false);
-				console.log(fromtype, otype, "*-**-*-*-*------------------");
 			},
 			pathTo(){
 				vm.$emit('toRelation');

@@ -22,7 +22,7 @@ const TYPE = {
   way:2,
   relation:3
 }
-
+let bool = true;
 function parseObjectToOsm (jsonObjects, callback) {
   if (jsonObjects.status !== 200) return
 
@@ -44,7 +44,7 @@ function parseObjectToOsm (jsonObjects, callback) {
     // allDatas[jsonObjectsList[i].id] = jsonObjectsList[i]
   }
   entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type]);
-  console.log(entities,4444444444444)
+  console.log(entities,4444444444444);
   callback(null, entities)
 }
 
@@ -63,7 +63,7 @@ function parseObject (entities, sobject) {
       // 编辑节点
       // console.log(geom,sobject)
       if (geom.id) {
-        let oNode = createOsmNode(geom, tags, sobject);
+        let oNode = createOsmNode(geom, tags, sobject,'point');
         entities.push(oNode);
         form.geom = oNode.id;
       }
@@ -92,7 +92,7 @@ function parseObject (entities, sobject) {
       for (let i = 0; i < geom.nodes.length; i++) {
         let node = geom.nodes[i]
         // console.log(sobject)
-        let oNode = createOsmNode(node, [], sobject)
+        let oNode = createOsmNode(node, {}, sobject)
         nodeids.push(oNode.id)
         entities.push(oNode)
         form.geom = oNode.id
@@ -105,50 +105,16 @@ function parseObject (entities, sobject) {
       entities.push(way)
       form.geom = way.id
     }else if (form.geotype == osm.SORTINDEX_EXT_RELATION) {
-      var members = [];
+    
       clearRelationArr();
-      // console.log(geom,'relation',sobject)
-      // if(!geom.nodes) continue;
-      // if(geom.nodes.length==0) continue;
-      geom.node.forEach(node => {
-        let oNode = createOsmNode(node, tags, sobject)
-        entities.push(oNode)
-        members.push(oNode)
-        form.geom = oNode.id
-      })
-      geom.way.forEach(way => {
-        let nodeids = []
-        for (let i = 0; i < way.nodes.length; i++) {
-          let node = way.nodes[i]
-          let arr = []
-          for (let key in tags) {
-            arr.push(tags[key])
-          }
 
-          let oNode = createOsmNode(node, {}, sobject);
-          
-          nodeids.push(oNode.id)
-          entities.push(oNode)
-          form.geom = oNode.id
-        }
-        let obj = createWay(nodeids, way.id, {area:'yes',name:tags.name}, sobject);
-        obj.uuid = way.uuid;
-        obj.vid = way.vid;
-        members.push({
-          id: obj.id,
-          type: 'way',
-          role: way.role
-        })
-        entities.push(obj)
-        form.geom = obj.id
-      })
-      // console.log(members)
-      let relation = createRelation(members, geom.id, {type: "multipolygon",name:tags.name}, sobject);
-      // console.log(relation)
-      entities.push(relation)
-      form.geom = relation.id;
+      let obj = createOsmRelation(form.geom,tags,sobject,entities);
+      entities = obj.lists;
+
+      entities.push(obj.entity)
+      form.geom = obj.entity.id;
       // relation.addMember(members[0], 0);
-      relationArr(relation)
+      // relationArr(relation)
     }
   }
   sobject.otype = getOtypeById(sobject.otype.id)
@@ -158,15 +124,16 @@ function parseObject (entities, sobject) {
   return entities;
 }
 
-function createOsmNode (geom, tags, org) {
+function createOsmNode (geom, tags, org,_t) {
   org = org || {}
+  _t = _t || 'vertex';
   let nid = 'n' + geom.id;
   // console.log(geom,'geom')
   let node = new osmNode({
     id: nid,
     visible: true,
     version: 1,
-    changeset: 11668672,
+    changeset: 1,
     timestamp: org.realTime,
     user: 'min',
     uid: 0,
@@ -174,28 +141,28 @@ function createOsmNode (geom, tags, org) {
     tags: tags,
     orgData: org,
     uuid:geom.uuid,
-    vid:geom.vid
+    vid:geom.vid,
+    _t:_t
   })
-  // if(geom.id=='5224388132865'){
-  //   if(tags.name=='askwan'){
-  //     return node
-  //   }else{
-  //     return new osmNode({
-  //       id: nid,
-  //       visible: true,
-  //       version: 1,
-  //       changeset: 11668672,
-  //       timestamp: '2012-05-22T07:13:23Z',
-  //       user: 'min',
-  //       uid: 0,
-  //       loc: geom.coord,
-  //       tags: {name:'askwan'},
-  //       orgData: org
-  //     })
-  //   }
-  // }
   allDatas[nid] = node;
   return node
+}
+
+function createOsmWay (geom,tags,org,collection){
+  org = org || {};
+  let nodes = [];
+  geom.nodes.forEach(n=>{
+    let node = createOsmNode(n,{},org);
+    collection.push(node);
+    nodes.push(node.id);
+  });
+
+  let _way = createWay(nodes,geom.id,tags,org)
+  collection.push(_way);
+  return {
+    lists:collection,
+    entity:_way
+  }
 }
 
 function createWay (nodes, id, tags, org) {
@@ -216,6 +183,38 @@ function createWay (nodes, id, tags, org) {
   // console.log(way,'way')
   allDatas[wid] = way
   return way
+}
+
+function Member (id,role,type){
+  this.id = id;
+  this.role = role;
+  this.type = type;
+}
+
+function createOsmRelation (geom,tags,org,collection){
+  Object.assign(tags,{type: "multipolygon"});
+  org = org||{};
+  let members = [];
+  geom.members.forEach(el=>{
+    if(el.type=='node'){
+      let node = createOsmNode(el,{},org);
+      collection.push(new Member(node.id,el.role,node.type));
+      members.push(node.id);
+    }else if(el.type=='way'){
+      let obj = createOsmWay(el.refEntity,{},org,collection);
+      members.push(new Member(obj.entity.id,el.role,obj.entity.type));
+      collection = obj.lists;
+    }else if(el.type=='relation'){
+      let obj = createOsmRelation(el.refEntity,{},org,collection)
+      members.push(new Member(obj.entity.id,el.role,obj.entity.type));
+      collection = obj.lists;
+    }
+  })
+  let relation = createRelation(members,geom.id,tags,org);
+  return {
+    lists:collection,
+    entity:relation
+  }
 }
 
 function createRelation (members, id, tags, org) {

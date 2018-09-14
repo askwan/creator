@@ -1,22 +1,38 @@
 <template>
   <div class='root'>
-    <div class="title">添加复合多边形</div>
+    <!-- <div class="title">添加复合多边形</div>
     <div class="select-new">
-      <el-select v-model = selectRelation class="select">
+      <el-select v-model = 'selectRelation' class="select">
         <el-option v-for="(item,i) in relationCollection" :key="i" :label="item.name||item.id" :value="item.id">
         </el-option>
       </el-select>
     </div>
     <div class="add-member">
-      <el-button class="btn" @click="addMember" v-show="selectRelation!=1&&selectRelation">添加成员</el-button>
-    </div>
+      
+      
+    </div> -->
+
+    <el-form label-width="80px">
+      <el-form-item label="选择关系">
+        <el-select v-model = 'selectRelation' class="select">
+          <el-option v-for="(item,i) in relationCollection" :key="i" :label="item.name||item.id" :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="选择角色">
+        <el-select v-model="role">
+          <el-option label="inner" value="inner"></el-option>
+          <el-option laber="outer" value="outer"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
 
 
     
   </div>
 </template>
 <script>
-  import {createRelation,choose,setInnerRole} from './relations'
+  import {createRelation,choose,setRole} from './relations'
   import {vm,operate,getContext} from '@/script/operate';
   import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
   let context,r;
@@ -25,7 +41,8 @@
       return {
         currentEntity:'',
         relationCollection:[{id:1,name:'新关系'}],
-        selectRelation:''
+        selectRelation:'',
+        role:'inner'
       }
     },
     props: ["ifEdit", "objectDetail"],
@@ -33,6 +50,7 @@
     computed:{},
     mounted(){
       this.initData();
+      console.log(123)
     },
     watch:{
       selectRelation(id,oldId){
@@ -43,8 +61,11 @@
           let relation = this.relationCollection.find(el=>el.id==id);
           choose(relation);
         }
-
-        
+      },
+      role(val){
+        if(val){
+          this.addMember();
+        }
       }
     },
     methods:{
@@ -97,20 +118,20 @@
         }
         let re = context.graph().hasEntity(this.selectRelation);
 
-        let err = false;
-        re.members.forEach(el=>{
-          if(el.id==id){
-            err = true;
-          }
-        })
-        if(err){
-          return this.$notify.error({
-            title:'错误',
-            message:'该形态已经是成员了',
-            type:'warning'
-          })
-        }
-        setInnerRole({id:id,index:re.members.length,role:'inner',type:type},this.selectRelation);
+        // let err = false;
+        // re.members.forEach(el=>{
+        //   if(el.id==id){
+        //     err = true;
+        //   }
+        // })
+        // if(err){
+        //   return this.$notify.error({
+        //     title:'错误',
+        //     message:'该形态已经是成员了',
+        //     type:'warning'
+        //   })
+        // }
+        setRole({id:id,index:re.members.length,role:this.role,type:type},this.selectRelation);
       }
     }
   }
@@ -124,7 +145,6 @@
       margin-bottom: 10px;
     }
     .add-member{
-      margin-top: 10px;
       .btn{
         width:100%;
         padding: 0;

@@ -44,23 +44,22 @@ class IdEdit {
     this.osmContent = osmContent
     osmContent.on('selectEle', ele => {
       // let tags = {name:'askwan'};
-      // if(ele){
-      //   console.log(osmContent.entity(ele));
-      //   osmContent.perform(actionChangeTags(ele,tags), '修改属性');
-      // }
-      let relations = relationArr();
-      relations = JSON.stringify(relations);
-      relations = JSON.parse(relations);
-      let reForm,aimRelation;
-      relations.forEach(relation=>{
-        reForm = relation.members.find(member=>member.id==ele);
-        if(reForm){
-          aimRelation = relation
-        }
-      })
-      if(aimRelation){
-        ele = aimRelation.id;
+      if(ele){
+        console.log(osmContent.entity(ele));
       }
+      // let relations = relationArr();
+      // relations = JSON.stringify(relations);
+      // relations = JSON.parse(relations);
+      // let reForm,aimRelation;
+      // relations.forEach(relation=>{
+      //   reForm = relation.members.find(member=>member.id==ele);
+      //   if(reForm){
+      //     aimRelation = relation
+      //   }
+      // })
+      // if(aimRelation){
+      //   ele = aimRelation.id;
+      // }
 
       if (this.aimForm) {
         this.currentSobject.forms.forEach(form => {
@@ -126,7 +125,9 @@ class IdEdit {
     let bool = sobject.forms.find(el=>el.geotype == 23);
     if(bool) tags.area = 'yes';
     attr.forEach(el=>tags[el.name]=el.value);
-    this.osmContent.perform(actionChangeTags(ele,tags), '修改属性');
+    let oldTag = this.osmContent.entity(ele).tags;
+    Object.assign(oldTag,tags)
+    this.osmContent.perform(actionChangeTags(ele,oldTag), '修改属性');
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
     console.log(sobject,77777777)

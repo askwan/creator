@@ -121,7 +121,7 @@ class SObjectGraph {
   }
 
   createSobjectByOsmEntityId (entityId, otype, formType, geoType) {
-    console.log(otype, formType, 'abd111')
+    // console.log(otype, formType, 'abd111')
 
     let form = this.createFormByStyle(formType)
 

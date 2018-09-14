@@ -40,10 +40,14 @@ class EditSave {
             if(ev.geotype==21){
               let node = new osm.OsmNode(context.entity(ev.geom));
               addObj(result,node);
-            }else{
+            }else if(ev.geotype==23||ev.geotype==22){
               let way = new osm.OsmWay();
               way.setOsmWay(context,context.entity(ev.geom));
               addObj(result,way)
+            }else if(ev.geotype==24){
+              let relation = new osm.OsmRelation();
+              relation.setOsmRelation(context,context.entity(ev.geom));
+              addObj(result,relation)
             }
           })
         }
@@ -74,7 +78,7 @@ class EditSave {
 
     _osmChange = _osmChange.concat(created,modified,deleted);
 
-    let ways = _osmChange.filter(el=>el.type == 'Way');
+    let ways = _osmChange.filter(el=>el.type == 'way');
 
     ways.forEach(way=>{
       way.nodes.forEach((el,k)=>{
@@ -92,6 +96,25 @@ class EditSave {
           way.nodes.push(el);
         }
       }
+    })
+
+    let relations = _osmChange.filter(el=>el.type == 'relation');
+    relations.forEach(relation=>{
+      relation.members.forEach((member,k)=>{
+        if(member.type=='node'){
+          let i = _osmChange.findIndex(ev=>ev.id==el.id);
+          if(i>-1){
+            relation.members.splice(k,1,_osmChange[i]);
+          }
+        }else if(member.type=='way'){
+          member.refEntity.nodes.forEach((node,k)=>{
+            let i = _osmChange.findIndex(ev=>ev.id==node.id);
+            if(i>-1){
+              member.refEntity.nodes.splice(k,1,_osmChange[i]);
+            }
+          })
+        }
+      })
     })
     return _osmChange
 
@@ -152,7 +175,9 @@ class EditSave {
       	} else{
       		form.style = "";
         }
-        form.geom.clearId();
+        if(typeof form.geom =='object'){
+          form.geom.clearId();
+        }
       })
     })
     // resultSobjectList.forEach(obj=>{

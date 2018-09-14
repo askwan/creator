@@ -23,19 +23,7 @@ class OsmEntity {
   updateFlag (flag) {
     this.flag = flag
   }
-  record () {
-    let index = collection.findIndex(el => el.id === this.id)
-    if (index == -1) {
-      collection.push(this)
-    }else{
-      // console.log(this.flag,'ff');
-      if(this.flag>0){
-        collection.splice(index,1,this);
-      }
-    }
-  }
   clearId(){
-
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"")
     // if(this.flag==1) this.id = 0;
@@ -57,7 +45,6 @@ class OsmNode extends OsmEntity {
     this.refOb = node.orgData||{};
     this.tags = {}
     this['@type'] = 'Node'
-    this.record()
   }
 
   setOsmNode (node, flag) {
@@ -83,35 +70,17 @@ class OsmNode extends OsmEntity {
 }
 
 class OsmWay extends OsmEntity {
-  constructor (way) {
+  constructor (context,way) {
     super()
     this.nodes = []
-    this.type = 'Way';
+    this.type = 'way';
     this['@type'] = 'Way'
     if(!way) return
     if (way.entity.tags.area == 'yes') {
       this.type = 'area'
     }
-    if (!way) return
-    this.id = way.entity.id
-    for (let i = 0;i < way.entity.nodes.length;i++) {
-      let node = new OsmNode(way.graph.entities[way.entity.nodes[i]])
-      let change = Object.assign({}, way.graph.entities)
-      if (change[node.id] && !this.id.includes('-')) {
-        node.updateFlag(2)
-      }
-      if (this.id.includes('-')) {
-        this.updateFlag(1)
-      }else {
-        this.updateFlag(2)
-      }
-      if (node.id.includes('-')) {
-        node.updateFlag(1)
-      }
-      this.nodes.push(node)
-    }
-    let change = false;
-    this.record()
+    if(!context||!way) return
+    this.setOsmWay(context,way);
   }
 
   setOsmWay (context, way) {
@@ -119,6 +88,7 @@ class OsmWay extends OsmEntity {
     this.id = way.id;
     this.uuid = way.uuid;
     this.vid = way.vid;
+    console.log(way,122211)
     way.nodes.forEach(el => {
       let node = new OsmNode(context.entity(el));
       if(node.id.includes('-')) node.updateFlag(1);
@@ -134,7 +104,6 @@ class OsmWay extends OsmEntity {
     if (change) this.updateFlag(2);
     if(this.id.includes('-')) this.updateFlag(1);
     if(!this.id.includes('-')) this.updateFlag(2);
-    this.record()
   }
   // toJSON () {
   //   return this;
@@ -171,58 +140,44 @@ class OsmRelation extends OsmEntity {
     super()
     this.type = 'relation'
     this['@type'] = 'Relation'
-    if (!relation) return
-    this.id = relation.entity.id
-    this.members = []
-    relation.entity.members.forEach(el => {
-      let entity = collection.find(member => member.id == el.id);
-
-      if(entity){
-        entity.role = el.role||'';
-        this.members.push(entity)
-      }else{
-        entity = context.graph().entity(el.id);
-
-        if(entity){
-        	if(entity.type=='way'){
-	          let way = new OsmWay()
-	          way.setOsmWay(context, context.entity(el.id))
-	          this.members.push(way)
-	        }else if(entity.type=='node'){
-	          let node = new OsmNode(el)
-	          this.members.push(node)
-	        }
-	        this.record()
-        }
-      }
-    })
-    this.record()
+    if(!context||!relation) return
+    this.setOsmRelation(context,relation);
   }
   setOsmRelation (context, relation) {
-
+    this.tags = {
+      tags:{
+        type:{
+          key:'type',
+          value:relation.tags.type
+        }
+      }
+    }
     this.id = relation.id;
     this.uuid = relation.uuid;
     this.vid = relation.vid;
     this.members = [];
-    // console.log(relation,'relation')
-    relation.members.forEach(el => {
-      
-      let way = collection.find(member => member.id == el)
-      if (way) {
-        this.members.push(way)
-      }else {
-        if (el.type === 'node') {
-          let node = new OsmNode(el)
-          this.members.push(node)
-        }else if (el.type === 'way') {
-          way = new OsmWay()
-          way.setOsmWay(context, context.entity(el))
-          this.members.push(way)
-        }
+    // console.log(relation,'relation');
+    if(relation.id.includes('-')) this.updateFlag(1);
+    if(!relation.id.includes('-')) this.updateFlag(2);
+    relation.members.forEach(member => {
+      let entity = context.entity(member.id);
+      let obj = {};
+      if(entity.type=='relation'){
+        obj.refEntity = new OsmRelation();
+        obj.refEntity.setOsmRelation(context,entity);
+      }else if(entity.type=='way'){
+        obj.refEntity = new OsmWay();
+        obj.refEntity.setOsmWay(context,entity);
+      }else if(entity.type=="node"){
+        obj.refEntity = new OsmNode(entity);
+        node.role = member.role;
       }
+      obj.role = member.role;
+      obj.type = entity.type;
+      this.members.push(obj);
     });
+    
     this.refOb = relation.orgData||{};
-    this.record()
   }
   updateMember (member) {
     let index = this.members.findIndex(el => el.id == member.id)
@@ -231,6 +186,13 @@ class OsmRelation extends OsmEntity {
     }else {
       this.members.splice(index, 1, member)
     }
+  }
+  clearId(){
+    delete this.refOb;
+    this.id = this.id.replace(/[^0-9]/ig,"");
+    this.members.forEach(el=>{
+      el.refEntity.clearId();
+    })
   }
   // toJSON () {
   //   return this;

@@ -1,8 +1,5 @@
 <template>
 	<div class='relations-root' id="relations-root" v-if="objectDetail.id">
-		<!--<transition name="public">
-			<relation-info v-show="isRelationInfo" ref="parentListRef" :ifEdit="ifEdit" :objectDetail="objectDetail" @openRelationList="openRelationList" @openParentObject="openParentObject"></relation-info>
-		</transition>-->
 		<transition name="public">
 			<relation-list v-show="isRelationList" ref="relationListRef" :objectDetail="objectDetail" @openRelationInfo="openRelationInfo" @openRelationObject="openRelationObject"></relation-list>
 		</transition>
@@ -50,10 +47,6 @@
 		methods:{
 			openRelationInfo(){
 				this.$emit("enterDetail", false);
-				/*this.isRelationInfo = true;
-				this.isRelationList = false;
-				this.isRelationObject = false;
-				this.isParentObject = false;*/
 			},
 			openRelationList(){
 				this.isRelationInfo = false;

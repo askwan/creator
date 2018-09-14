@@ -34,7 +34,7 @@ import {
   actionAddMember,
   actionChangeMember,
   actionDeleteMember,
-  actionChangePreset
+  actionChangePreset,
 } from '@/iD-2.7.1/modules/actions';
 import { modeSelect } from '@/iD-2.7.1/modules/modes';
 
@@ -52,20 +52,15 @@ var relation;
 
 const createRelation = (_,member)=>{
   context = _;
-  // var member = { id: _entityID, type: context.entity(_entityID).type, role: role };
-  // var member = {id:id,role:'',type:'way',index:0}
-  // console.log(context)
   relation = osmRelation();
 
   context.perform(
       actionAddEntity(relation),
-      actionAddMember(relation.id, member),
+      actionAddMember(relation.id, {}),
       t('operations.add.annotation.relation')
   );
 
-  // console.log(relation,'relation')
-  let enti = context.graph().hasEntity(relation.id);
-  highLightEntity([member.id])
+  // context.perform(actionChangeTags(relation.id,Object.assign(relation.tags,{name:'askwan'})), '修改属性')
   return relation
 
 }
@@ -77,56 +72,32 @@ const choose = (r)=>{
   highLightEntity([relation.id])
 
   return
-  // let presets = context.presets();
-  // // console.log(presets.item("type/multipolygon"));
-  // let preset = presets.item("type/multipolygon");
-  // // console.log(presets,'r');
-  // let currentPreset = null;
-  // // var currentPreset=context.presets().item('area');
-  // context.perform(
-  //   actionChangePreset(id, currentPreset, preset),
-  //   t('operations.change_tags.annotation')
-  // );
-  // var entity = context.entity(r.id),
-  // memberships = [];
-  // console.log(entity);
-  // entity.members.forEach((member,index)=>{
-  //   memberships.push({
-  //       index: index,
-  //       id: member.id,
-  //       type: member.type,
-  //       role: member.role,
-  //       relation: entity,
-  //       member: context.hasEntity(member.id)
-  //   });
-  // });
-
-
-
-  
-  // var member = { id: id, type: 'way', role: 'outer' };
-  // context.perform(
-  //     actionChangeMember(r.id, member, 0),
-  //     t('operations.change_role.annotation')
-  // );
-  // console.log(r,'r')
-  // setInnerRole({id:"w5120213360640",index:1,role:'inner',type:'way'},r.id)
-
 }
 
-const setInnerRole=(member,id)=>{
+const setRole=(member,id)=>{
+  let relation = context.entity(id);
+  let _m = relation.members.findIndex(m=>m.id==member.id);
+  if(_m>=0){
+    context.perform(
+        actionChangeMember(id, member,_m),
+        t('operations.change_role.annotation')
+    );
+  }else{
+    context.perform(
+        actionAddMember(id, member),
+        t('operations.add_member.annotation')
+    );
+    let presets = context.presets();
+    let currentPreset = presets.item('relation');
+    let preset = presets.item("type/multipolygon")
+    changePreset(id,currentPreset,preset);
+  }
   
-  context.perform(
-      actionAddMember(id, member),
-      t('operations.add_member.annotation')
-  );
-
-
-  let presets = context.presets();
-  let currentPreset = presets.item('relation');
-  let preset = presets.item("type/multipolygon")
-  changePreset(id,currentPreset,preset);
   highLightEntity([id])
+}
+
+const deleteRole = (member,id)=>{
+
 }
 
 const changePreset=(id,currentPreset,preset)=>{
@@ -162,7 +133,7 @@ const positionEntity = (context,id)=>{
 export {
   createRelation,
   choose,
-  setInnerRole,
+  setRole,
   changePreset,
   highLightEntity,
   positionEntity
