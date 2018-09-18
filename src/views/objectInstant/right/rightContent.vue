@@ -42,7 +42,7 @@
 	export default {
 		data() {
 			return {
-				currentCom: "propertyTab",
+				currentCom: "propertyList",
 				oTypeCtrl: oTypeCtrl,
 				osmData: {},
 				headObjectName: "",
@@ -149,6 +149,9 @@
 					this.viewExportShow = false;
 					
 				});
+				vm.$on(operate.currentComp,data=>{
+					this.chooseCom(data);
+				})
 				vm.$on(operate.viewHistoryEvent, (data) => {
 					if (data == "viewHistory") {
 						this.viewContent = true;
@@ -180,18 +183,13 @@
 						hideRight: false
 					});
 					if(obj == null) {
-						this.currentCom = 'propertyTab';
-						if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
-							document.getElementsByTagName("body")[0].lastChild.style.display = "none";
-						}
+						this.currentCom = 'propertyList';
 					} else if(obj !== null && !obj.id) {
-						this.currentCom = 'propertyTab';
-						if(document.getElementsByClassName("is-multiple") && document.getElementsByClassName("is-multiple")[0] && document.getElementsByTagName("body")[0].lastChild.style) {
-							document.getElementsByTagName("body")[0].lastChild.style.display = "none";
-						}
+						this.currentCom = 'propertyList';
 					}
 					if(obj && obj.otype) {
 						let otypeDetail = allotypemgr.getOtypeById(obj.otype.id);
+						this.currentCom = 'objectContent';
 						Object.assign(obj.otype, otypeDetail);
 					}
 
@@ -199,7 +197,10 @@
 
 					let sobject = typeData.copyObject(obj);
 
-					this.objectDetail = sobject;
+					// this.objectDetail = sobject;
+					setTimeout(() => {
+						vm.$emit('currentSobject',sobject);
+					}, 100);
 				});
 			}
 		}

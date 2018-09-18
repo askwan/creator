@@ -1,5 +1,5 @@
 <template>
-	<div class="objtype-info" v-show="objectDetail.id">
+	<div class="objtype-info">
 		<div class="objtype-detail">
 			<div class="object-form-type">
 				<span v-for="it in formTypeList" :title="it.label" :key="it.value" @click.prevent.stop="placeTypeChange(it.value)">
@@ -18,11 +18,6 @@
 					<el-form>
 
 						<el-form-item v-show="item.type!==50 && item.type!==40" label="样式内容 :" :label-width="classNameWidth">
-							<!--<el-tag size="small" :closable="true" type="gray" @close="closeBehaviorTag(tag,indexTag,item)" v-if="item.style && item.style.length>0 && isMe()" v-for="(tag,indexTag) in toArr(item.style)" :key="indexTag">{{tag.name|compairString}}</el-tag>
-							<div v-if="!item.style || item.style.length==0" class="drag-area" @click="openTab(item)" v-drop="dropBehavior">
-								<p> + 选择</p>
-								<span>拖拽至此区域</span>
-							</div>-->
 							<el-select 
 								v-if="item.type!==50 && item.type!==40"
 								class="select-style"
@@ -71,17 +66,13 @@
 						    </el-tooltip>
 						</el-form-item>
 						<el-form-item label="维度 :" :label-width="classNameWidth">
-							<el-select v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
+							<el-select class="width-200" v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
 								<el-option v-for="(da, ix) in dimension" :key="ix" :label="da.name" :value="da.value">
 								</el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="位置 :" :label-width="classNameWidth">
-							<!--<input type="text" v-model="item.geomref" class="objtype-input" :class="{'objtype-input-case':!item.geom}" :readonly="!ifEdit" @blur="modifyFormFn(item,index)" />-->
-							
-							<!--<input type="text" :value="getPositionName(item.geotype)" class="objtype-input" :class="{'objtype-input-case':!item.geom}" readonly="true" @blur="modifyFormFn(item,index)" />-->
-							
-							<el-select v-model="item.geomref" placeholder="选择引用位置" @change="modifyFormFn(item,index)" :class="{'objtype-input-case':!item.geom}">
+						<el-form-item label="位置 :" :label-width="classNameWidth">					
+							<el-select class="width-200" v-model="item.geomref" placeholder="选择引用位置" @change="modifyFormFn(item,index)" :class="{'objtype-input-case':!item.geom}">
 								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.geomref" :value="da.geomref">
 								</el-option>
 							</el-select>
@@ -110,11 +101,12 @@
 							<input :readonly="!ifEdit" type="number" placeholder="Y轴旋转" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].y" class="objtype-rotate-input" />
 							<input :readonly="!ifEdit" type="number" placeholder="Z轴旋转" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].z" class="objtype-rotate-input" />
 						</el-form-item>
-						
-						<!--<el-form-item label="矩阵 :" :label-width="classNameWidth" v-if="item.type==50">
-							<input :readonly="!ifEdit" type="text" placeholder="4*4矩阵字符串([开头]结尾,英文逗号分隔)" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].matrix" class="objtype-input" />
-						</el-form-item>-->
-
+						<el-form-item label="关联:" :label-width="classNameWidth">
+							<div>
+								<div class="add" @click="addRelation(item)">添加</div>
+								<relation-operate v-for="(item,i) in item.relationArr" :key="i" :item="item" @delete="deleteRelation"></relation-operate>
+							</div>
+						</el-form-item>
 					</el-form>
 				</el-collapse-item>
 			</el-collapse>
@@ -125,7 +117,7 @@
 <script>
 	import psde from "@/psde";
 	import ImageManage from "@/psde/ImageManage";
-	import { vm, operate } from "@/script/operate";
+	import { vm, operate,getContext } from "@/script/operate";
 	import * as allotypemgr from "@/script/allOtype";
 	import { tabManage } from "@/components/designer/tabmanage";
 	import { oTypeCtrl, dimension, styleServerType, formstyleType } from "@/views/objectInstant/right/tabs/oTypeCtrl";
@@ -173,9 +165,9 @@
 		},
 		props: ["ifEdit", "objectDetail"],
 		components: {
-			
+			relationOperate:()=>import('./relationOperate')
 		},
-		activated() {
+		mounted() {
 			this.getData();
 		},
 		watch: {
@@ -436,7 +428,7 @@
 				);
 				// console.log(formList, this.formTypeList, "形态列表前后对比");
 				this.fromlistName = formCtrl.fromlist;
-				// this.addFormOtype(val);
+				
 			},
 			//样式内容转为数组格式
 			changeArr(list) {
@@ -458,6 +450,8 @@
 					} else {
 						item.style = [];
 					}
+					this.$set(item,'relationArr',this.relationArr(item))
+					// item.relationArr = this.relationArr(item);
 				});
 				this.objtypeLists = list;
 				
@@ -660,7 +654,7 @@
 
 					//根据样式创建形态
 					let form = IdEdit.currentGraph.createFormByStyle(style);
-					console.log(form,this.objectDetail)
+					// console.log(form,this.objectDetail,888888)
 					//添加形态
 					IdEdit.addObjectForm(this.objectDetail, form);
 				}
@@ -761,6 +755,37 @@
 				// 	arr = [];
 				// 	this.deleteObjectList = [];
 				// });
+			},
+			addRelation(item){
+				// vm.$emit('toRelation');
+				let obj = {
+					relation:'',
+					role:''
+				}
+				console.log(item,123123)
+				// this.relationArr.push(obj);
+				item.relationArr.push(obj);
+
+			},
+			relationArr(item={}){
+				// console.log(item,55555);
+				let context = getContext();
+				let arr = [];
+				let relation = context.getRelations(item.geom);
+				// console.log(relation,88888888);
+				relation.forEach(id=>{
+					let obj = {};
+					let re = context.entity(id);
+					obj.relation = id;
+					obj.role = re.members.find(el=>el.id==item.geom).role;
+					arr.push(obj);
+				});
+				// item.relationArr = arr;
+				console.log(arr,'arr')
+				return arr;
+			},
+			deleteRelation(obj){
+				console.log(obj,'delete')
 			}
 		}
 	};
@@ -976,5 +1001,15 @@
 				}
 			}
 		}
+	}
+	.add{
+		color: #4588e6;
+		display: flex;
+		justify-content: flex-end;
+		cursor: pointer;
+		font-size: 12px;
+	}
+	.width-200{
+		width: 200px;
 	}
 </style>

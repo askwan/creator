@@ -76,7 +76,6 @@ function parseObject (entities, sobject) {
         let oNode = createOsmNode(node, {}, sobject)
         nodeids.push(oNode.id)
         entities.push(oNode)
-      // form.geom = oNode.id
       }
       // let way = createWay(nodeids, geom.id, {highway:'bridleway',name:tags.name}, sobject)
       let way = createWay(nodeids, geom.id, {name:tags.name}, sobject);
@@ -87,34 +86,25 @@ function parseObject (entities, sobject) {
     }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)) {
       let nodeids = []
       if(geom.nodes.length==0) continue;
-      // console.log(geom,sobject)
-      // console.log(form.geom)
       for (let i = 0; i < geom.nodes.length; i++) {
         let node = geom.nodes[i]
-        // console.log(sobject)
         let oNode = createOsmNode(node, {}, sobject)
         nodeids.push(oNode.id)
         entities.push(oNode)
         form.geom = oNode.id
       }
-      // let way = createWay(nodeids, geom.id, tags, sobject);
-      // let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name,natural:'water'}, sobject)
       let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name}, sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
       form.geom = way.id
     }else if (form.geotype == osm.SORTINDEX_EXT_RELATION) {
-    
-      clearRelationArr();
-
       let obj = createOsmRelation(form.geom,tags,sobject,entities);
       entities = obj.lists;
 
       entities.push(obj.entity)
       form.geom = obj.entity.id;
-      // relation.addMember(members[0], 0);
-      // relationArr(relation)
+      relationArr(obj.entity)
     }
   }
   sobject.otype = getOtypeById(sobject.otype.id)
@@ -151,18 +141,26 @@ function createOsmNode (geom, tags, org,_t) {
 function createOsmWay (geom,tags,org,collection){
   org = org || {};
   let nodes = [];
+  
   geom.nodes.forEach(n=>{
     let node = createOsmNode(n,{},org);
     collection.push(node);
     nodes.push(node.id);
   });
 
-  let _way = createWay(nodes,geom.id,tags,org)
+  let _way = createWay(nodes,geom.id,tags,org);
+  _way.uuid = geom.uuid;
   collection.push(_way);
+  if(geom.id=='8776507342858'){
+    // console.log(JSON.stringify(geom));
+    console.log(org.id);
+    console.log(_way)
+  }
   return {
     lists:collection,
     entity:_way
   }
+
 }
 
 function createWay (nodes, id, tags, org) {
@@ -202,6 +200,7 @@ function createOsmRelation (geom,tags,org,collection){
       members.push(node.id);
     }else if(el.type=='way'){
       let obj = createOsmWay(el.refEntity,{},org,collection);
+      obj.entity.vid = el.refEntity.vid;
       members.push(new Member(obj.entity.id,el.role,obj.entity.type));
       collection = obj.lists;
     }else if(el.type=='relation'){
@@ -211,6 +210,8 @@ function createOsmRelation (geom,tags,org,collection){
     }
   })
   let relation = createRelation(members,geom.id,tags,org);
+  relation.uuid = geom.uuid;
+  relation.vid = geom.vid;
   return {
     lists:collection,
     entity:relation
@@ -272,6 +273,8 @@ function findRelations () {
 }
 
 
-export { findByNodeId, findRelations }
+
+
+export { findByNodeId, findRelations,getRelation }
 
 export default parseObjectToOsm

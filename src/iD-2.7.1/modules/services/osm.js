@@ -596,7 +596,7 @@ export default {
       // console.log(context.parents(),"bbb")
       let tokne = localStorage.getItem('token');
       _tiles.inflight[id] = that.loadFromAPI(
-        '/object/query?token=' + tokne + '&loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&grain='+Math.floor(z),
+        '/object/query?token=' + tokne + '&loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox,
         function (err, parsed) {
           delete _tiles.inflight[id]
           if (!err) {

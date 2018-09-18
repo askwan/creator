@@ -69,7 +69,7 @@ const choose = (r)=>{
 
   relation = r;
   
-  highLightEntity([relation.id])
+  // highLightEntity([relation.id])
 
   return
 }
@@ -96,8 +96,15 @@ const setRole=(member,id)=>{
   highLightEntity([id])
 }
 
-const deleteRole = (member,id)=>{
-
+const deleteRole = (id,index,callback)=>{
+  
+  context.perform(
+    actionDeleteMember(id, index),
+    t('operations.delete_member.annotation')
+  );
+  if(callback){
+    callback()
+  }
 }
 
 const changePreset=(id,currentPreset,preset)=>{
@@ -136,6 +143,7 @@ export {
   setRole,
   changePreset,
   highLightEntity,
-  positionEntity
+  positionEntity,
+  deleteRole
 }
 

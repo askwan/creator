@@ -307,6 +307,7 @@
 					.then(res => {
 						this.diagrams = res.list;
 						allOtype.orginData(res.list);
+						vm.$emit('readyDiagram',res.list);
 					});
 			},
 			searchViewObject(){

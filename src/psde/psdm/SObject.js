@@ -121,7 +121,7 @@ export default class SObject extends DObject {
     return null
   }
   addForm (form) {
-    let index = this.forms.findIndex(el => el.refid == form.refid)
+    let index = this.forms.findIndex(el => el.id == form.id)
     if (index == -1) {
       this.forms.push(form)
     }else {

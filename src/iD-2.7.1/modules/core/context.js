@@ -526,12 +526,29 @@ export function coreContext() {
     context.getParents = function(nodeId){
         let ways = context.graph()._childNodes;
         let aim = [];
+        console.log(ways,'ways')
         for(let id in ways){
             let way = ways[id];
             let index =  way.find(el=>el.id==nodeId);
             if(index) aim.push(id);
         }
         return aim
+    }
+    context.getRelations = function(wayId){
+        let relations = context.graph().transients;
+        let aim = [];
+        for(let id in relations){
+            try {
+                let relation = context.entity(id);
+                if(relation.type=='relation'){
+                    let index = relation.members.find(el=>el.id==wayId);
+                    if(index) aim.push(id);
+                }
+            } catch (error) {
+                
+            }
+        }
+        return aim;
     }
 
     

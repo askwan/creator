@@ -100,7 +100,7 @@
 	import common from "@/script/common";
 	import ImageManage from "@/psde/ImageManage";
 	import EditManage from "@/script/mapbox/EditManage";
-	import { getOtypeById } from "@/script/allOtype";
+	import { getOtypeById,allOtype } from "@/script/allOtype";
 	import { vm, operate } from "@/script/operate";
 
 	import IdEdit from "@/script/id_edit/IdEdit";
@@ -120,10 +120,11 @@
 				getDict: new psde.GetDict(),
 				searchOtypeList: [],
 				showDiagramList: true,
-				formList: []
+				formList: [],
+				diagrams:[]
 			};
 		},
-		props: ["diagrams", "entityObj"],
+		props: [ "entityObj"],
 		components: {
 			"common-search-bar": () => import("@/components/common/searchBar/searchBar")
 		},
@@ -188,22 +189,16 @@
 		},
 		mounted() {
 			this.listenEvent();
+			this.diagrams = allOtype.orginData();
 		},
 		methods: {
 			listenEvent() {
 				this.getDict.query({}, "form").then(res => {
 					this.formList = res;
 				});
-				/*vm.$on(operate.getOsmType, obj => {
-					console.log(obj, "create");
-
-					this.showDiagramList = true;
-					this.searchValue = "";
-
-					this.type = obj.type;
-					this.entityId = obj.entityId;
-					this.$emit("enterDetail", true);
-				});*/
+				vm.$on('readyDiagram',(list)=>{
+					this.diagrams = allOtype.orginData();
+				})
 			},
 			getName(data) {
 				var find = this.formList.find(item => item.value == data);

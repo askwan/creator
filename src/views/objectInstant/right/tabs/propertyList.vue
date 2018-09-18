@@ -1,14 +1,10 @@
 <template>
 	<div class="filter-list">
-		<transition name="public">
-			<property-otype v-show="propertyOtypeList" :diagrams="diagrams" @enterDetail='enterDetail' :entityObj="entityObj"></property-otype>
-		</transition>
-		<transition name="public">
-			<property-object v-show="propertyObjectList" :entityObj="entityObj" :clearContent="clearContent"></property-object>
-		</transition>
-		<transition name="public">
-			<relation-operate ref="relationOperateRef" v-show="relationOperateShow" :ifEdit="ifEdit" :objectDetail="objectDetail"></relation-operate>
-		</transition>
+			<property-otype :diagrams="diagrams" @enterDetail='enterDetail' :entityObj="entityObj"></property-otype>
+			<!-- <property-object v-show="propertyObjectList" :entityObj="entityObj" :clearContent="clearContent"></property-object> -->
+
+			<!-- <relation-operate ref="relationOperateRef" v-show="relationOperateShow" :ifEdit="ifEdit" :objectDetail="objectDetail"></relation-operate> -->
+
 	</div>
 </template>
 <script>

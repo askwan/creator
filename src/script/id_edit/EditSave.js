@@ -33,8 +33,17 @@ class EditSave {
           ways.forEach(w=>{
             let way = new osm.OsmWay();
             way.setOsmWay(context,context.entity(w));
-            addObj(result,way)
+            addObj(result,way);
+            let res = context.getRelations(w);
+            res.forEach(r=>{
+              let relation = new osm.OsmRelation();
+              relation.setOsmRelation(context,context.entity(r));
+              console.log(relation,'relationssssssssssssssss')
+              addObj(result,relation)
+            })
+
           })
+
 
           el.orgData.forms.forEach(ev=>{
             if(ev.geotype==21){
@@ -54,7 +63,15 @@ class EditSave {
         entity = new osm.OsmNode(el);
       }else if(el.type ==='way'){
         entity = new osm.OsmWay();
-        entity.setOsmWay(context,el)
+        entity.setOsmWay(context,el);
+        let relations = context.getRelations(entity.id);
+        relations.forEach(r=>{
+          let relation = new osm.OsmRelation();
+          relation.setOsmRelation(context,context.entity(r));
+          
+          if(relation.flag!==1) relation.updateFlag(2);
+          addObj(result,relation);
+        })
       }else if(el.type==='relation'){
         entity = new osm.OsmRelation();
         entity.setOsmRelation(context,el)
@@ -78,6 +95,8 @@ class EditSave {
 
     _osmChange = _osmChange.concat(created,modified,deleted);
 
+    // _osmChange = getRoot(context,_osmChange)
+
     let ways = _osmChange.filter(el=>el.type == 'way');
 
     ways.forEach(way=>{
@@ -87,13 +106,36 @@ class EditSave {
           let node = _osmChange[i];
           way.nodes.splice(k,1,node);
         }; 
-      })
+      });
+      
     });
+    
     deleted.forEach(el=>{
       if(el['@type']==='Node'){
-        let way = _osmChange.find(ev=>ev.refOb.id==el.refOb.id);
-        if(way){
-          way.nodes.push(el);
+        let entitys = _osmChange.filter(ev=>ev.refOb.id==el.refOb.id);
+        if(entitys.length==0) return
+        entitys.forEach(entity=>{
+          if(entity['@type']=='Way'){
+            entity.nodes.push(el);
+          }else if(entity['@type']=='Relation'){
+            entity.members.forEach(member=>{
+              if(member.type=='way'){
+                console.log(member)
+                member.refEntity.nodes.push(el);
+              }
+            })
+          }
+          console.log(entity,'entity')
+        })
+        
+      }else if(el['@type']==='Way'){
+        let entity = _osmChange.find(ev=>ev.refOb.id===el.refOb.id);
+        if(!entity) return;
+        if(entity['@type']=='Relation'){
+          let obj = {};
+          obj.refEntity = el;
+          obj.type = 'way';
+          entity.members.push(obj);
         }
       }
     })
@@ -107,6 +149,11 @@ class EditSave {
             relation.members.splice(k,1,_osmChange[i]);
           }
         }else if(member.type=='way'){
+          // console.log(member.refEntity,5555);
+          if(!member.refEntity){
+            // member
+            return
+          }
           member.refEntity.nodes.forEach((node,k)=>{
             let i = _osmChange.findIndex(ev=>ev.id==node.id);
             if(i>-1){
@@ -134,13 +181,12 @@ class EditSave {
 
     for (var key in osmCollection) {
       let entity = osmCollection[key];
-      console.log(entity.id,55555555)
+
       // let sobject = idedit.getSObjectByListOsmEntity(resultSobjectList, entity.id);
       let sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
       if (sobject == null) {
-        // sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
+        // console.log(idedit.sobjectlist,9999);
       }else{
-        console.log(entity.id,sobject)
         let bool = adjustChange(entity);
         if(!bool) continue;
         this.updateSObjectForm(sobject, entity)
@@ -261,6 +307,12 @@ const adjustChange = (entity)=>{
     }
   }
   return bool;
+}
+
+const getRoot = arr => {
+  arr.forEach(entity=>{
+
+  })
 }
 
 let editSave = new EditSave()

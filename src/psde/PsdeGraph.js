@@ -31,7 +31,7 @@ class PsdeGraph {
     let token = localStorage.getItem('token');
     let json = idedit.saveEdit(context);//formate.compairOsm(context);
     console.log(json);
-    console.log(JSON.stringify(json))
+    // console.log(JSON.stringify(json))
     // return
     if (!json.length) return
     let loading = vm.$loading({

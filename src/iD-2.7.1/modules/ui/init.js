@@ -57,7 +57,8 @@ export function uiInit(context) {
         hash();
 
         if (!hash.hadHash) {
-            map.centerZoom([103.6249284647,34.7472541716], 9);
+            // map.centerZoom([103.6249284647,34.7472541716], 9);
+            map.centerZoom([120.754, 31.628],9);
         }
 
         container

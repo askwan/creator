@@ -139,7 +139,8 @@
 //			},
 			backStep(){
 //				this.searchList("");
-				this.$emit("openRelationInfo");
+				// this.$emit("openRelationInfo");
+				vm.$emit(operate.currentComp,{name:'objectContent'})
 			},
 			addObjectParentFn(item){
 //				this.searchList("");

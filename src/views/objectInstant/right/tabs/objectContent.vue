@@ -1,6 +1,6 @@
 <template>
 	<div class="object-content">
-		<el-collapse v-model="activeNames" @change="handleChange" v-show="objectDetail.id">
+		<el-collapse v-model="activeNames" @change="handleChange">
 			<el-collapse-item title="属性" name="1">
 				<div class="tab-box">
 					<property-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams" @objectContentEvent="objectContentEvent"></property-tab>
@@ -13,7 +13,7 @@
 			</el-collapse-item>
 			<el-collapse-item title="形态" name="3">
 				<div class="tab-box">
-					<form-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></form-tab>
+					<form-tab :objectDetail="objectDetail" :ifEdit='ifEdit'></form-tab>
 				</div>
 			</el-collapse-item>
 			<el-collapse-item title="关系" name="4">
@@ -32,16 +32,18 @@
 	</div>
 </template>
 <script>
+	import { vm, operate } from "@/script/operate";
 	export default {
 		data() {
 			return {
-				activeNames: ['1', '2', '3', '4', '5']
+				activeNames: ['1', '2', '3', '4', '5'],
+				objectDetail:{}
 			}
 		},
 		props: {
 			osmData: Object,
 			ifEdit: Boolean,
-			objectDetail: Object,
+			// objectDetail: Object,
 			diagrams: Array
 		},
 		components: {
@@ -54,12 +56,20 @@
 			relationInfo: () => import("./relationInfo"),
 			behaviorInfo: () => import("./behaviorInfo"),
 		},
-		mounted() {
+		beforeMount() {
 			this.listenEvent();
+		},
+		mounted() {
+
+		},
+		watch:{
+
 		},
 		methods: {
 			listenEvent() {
-
+				vm.$on('currentSobject',obj=>{
+					this.objectDetail = obj;
+				})
 			},
 			handleChange() {
 

@@ -1,10 +1,10 @@
 <template>
 	<div class='root-detail'>
-		<!--<keep-alive>
-	    	<component :is="component" :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></component>
-	    </keep-alive>-->
+		<keep-alive>
+			<component :is="component" :osmData="osmData" :ifEdit='ifEdit' :diagrams="diagrams"></component>
+		</keep-alive>
 
-		<transition name="public">
+		<!-- <transition name="public">
 			<object-content v-show="showList" ref="objectContentRef" :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams" @objectContentEvent="objectContentEvent"></object-content>
 		</transition>
 
@@ -19,13 +19,16 @@
 
 		<transition name="public">
 			<behavior-list v-show="BehaviorListShow" ref="behaviorListRef" :objectDetail="objectDetail" @addObjectBehavior="addObjectBehavior" @openBehaviorInfo="enterDetail"></behavior-list>
-		</transition>
+		</transition> -->
+
+		<!-- <relation-operate></relation-operate> -->
 		
 	</div>
 </template>
 
 <script>
 	import { vm, operate } from "@/script/operate";
+	import ss from './tabs/objectContent'
 	export default {
 		data() {
 			return {
@@ -36,40 +39,28 @@
 			};
 		},
 		props: {
-			component: String,
+			component: {
+				type:String,
+				default:'relationOperate'
+			},
 			osmData: Object,
 			ifEdit: Boolean,
 			objectDetail: Object,
 			diagrams: Array
 		},
 		components: {
-			/*locationTab: () => import("./tabs/locationTab"), 
-			versionTab: () => import("./tabs/versionTab"),
-			relationOperate: () => import('./tabs/relationOperate.vue'),
-			behaviorTab: () => import("./tabs/behaviorTab"),
-			formTab: () => import("./tabs/formTab"),
-			propertyTab: () => import("./tabs/propertyTab"),
-			relationsTab: () => import("./tabs/relationsTab"),
-			spacetimeTab: () => import("./tabs/spacetimeTab"),*/
-
 			objectContent: () => import("./tabs/objectContent"),
 			propertyList: () => import("./tabs/propertyList"),
 			relationsTab: () => import("./tabs/relationsTab"),
 			behaviorList: () => import("./tabs/behaviorList"),
+			relationOperate:()=>import('./tabs/relationOperate'),
+			relationParentObject:()=>import('./tabs/relationParentObject')
 		},
 		computed: {
 
 		},
 		watch: {
-			objectDetail(val) {
-				if(val.id && val.id != "" && val.id > 0) {
-					this.enterDetail(false);
-				} else {
-					if(!this.propertyShow){
-						this.enterNull(true);
-					}
-				}
-			}
+			
 		},
 		mounted() {
 			this.listenEvent();

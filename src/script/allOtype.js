@@ -70,28 +70,7 @@ var num = 1
 let otypes
 allOtype.compair = function (fn) {
   if (num == 1) {
-    // var otypesIds = allOtype.orginData().map(item=>item.id).join(",")
-    // var fieldsIds = fieldsCollection.map(item=>item.id).join(",")
-    // if(otypesIds.length==0||fieldsIds.length==0){
-    //   fn([],[],[])
-    //   return
-    // }
-    // var p1 = field.query({ids:fieldsIds})
-    // // console.log(fieldsIds,'ids')
-    // var p2 = otype.query({loadField: true, loadModel: true,loadParents:true})
-    // // console.log(p2,"abd")
-    // var p3 = dict.query(null,"form")
     num++
-    // Promise.all([p1,p2,p3]).then(res=>{
-
-    //   fn(res[0].list,res[1].list,res[2])
-    //   otypesCollection = res[1].list
-    //   vm.$emit('orginData',allOtypes())
-    //   num = 1
-    // },(err)=>{
-    //   console.log(err)
-    // })
-    // return
     dict.query(null, 'form').then(res => {
       dictCollection = res
       num = 1

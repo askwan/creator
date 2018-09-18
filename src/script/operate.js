@@ -91,6 +91,8 @@ const operate = {
 
   mapBoxZoom:'mapBoxZoom',
 
+  currentComp:'currentComp',
+
 }
 let context;
 const getContext = (_)=>{

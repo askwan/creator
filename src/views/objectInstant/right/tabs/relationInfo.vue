@@ -506,47 +506,8 @@
 				this.objectParents.splice(ix, 1);
 			},
 			openTab(tab) {
-				this.$emit("objectContentEvent", {id: "parent", value: true, data: null});
-				/*var popup = tabManage.getItemById(tab);
-				tabManage.setTabItem(popup);
-				popup.floatItem();
-				popup.setPos(370, 160);
-				popup.setSize(800, 600);*/
-				
-				/*if (window.innerWidth-800-350 > 0) {
-					popup.setPos(window.innerWidth-800-350, 160);
-					popup.setSize(800, 600);
-				} else{
-					popup.setPos(0, 160);
-					popup.setSize(650, 400);
-				}*/
-				
-				/*这是根据关系选择对象
-				var arr = [];
-				if (this.otypeDetail.connectors && this.otypeDetail.connectors.connectors && this.otypeDetail.connectors.connectors.length>0) {
-					this.otypeDetail.connectors.connectors.forEach((item,index) => {
-						if (item.relation && item.relation.id) {
-							if (arr.length>0) {
-								var findIndex = arr.findIndex(it => it.id==item.dType.id);
-								if (findIndex == -1) {
-									arr.push(item.dType);
-								}
-							} else{
-								arr.push(item.dType);
-							}
-						}
-					})
-				}
-				var list = [];
-				arr.forEach((m,n) => {
-					list.push(m.name);
-				})
-				var str = list.join(",");
-				setTimeout( () => {
-					//vm.$emit(operate.relationSearchObject , {data:str});
-					vm.$emit(operate.relationSearchObject , {data:""});
-				},100)*/
-				
+				// this.$emit("objectContentEvent", {id: "parent", value: true, data: null});
+				vm.$emit(operate.currentComp,{name:'relationParentObject'})
 			}
 		}
 	};

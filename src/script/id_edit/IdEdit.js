@@ -121,13 +121,14 @@ class IdEdit {
   }
   modifyAttr(attr,sobject){
     let tags = {};
+    let newTag = {};
     let ele = sobject.forms[0].geom;
     let bool = sobject.forms.find(el=>el.geotype == 23);
     if(bool) tags.area = 'yes';
     attr.forEach(el=>tags[el.name]=el.value);
     let oldTag = this.osmContent.entity(ele).tags;
-    Object.assign(oldTag,tags)
-    this.osmContent.perform(actionChangeTags(ele,oldTag), '修改属性');
+    Object.assign(newTag,oldTag,tags)
+    this.osmContent.perform(actionChangeTags(ele,newTag), '修改属性');
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
     console.log(sobject,77777777)
@@ -202,7 +203,7 @@ class IdEdit {
   }
   addObjectForm (sobject, form) {
     sobject.addForm(form);
-    // console.log(sobject);
+    console.log(sobject,777777777);
     this.updateAndHistory(sobject)
   }
   updateAndHistory (sobject) {

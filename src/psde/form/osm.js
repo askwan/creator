@@ -88,7 +88,6 @@ class OsmWay extends OsmEntity {
     this.id = way.id;
     this.uuid = way.uuid;
     this.vid = way.vid;
-    console.log(way,122211)
     way.nodes.forEach(el => {
       let node = new OsmNode(context.entity(el));
       if(node.id.includes('-')) node.updateFlag(1);
@@ -190,6 +189,7 @@ class OsmRelation extends OsmEntity {
   clearId(){
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"");
+    console.log(this.members)
     this.members.forEach(el=>{
       el.refEntity.clearId();
     })
