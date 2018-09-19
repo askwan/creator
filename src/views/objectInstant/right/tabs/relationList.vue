@@ -52,9 +52,10 @@
 				relationList: [],
 				typeList: [],
 				dict: new psde.GetDict(),
+				objectDetail:{}
 			}
 		},
-		props: ["objectDetail"],
+		// props: ["objectDetail"],
 		components: {
 			"no-data-model": () => import("@/components/noDataModel")
 		},
@@ -88,9 +89,18 @@
 			}
 		},
 		mounted() {
-			this.initData();
+			this.listenEvent();
+		},
+		activated() {
+			this.listenEvent();
 		},
 		methods: {
+			listenEvent(){
+				vm.$on('currentSobject',obj=>{
+					this.objectDetail = obj;
+					this.initData();
+				})
+			},
 			initData() {
 				var val = this.objectDetail;
 				this.addRelationOtype(val);
@@ -101,6 +111,7 @@
 				
 			},
 			addRelationOtype(val) {
+				console.log(val,'val')
 				if(val.otype && val.otype.id) {
 					//根据对象otypeid，获取对象关系列表
 					this.otypeDetail = allotypemgr.getOtypeById(val.otype.id);
@@ -146,7 +157,8 @@
 				return str;
 			},
 			backStep(){
-				this.$emit("openRelationInfo");
+				// this.$emit("openRelationInfo");
+				vm.$emit(operate.currentComp,{name:'objectContent'});
 			},
 			openRelationObject(data){
 				this.$emit("openRelationObject" , data);

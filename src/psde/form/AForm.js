@@ -20,7 +20,7 @@ class AForm extends CoreData {
     this.style = '';
     this.formref = {
       refid:0,
-      geometry:{}
+      geometry:null
     };
     this.geom = null;
   }

@@ -1,7 +1,9 @@
 <template>
 	<div class='root-detail'>
 		<keep-alive>
-			<component :is="component" :osmData="osmData" :ifEdit='ifEdit' :diagrams="diagrams"></component>
+			<component :is="component" :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"
+				@addObjectBehavior="addObjectBehavior"
+			></component>
 		</keep-alive>
 
 		<!-- <transition name="public">
@@ -53,8 +55,10 @@
 			propertyList: () => import("./tabs/propertyList"),
 			relationsTab: () => import("./tabs/relationsTab"),
 			behaviorList: () => import("./tabs/behaviorList"),
-			relationOperate:()=>import('./tabs/relationOperate'),
-			relationParentObject:()=>import('./tabs/relationParentObject')
+			// relationOperate:()=>import('./tabs/relationOperate'),
+			relationParentObject:()=>import('./tabs/relationParentObject'),
+			relationList:()=>import('./tabs/relationList'),
+			relationOperate:()=>import('./tabs/relationTab')
 		},
 		computed: {
 
@@ -117,10 +121,11 @@
 			},
 			//添加行为中间转换
 			addObjectBehavior(obj) {
-				this.enterDetail(false);
-				setTimeout(() => {
-					this.$refs.objectContentRef.addObjectBehavior(obj);
-				}, 10)
+				// this.enterDetail(false);
+				// this.$emit('addObjectBehavior',obj)
+				// setTimeout(() => {
+				// 	this.$refs.objectContentRef.addObjectBehavior(obj);
+				// }, 10)
 			},
 			//根据类型判断当前显示
 			objectContentEvent(obj) {

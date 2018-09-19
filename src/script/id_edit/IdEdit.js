@@ -46,6 +46,15 @@ class IdEdit {
       // let tags = {name:'askwan'};
       if(ele){
         console.log(osmContent.entity(ele));
+        // let entity = osmContent.entity(ele);
+        // if(entity.type=='relation'){
+        //   entity.members.forEach(el=>{
+        //     let way = osmContent.entity(el.id);
+        //     way.nodes.forEach(node=>{
+        //       console.log(osmContent.entity(node),node,osmContent.entity(node).type)
+        //     })
+        //   })
+        // }
       }
       // let relations = relationArr();
       // relations = JSON.stringify(relations);

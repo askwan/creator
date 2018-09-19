@@ -97,7 +97,7 @@ const setRole=(member,id)=>{
 }
 
 const deleteRole = (id,index,callback)=>{
-  
+  if(!context) context = getContext();
   context.perform(
     actionDeleteMember(id, index),
     t('operations.delete_member.annotation')

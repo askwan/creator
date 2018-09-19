@@ -86,6 +86,9 @@
 		mounted() {
 			this.startSearch();
 		},
+		activated() {
+			this.startSearch();
+		},
 		methods: {
 			searchInputFn() {
 				clearTimeout(this.times);

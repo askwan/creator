@@ -72,8 +72,12 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="位置 :" :label-width="classNameWidth">					
-							<el-select class="width-200" v-model="item.geomref" placeholder="选择引用位置" @change="modifyFormFn(item,index)" :class="{'objtype-input-case':!item.geom}">
+							<!-- <el-select class="width-200" v-model="item.geomref" placeholder="选择引用位置" @change="modifyFormFn(item,index)" :class="{'objtype-input-case':!item.geom}">
 								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.geomref" :value="da.geomref">
+								</el-option>
+							</el-select> -->
+							<el-select class="width-200" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
+								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.id" :value="da.id">
 								</el-option>
 							</el-select>
 							
@@ -103,7 +107,10 @@
 						</el-form-item>
 						<el-form-item label="关联:" :label-width="classNameWidth">
 							<div>
-								<div class="add" @click="addRelation(item)">添加</div>
+								<div class="add">
+									<span class="operate-btn" @click="addRelation(item)">添加</span>
+									<!-- <span class="operate-btn" @click="reloveRelation(item)">分解</span> -->
+								</div>
 								<relation-operate v-for="(item,i) in item.relationArr" :key="i" :item="item" @delete="deleteRelation"></relation-operate>
 							</div>
 						</el-form-item>
@@ -220,6 +227,17 @@
 		},
 		methods: {
 			positionRefList(item,index){
+				let context = getContext();
+				if(typeof item.geom !='string') return [];
+				let entity = context.entity(item.geom);
+				let arr = [];
+					arr.push({id:entity.id})
+				if(entity.type=='relation'){
+					arr = arr.concat(entity.members);
+				}else{
+					
+				}
+				return arr;
 				var addPosition = {
 					geomref: "重新编辑位置",
 					type: 100,
@@ -758,34 +776,62 @@
 			},
 			addRelation(item){
 				// vm.$emit('toRelation');
-				let obj = {
-					relation:'',
-					role:''
-				}
-				console.log(item,123123)
-				// this.relationArr.push(obj);
-				item.relationArr.push(obj);
+				// let obj = {
+				// 	relation:'',
+				// 	role:''
+				// }
+				// console.log(item,123123)
+				// item.relationArr.push(obj);
+				vm.$emit(operate.currentComp,{name:'relationOperate'})
 
 			},
+			changePosi(item,index){
+				// console.log(item,index,'changePosi');
+				// console.log(this.objectDetail,item)
+				this.modifyForm(this.objectDetail, item);
+			},
 			relationArr(item={}){
-				// console.log(item,55555);
+				// let context = getContext();
+				// let arr = [];
+				// let relation = context.getRelations(item.geom);
+				// relation.forEach(id=>{
+				// 	let obj = {};
+				// 	let re = context.entity(id);
+				// 	obj.relation = id;
+				// 	obj.role = re.members.find(el=>el.id==item.geom).role;
+				// 	arr.push(obj);
+				// });
+				// console.log(arr,'arr')
+				// return arr;
 				let context = getContext();
 				let arr = [];
-				let relation = context.getRelations(item.geom);
-				// console.log(relation,88888888);
-				relation.forEach(id=>{
-					let obj = {};
-					let re = context.entity(id);
-					obj.relation = id;
-					obj.role = re.members.find(el=>el.id==item.geom).role;
+				let entity = context.entity(item.geom);
+				if(entity.type=='relation'){
+					entity.members.forEach(member=>{
+						let obj = {
+							relation:member.id,
+							role:member.role,
+							parent:item.geom
+						}
 					arr.push(obj);
-				});
-				// item.relationArr = arr;
-				console.log(arr,'arr')
+					})
+				}else{
+					// let relation = context.getRelations(item.geom);
+					// relation.forEach(id=>{
+					// 	let obj = {};
+					// 	let re = context.entity(id);
+					// 	obj.relation = id;
+					// 	obj.role = re.members.find(el=>el.id==item.geom).role;
+					// 	arr.push(obj);
+					// });
+				}
 				return arr;
 			},
 			deleteRelation(obj){
-				console.log(obj,'delete')
+				this.formateList.forEach(el=>{
+					let index = el.relationArr.findIndex(ev=>ev.parent==obj.relation);
+					if(index>-1) el.relationArr.splice(index,1);
+				})
 			}
 		}
 	};
@@ -1003,9 +1049,9 @@
 		}
 	}
 	.add{
-		color: #4588e6;
 		display: flex;
 		justify-content: flex-end;
+		color: #4588e6;
 		cursor: pointer;
 		font-size: 12px;
 	}

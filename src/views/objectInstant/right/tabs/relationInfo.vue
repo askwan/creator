@@ -133,6 +133,8 @@
 		methods: {
 			openRelationList(){
 				var list = [];
+				vm.$emit(operate.currentComp,{name:'relationList'});
+				return
 				if(this.otypeDetail.connectors && this.otypeDetail.connectors.connectors && this.otypeDetail.connectors.connectors.length > 0) {
 					this.otypeDetail.connectors.connectors.forEach((item, index) => {
 						if(item.relation && item.relation.id) {

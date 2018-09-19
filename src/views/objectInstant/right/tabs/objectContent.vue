@@ -70,6 +70,9 @@
 				vm.$on('currentSobject',obj=>{
 					this.objectDetail = obj;
 				})
+				vm.$on('addObjectBehavior',obj=>{
+					this.addObjectBehavior(obj)
+				})
 			},
 			handleChange() {
 

@@ -38,7 +38,6 @@ class EditSave {
             res.forEach(r=>{
               let relation = new osm.OsmRelation();
               relation.setOsmRelation(context,context.entity(r));
-              console.log(relation,'relationssssssssssssssss')
               addObj(result,relation)
             })
 
@@ -118,14 +117,15 @@ class EditSave {
           if(entity['@type']=='Way'){
             entity.nodes.push(el);
           }else if(entity['@type']=='Relation'){
-            entity.members.forEach(member=>{
-              if(member.type=='way'){
-                console.log(member)
-                member.refEntity.nodes.push(el);
+            
+            let wayIds = getWayFromRelation(el.id,entity);
+            wayIds.forEach(id=>{
+              let way = entity.members.find(el=>el.refEntity.id.replace(/[^0-9]/ig,"")==id);
+              if(way){
+                way.refEntity.nodes.push(el);
               }
             })
           }
-          console.log(entity,'entity')
         })
         
       }else if(el['@type']==='Way'){
@@ -149,9 +149,7 @@ class EditSave {
             relation.members.splice(k,1,_osmChange[i]);
           }
         }else if(member.type=='way'){
-          // console.log(member.refEntity,5555);
           if(!member.refEntity){
-            // member
             return
           }
           member.refEntity.nodes.forEach((node,k)=>{
@@ -172,7 +170,7 @@ class EditSave {
     let resultSobjectList = []
     // let osmCollection = this.getOsmChanges(context);
     let osmCollection = this.getOsmChanges1(context);
-    console.log(osmCollection,456664)
+    console.log(osmCollection,'osmCollecto')
     // 检测osm变化，currentgraph未检测到的变化
     for (let key in currentGraph.sobjectList) {
       let sobject = currentGraph.sobjectList[key];
@@ -235,27 +233,30 @@ class EditSave {
     //   })
     // });
 
-    // console.log(resultSobjectList, osmCollection, currentGraph, '保存');
     return resultSobjectList
   }
   updateSObjectForm (sobject, entity) {
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
-    form.formref.geometry = entity;
+    console.log(entity.refOb)
+    
+    // form.formref.geometry = entity;
 
     if (form.type < 30) {
       form.formref.refid = entityId
       form.geomref = entityId;
     }else {
       form.geomref = entityId;
-      
+      if(entity.flag==1) {
+        form.geomref = 0;
+        form.formref.geometry = null;
+      }
       if( typeof form.formref.refid=='string' && form.formref.refid.search(/[a-zA-Z]+/)>-1){
         form.formref.refid = 0;
       }
 
     }
-    // console.log(typeof form.id =='number',form.id)
     if (entity.flag == 1) {
       sobject.modifyForm(form)
     }else if (entity.flag == 2) {
@@ -269,22 +270,13 @@ class EditSave {
     let idx = sobjectlist.findIndex(el => el.id == sobject.id)
     if (idx == -1) {
       sobjectlist.push(sobject)
+    }else{
+      sobject.attributes = sobjectlist[idx].attributes;
+      sobjectlist.splice(idx,1,sobject);
+
     }
   }
 
-}
-
-const getRelationByMember=(member)=>{
-  let aimRelation;
-  let relationArrs = relationArr();
-  relationArrs.forEach(relation=>{
-    relation.members.forEach(el=>{
-      if(el.id==member.id){
-        aimRelation = relation;
-      }
-    })
-  })
-  return aimRelation
 }
 
 const addObj=(arr,obj)=>{
@@ -309,10 +301,25 @@ const adjustChange = (entity)=>{
   return bool;
 }
 
-const getRoot = arr => {
-  arr.forEach(entity=>{
+const getWayFromRelation = (nodeId,relation)=>{
+  if(!relation.refOb) return;
+  let aimIds = [];
+  let forms = relation.refOb.forms;
+  let form = forms.find(el=>el.formref.geometry.id==relation.id.replace(/[^0-9]/ig,""));
+  if(form){
+    let _relation = form.formref.geometry;
+    _relation.members.forEach(member=>{
 
+      if(member.id==nodeId.replace(/[^0-9]/ig,"")){
+        aimId = [_relation.id];
+      }else if(member.refEntity){
+        let way = member.refEntity;
+        let node = way.nodes.find(el=>el.id==nodeId.replace(/[^0-9]/ig,""));
+        if(node) aimIds.push(way.id);
+      }
   })
+}
+  return aimIds
 }
 
 let editSave = new EditSave()

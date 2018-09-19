@@ -89,6 +89,7 @@
 	import IdEdit from "@/script/id_edit/IdEdit";
 	import { modeSelect } from '@/iD-2.7.1/modules/modes/select';
 	import { tabManage } from "@/components/designer/tabmanage";
+	import { vm, operate } from "@/script/operate";
 
 	export default {
 		data() {
@@ -144,7 +145,8 @@
 		methods: {
 			openTab(tab) {
 				//this.$emit("openBehaviorList");
-				this.$emit("objectContentEvent", {id: "behavior", value: true, data: null});
+				// this.$emit("objectContentEvent", {id: "behavior", value: true, data: null});
+				vm.$emit(operate.currentComp,{name:tab})
 				/*var popup = tabManage.getItemById(tab);
 				tabManage.setTabItem(popup);
 				popup.floatItem();

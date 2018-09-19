@@ -1,9 +1,9 @@
 <template>
   <div class='root'>
-    <div class="delete-btn" @click="deleteRelation">删除</div>
+    <div v-show="item.relation"  class="delete-btn" @click="deleteRelation">删除</div>
     <el-form>
       <el-form-item>
-        <el-select v-model = 'selectRelation' class="select" placeholder="请选择关系">
+        <el-select v-model = 'selectRelation' class="select" placeholder="请选择关系" :disabled="Boolean(item.parent)">
           <el-option v-for="(item,i) in mapRelation" :key="i" :label="item.name||item.id" :value="item.id">
           </el-option>
         </el-select>
@@ -18,6 +18,7 @@
   </div>
 </template>
 <script>
+
   import {createRelation,choose,setRole,deleteRole} from './relations'
   import {vm,operate,getContext} from '@/script/operate';
   import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
@@ -38,7 +39,8 @@
         default:()=>{
           return {
             relation:'',
-            role:''
+            role:'',
+            parent:''
           }
         }
       }
@@ -50,8 +52,10 @@
     },
     activated() {
       this.initData();
-      this.selectRelation = '';
-      this.role='';
+      if(!this.item.relation){
+        this.selectRelation = '';
+        this.role='';
+      }
     },
     watch:{
       selectRelation(id,oldId){
@@ -65,7 +69,7 @@
       role(val){
         if(val){
 
-          this.addMember();
+          this.addMember(val);
         }
       }
     },
@@ -112,6 +116,13 @@
         choose(r);
       },
       addMember(){
+
+        if(this.item.parent){
+          console.log(this.item.relation,this.item.parent,555555);
+          setRole({id:this.item.relation,index:1,role:role},this.item.parent);
+          return
+        }
+
         let id = context.selectedIDs()[0];
         if(!id) {
           return this.$notify.error({
@@ -128,7 +139,7 @@
           });
         }
         let re = context.graph().hasEntity(this.selectRelation);
-        setRole({id:id,index:re.members.length,role:this.role,type:type},this.selectRelation);
+        setRole({id:id,index:re.members.length,role:role,type:type},this.selectRelation);
           let sobject = IdEdit.getSObjectByOsmEntity(id);
           // console.log(sobject,'soje')
           if(sobject){
@@ -140,6 +151,7 @@
       },
       deleteRelation(obj){
         let id = context.selectedIDs()[0];
+        let relation,index;
         if(!id) {
           return this.$notify.error({
             title: '警告',
@@ -147,8 +159,17 @@
             type: 'warning'
           });
         }
-        let relation = context.entity(this.selectRelation);
-        let index = relation.members.findIndex(el=>el.id==id);
+        
+        if(this.item.parent){
+          relation = context.entity(this.item.parent);
+          index = relation.members.findIndex(el=>el.id==this.item.relation);
+          this.selectRelation = this.item.parent;
+          id = this.item.relation;
+        }else{
+          relation = context.entity(this.selectRelation);
+          index = relation.members.findIndex(el=>el.id==id);
+        }
+        console.log(this.selectRelation,index,55555555555)
         deleteRole(this.selectRelation,index,(obj)=>{
           this.$emit('delete',{
             relation:this.selectRelation,

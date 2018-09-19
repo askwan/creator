@@ -37,6 +37,7 @@
 <script>
 	import psde from "@/psde";
 	import ImageManage from "@/psde/ImageManage";
+	import { vm, operate } from "@/script/operate";
 	export default {
 		data() {
 			return {
@@ -56,6 +57,7 @@
 					pageSizeArr: [4, 20, 40],
 					total: 0
 				},
+				// objectDetail:{}
 			}
 		},
 		props: ["objectDetail"],
@@ -66,7 +68,7 @@
 				import("@/components/common/searchBar/searchBar")
 		},
 		watch: {
-			objectDetail(val) {
+			'objectDetail.id'(val) {
 				if(val) {
 					this.backStep();
 				}
@@ -82,12 +84,24 @@
 			}
 		},
 		mounted() {
+			// this.getDict.query(null, "modelDefType").then(response => {
+			// 	this.options = response;
+			// });
+			// this.startSearch();
+			// this.listenEvent();
+			// console.log('behavior')
+		},
+		activated() {
+			this.listenEvent();
 			this.getDict.query(null, "modelDefType").then(response => {
 				this.options = response;
 			});
 			this.startSearch();
 		},
 		methods: {
+			listenEvent(){
+				
+			},
 			filtersName(num) {
 				for(let item of this.options) {
 					if(item.value == num) {
@@ -132,12 +146,13 @@
 					});
 			},
 			backStep() { 
-				if (this.searchValue=="") {
-					this.searchValue = null;
-				} else {
-					this.searchValue = "";
-				}
-				this.$emit("openBehaviorInfo");
+				// if (this.searchValue=="") {
+				// 	this.searchValue = null;
+				// } else {
+				// 	this.searchValue = "";
+				// }
+				// this.$emit("openBehaviorInfo");
+				vm.$emit(operate.currentComp,{name:'objectContent'});
 			},
 			addObjectBehaviorFn(item) {
 				if (this.searchValue=="") {
@@ -151,7 +166,11 @@
 						id: 'behavior'
 					}
 				}
-				this.$emit("addObjectBehavior", obj);
+				vm.$emit(operate.currentComp,{name:'objectContent'});
+				setTimeout(() => {
+					vm.$emit("addObjectBehavior", obj);
+
+				}, 10);
 			},
 
 		}

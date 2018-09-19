@@ -29,7 +29,9 @@
 				<!-- <i class="iconfont icon-guanbi1" @click="closeRight"></i> -->
 			</div>
 			<div class="detail">
-				<o-detail :component="currentCom" :osmData="osmData" :ifEdit='ifEdit' :objectDetail="objectDetail" :diagrams="diagrams"></o-detail>
+				<o-detail :component="currentCom" :osmData="osmData" :ifEdit='ifEdit' :objectDetail="objectDetail" :diagrams="diagrams"
+					
+				></o-detail>
 			</div>
 		</div>
 	</div>
@@ -197,7 +199,7 @@
 
 					let sobject = typeData.copyObject(obj);
 
-					// this.objectDetail = sobject;
+					this.objectDetail = sobject;
 					setTimeout(() => {
 						vm.$emit('currentSobject',sobject);
 					}, 100);
