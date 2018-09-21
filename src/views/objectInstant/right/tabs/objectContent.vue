@@ -6,16 +6,13 @@
 					<property-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams" @objectContentEvent="objectContentEvent"></property-tab>
 				</div>
 			</el-collapse-item>
-			<el-collapse-item title="时空" name="2">
-				<div class="tab-box">
-					<spacetime-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></spacetime-tab>
-				</div>
-			</el-collapse-item>
 			<el-collapse-item title="形态" name="3">
 				<div class="tab-box">
 					<form-tab :objectDetail="objectDetail" :ifEdit='ifEdit'></form-tab>
 				</div>
 			</el-collapse-item>
+			
+			
 			<el-collapse-item title="关系" name="4">
 				<div class="tab-box">
 					<!--<relations-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></relations-tab>-->
@@ -28,6 +25,11 @@
 					<!--<behavior-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></behavior-tab>-->
 				</div>
 			</el-collapse-item>
+			<el-collapse-item title="时空" name="2">
+				<div class="tab-box">
+					<spacetime-tab :osmData="osmData" :objectDetail="objectDetail" :ifEdit='ifEdit' :diagrams="diagrams"></spacetime-tab>
+				</div>
+			</el-collapse-item>
 		</el-collapse>
 	</div>
 </template>
@@ -36,7 +38,7 @@
 	export default {
 		data() {
 			return {
-				activeNames: ['1', '2', '3', '4', '5'],
+				activeNames: ['1', '3'],
 				objectDetail:{}
 			}
 		},

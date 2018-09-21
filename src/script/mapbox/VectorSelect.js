@@ -73,10 +73,8 @@ class VectorSelect {
         }
 				
 				//点击对象左边显示详细信息
-//				console.log(feature.properties)
-//      self.loadObjectById(feature.properties.oid)
+
       }else {
-//      vm.$emit(operate.currentObject, {})
         self.feature = null
       }
 

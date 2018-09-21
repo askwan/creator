@@ -46,7 +46,7 @@ var _tiles = { loaded: {}, inflight: {} }
 var _changeset = {}
 var _entityCache = {}
 var _connectionID = 1
-var _tileZoom = 14
+var _tileZoom = 16
 var _rateLimitError
 var _userChangesets
 var _userDetails

@@ -65,15 +65,16 @@
 
 			this.listenEvent();
 			map.resize();
+			this.setPosi();
 		},
 		methods: {
+			setPosi(){
+				if(!window._POSITION_) return
+				let posi = window._POSITION_;
+				map.setCenter(posi.position);
+				map.setZoom(posi.zoom);
+			},
 			listenEvent() {
-				vm.$on(operate.fly, posi => {
-					setTimeout(() => {
-						map.setCenter(posi.position);
-						map.setZoom(posi.zoom);
-					}, 200);
-				});
 				vm.$on(operate.ifEdit, obj => {
 					this.ifEdit = obj.status;
 				});
@@ -83,6 +84,7 @@
 					}, 500);
 				});
 				vm.$on(operate.flyTo, obj => {
+					console.log(obj,'objectData')
 					map.flyTo({
 						center: obj.position,
 						zoom: obj.zoom
@@ -118,7 +120,9 @@
 				zoom: map.getZoom()
 			};
 			window.posi = sess;
-			vm.$emit("fly", sess);
+			vm.$off();
+			sessionStorage.setItem('position',JSON.stringify(sess));
+			window._POSITION_ = sess;
 		}
 	};
 </script>

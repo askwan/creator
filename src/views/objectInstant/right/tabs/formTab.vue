@@ -1,5 +1,5 @@
 <template>
-	<div class="objtype-info">
+	<div class="objtype-info" v-if="objectDetail.id">
 		<div class="objtype-detail">
 			<div class="object-form-type">
 				<span v-for="it in formTypeList" :title="it.label" :key="it.value" @click.prevent.stop="placeTypeChange(it.value)">
@@ -207,6 +207,7 @@
 					if(typeof el.style == "string" && el.style != "") {
 						el.style = JSON.parse(el.style);
 					}
+					
 					return el;
 				});
 			}
@@ -222,7 +223,7 @@
 				return str;
 			}
 		},
-		mounted() {
+		activated() {
 			this.requestList();
 		},
 		methods: {
@@ -468,8 +469,7 @@
 					} else {
 						item.style = [];
 					}
-					this.$set(item,'relationArr',this.relationArr(item))
-					// item.relationArr = this.relationArr(item);
+					this.$set(item,'relationArr',this.relationArr(item));
 				});
 				this.objtypeLists = list;
 				
@@ -790,7 +790,7 @@
 				// console.log(this.objectDetail,item)
 				this.modifyForm(this.objectDetail, item);
 			},
-			relationArr(item={}){
+			relationArr(item){
 				// let context = getContext();
 				// let arr = [];
 				// let relation = context.getRelations(item.geom);
@@ -805,6 +805,7 @@
 				// return arr;
 				let context = getContext();
 				let arr = [];
+				if(!item.geom) return arr;
 				let entity = context.entity(item.geom);
 				if(entity.type=='relation'){
 					entity.members.forEach(member=>{
@@ -824,7 +825,7 @@
 					// 	obj.role = re.members.find(el=>el.id==item.geom).role;
 					// 	arr.push(obj);
 					// });
-				}
+				};
 				return arr;
 			},
 			deleteRelation(obj){

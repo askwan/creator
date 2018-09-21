@@ -99,16 +99,6 @@ export default class SObject extends DObject {
     if (name != null) {
       this.name = name
     }
-
-    /*
-    let index = this.attributes.findIndex(attribute=>attribute.name==attr.name)
-    if(index==-1){
-      this.attributes.push(attr)
-      this.addAction(attr.fid,Action.ADDING|Action.ATTRIBUTE)
-    }else{
-      this.attributes.splice(index,1,attr)
-      this.addAction(attr.fid,Action.MODIFY|Action.ATTRIBUTE)
-    }*/
     return this
   }
   getAttrName (attrs) {
@@ -127,7 +117,7 @@ export default class SObject extends DObject {
     }else {
       this.forms.splice(index, 1, form)
     }
-    this.addAction(form.refid, Action.ADDING | Action.FORM)
+    this.addAction(form.id, Action.ADDING | Action.FORM)
     return this
   }
   deleteForm (form) {
@@ -150,8 +140,8 @@ export default class SObject extends DObject {
    * @param {Object} form 
    */
   modifyForm (form) {
-    let index = this.forms.findIndex(el => el.refid == form.refid)
-    let addAction = this.getAction(form.refid, Action.ADDING | Action.FORM)
+    let index = this.forms.findIndex(el => el.id == form.id)
+    let addAction = this.getAction(form.id, Action.ADDING | Action.FORM)
     if (addAction) {
       this.forms.splice(index, 1, form)
     }else {

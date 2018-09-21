@@ -1,6 +1,5 @@
 <template>
   <div class='root-middle'>
-    <div class="demo" @click="showData"></div>
    <div id="id-container"></div>
    <!-- <div class='property-root' id="property-root"></div> -->
    <div class="slider-box" :class="{'hidden-el':isOpen}">
@@ -58,6 +57,7 @@ var position;
           context.flush();
           IdEdit.initEdit(context);
           getContext(context);
+          this.setPosi();
         });
         context.on('selectEle',ele=>{
           vm.$emit(operate.changeSlider,{
@@ -71,27 +71,21 @@ var position;
         vm.$on(operate.openInstant,()=>{
           this.isOpen = true;
         });
-        vm.$on(operate.fly,posi=>{
-          // this.posi = posi;
-          // position = posi;
-          setTimeout(() => {
-            this.posi = posi;
-            let map = context.map();
-            map.centerZoom(posi.position, posi.zoom);
-          }, 200);
-        });
 
         
       },
       closeOperate(){
         this.isOpen = false;
       },
-      showData(){
-       // console.log(JSON.stringify(getDifferent(context)))
-      },
       complate(){
         vm.$emit(operate.ifEdit,{status:false});
-      }
+      },
+      setPosi(){
+				if(!window._POSITION_) return
+				let posi = window._POSITION_;
+				let map = context.map();
+        map.centerZoom(posi.position, posi.zoom);
+			},
     },
     destroyed(){
       let map = context.map();
@@ -99,7 +93,7 @@ var position;
         position:map.center(),
         zoom:map.zoom()
       };
-      vm.$emit(operate.fly,posi);
+      window._POSITION_ = posi;
     }
   }
 </script>

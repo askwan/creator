@@ -1,5 +1,6 @@
 import osm from '@/psde/form/osm'
 import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
+import Idedit from './IdEdit'
 
 let flagType = {
   created: 1,
@@ -92,7 +93,18 @@ class EditSave {
     //deleted
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
 
-    _osmChange = _osmChange.concat(created,modified,deleted);
+    let sobjectCanged = Idedit.currentGraph;
+    let sArr = [];
+    for(let id in sobjectCanged.sobjectList){
+      let s = sobjectCanged.sobjectList[id];
+      s.forms.forEach(form=>{
+        sArr.push(context.entity(form.geom));
+      })
+    }
+    let _change = this.formateOsm(context,sArr,flagType.modified);
+
+
+    _osmChange = _osmChange.concat(created,modified,deleted,_change);
 
     // _osmChange = getRoot(context,_osmChange)
 
@@ -170,26 +182,27 @@ class EditSave {
     let resultSobjectList = []
     // let osmCollection = this.getOsmChanges(context);
     let osmCollection = this.getOsmChanges1(context);
-    console.log(osmCollection,'osmCollecto')
     // 检测osm变化，currentgraph未检测到的变化
+    console.log(osmCollection,'osmCollecto')
     for (let key in currentGraph.sobjectList) {
       let sobject = currentGraph.sobjectList[key];
-      this.addSObjectList(resultSobjectList, sobject)
+      this.addSObjectList(resultSobjectList, sobject);
+      // console.log(sobject,'sobje');
     }
 
     for (var key in osmCollection) {
       let entity = osmCollection[key];
 
-      // let sobject = idedit.getSObjectByListOsmEntity(resultSobjectList, entity.id);
-      let sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id)
-      if (sobject == null) {
-        // console.log(idedit.sobjectlist,9999);
-      }else{
+      let sobject = idedit.getSObjectByListOsmEntity(resultSobjectList, entity.id);
+      console.log(entity.id,'entity.id');
+      if (!sobject) {
+        sobject = idedit.getSObjectByListOsmEntity(idedit.sobjectlist, entity.id);
+        if(sobject) this.addSObjectList(resultSobjectList, sobject);
+      }
+      if(sobject){
         let bool = adjustChange(entity);
         if(!bool) continue;
         this.updateSObjectForm(sobject, entity)
-        this.addSObjectList(resultSobjectList, sobject);
-        // entity.clearId();
       }
       // if (sobject != null) {
       //   console.log(sobject,99999999999)
@@ -199,6 +212,8 @@ class EditSave {
       //   this.addSObjectList(resultSobjectList, sobject)
       // }
     };
+
+    
 
     //删除没有form的sobject;
     resultSobjectList.forEach(el=>{
@@ -239,8 +254,8 @@ class EditSave {
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
-    console.log(entity.refOb)
-    
+    // console.log(entity.refOb)
+    // return
     // form.formref.geometry = entity;
 
     if (form.type < 30) {
@@ -267,6 +282,7 @@ class EditSave {
     
   }
   addSObjectList (sobjectlist, sobject) {
+    console.log(sobjectlist,sobject,'sobjectlist')
     let idx = sobjectlist.findIndex(el => el.id == sobject.id)
     if (idx == -1) {
       sobjectlist.push(sobject)
@@ -290,6 +306,7 @@ const addObj=(arr,obj)=>{
 
 const adjustChange = (entity)=>{
   let bool = true;
+  if(entity.flag>0) return bool = true;
   if(entity['@type']==='Way'){
     let n = entity.nodes.find(node=>node.flag>0);
     if(n){

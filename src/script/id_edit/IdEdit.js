@@ -164,7 +164,8 @@ class IdEdit {
     return null
   }
   getSObjectByListOsmEntity (sobjects, entityId) {
-    let aimobj = null
+    let aimobj = null;
+    // if(typeof entityId !=='string') entityId = entityId.id;
     for (let key in sobjects) {
       let sobject = sobjects[key]
       for (let i = 0;i < sobject.forms.length;i++) {

@@ -151,11 +151,6 @@ function createOsmWay (geom,tags,org,collection){
   let _way = createWay(nodes,geom.id,tags,org);
   _way.uuid = geom.uuid;
   collection.push(_way);
-  if(geom.id=='8776507342858'){
-    // console.log(JSON.stringify(geom));
-    console.log(org.id);
-    console.log(_way)
-  }
   return {
     lists:collection,
     entity:_way
@@ -190,7 +185,7 @@ function Member (id,role,type){
 }
 
 function createOsmRelation (geom,tags,org,collection){
-  Object.assign(tags,{type: "multipolygon"});
+  Object.assign(tags,{type: "multipolygon",area:'yes'});
   org = org||{};
   let members = [];
   geom.members.forEach(el=>{
@@ -199,7 +194,11 @@ function createOsmRelation (geom,tags,org,collection){
       collection.push(new Member(node.id,el.role,node.type));
       members.push(node.id);
     }else if(el.type=='way'){
-      let obj = createOsmWay(el.refEntity,{},org,collection);
+      let option = {}
+      if(el.refEntity.nodes[0].id===el.refEntity.nodes[el.refEntity.nodes.length-1].id){
+        option.area = 'yes';
+      }
+      let obj = createOsmWay(el.refEntity,option,org,collection);
       obj.entity.vid = el.refEntity.vid;
       members.push(new Member(obj.entity.id,el.role,obj.entity.type));
       collection = obj.lists;
@@ -212,6 +211,10 @@ function createOsmRelation (geom,tags,org,collection){
   let relation = createRelation(members,geom.id,tags,org);
   relation.uuid = geom.uuid;
   relation.vid = geom.vid;
+  // if(relation.id=='r9216872906752'){
+  //   relation.members = [relation.members[1],relation.members[0]];
+  //   console.log(relation,'sort')
+  // }
   return {
     lists:collection,
     entity:relation

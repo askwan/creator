@@ -135,6 +135,7 @@ export function coreContext() {
     context.loadTiles = utilCallWhenIdle(function(projection, dimensions, callback) {
         var cid;
         function done(err, result) {
+            
             if (connection.getConnectionId() !== cid) {
                 if (callback) callback({ message: 'Connection Switched', status: -1 });
                 return;
@@ -189,7 +190,7 @@ export function coreContext() {
         });
     };
 
-    var minEditableZoom = 14;
+    var minEditableZoom = 16;
     context.minEditableZoom = function(_) {
         if (!arguments.length) return minEditableZoom;
         minEditableZoom = _;

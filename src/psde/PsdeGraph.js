@@ -33,7 +33,10 @@ class PsdeGraph {
     console.log(json);
     // console.log(JSON.stringify(json))
     // return
-    if (!json.length) return
+    if (!json.length) return vm.$message({
+      type:'info',
+      message:'未检测到对象变更'
+    })
     let loading = vm.$loading({
       lock:true,
       text:'加载中',

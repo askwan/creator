@@ -1,25 +1,31 @@
 <template>
   <div class='root'>
-    <div v-show="item.relation"  class="delete-btn" @click="deleteRelation">删除</div>
+    
     <el-form>
       <el-form-item>
-        <el-select v-model = 'selectRelation' class="select" placeholder="请选择关系" :disabled="Boolean(item.parent)">
-          <el-option v-for="(item,i) in mapRelation" :key="i" :label="item.name||item.id" :value="item.id">
-          </el-option>
-        </el-select>
+        <div class="flex">
+          <el-select v-model = 'selectRelation' class="select" placeholder="请选择关系" :disabled="Boolean(item.parent)">
+            <el-option v-for="(item,i) in mapRelation" :key="i" :label="item.name||item.id" :value="item.id">
+            </el-option>
+          </el-select>
+          <div v-show="item.relation" class="position-btn" @click="position">定位</div>
+        </div>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="role" placeholder="添加角色">
-          <el-option label="inner" value="inner"></el-option>
-          <el-option laber="outer" value="outer"></el-option>
-        </el-select>
+        <div class="flex">
+          <el-select v-model="role" placeholder="添加角色">
+            <el-option label="inner" value="inner"></el-option>
+            <el-option laber="outer" value="outer"></el-option>
+          </el-select>
+          <div v-show="item.relation"  class="delete-btn" @click="deleteRelation">删除</div>
+        </div>
       </el-form-item>
     </el-form>
   </div>
 </template>
 <script>
 
-  import {createRelation,choose,setRole,deleteRole} from './relations'
+  import {createRelation,choose,setRole,deleteRole,positionEntity} from './relations'
   import {vm,operate,getContext} from '@/script/operate';
   import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
   import IdEdit from '@/script/id_edit/IdEdit'
@@ -49,6 +55,10 @@
     computed:{},
     mounted(){
       this.initData();
+      if(!this.item.relation){
+        this.selectRelation = '';
+        this.role='';
+      }
     },
     activated() {
       this.initData();
@@ -115,7 +125,11 @@
       chooseRelation(){
         choose(r);
       },
-      addMember(){
+      position(){
+        context = getContext();
+        positionEntity(context,this.selectRelation);
+      },
+      addMember(role){
 
         if(this.item.parent){
           console.log(this.item.relation,this.item.parent,555555);
@@ -169,7 +183,6 @@
           relation = context.entity(this.selectRelation);
           index = relation.members.findIndex(el=>el.id==id);
         }
-        console.log(this.selectRelation,index,55555555555)
         deleteRole(this.selectRelation,index,(obj)=>{
           this.$emit('delete',{
             relation:this.selectRelation,
@@ -183,11 +196,10 @@
 <style lang='less' scoped>
   .root{
 		background: #FFFFFF;
-    // padding: 10px;
-    // margin-left:75px;
-    border: 1px solid #999;
-    margin-bottom: 5px;
-    padding: 2px;
+    width: calc(100% - 1px);
+    box-shadow: 0 0 3px #666;
+    margin-bottom: 10px;
+    padding: 5px 0px 5px 2px;
     border-radius: 5px;
     .title{
       font-size: 14px;
@@ -206,13 +218,26 @@
       }
     }
     .delete-btn{
-      display: flex;
-      justify-content: flex-end;
       cursor: pointer;
       color: #F56C6C;
       font-size: 12px;
       height: 25px;
       padding-right:5px; 
+      flex-basis: 40px;
+      text-align: right;
     }
+    .position-btn{
+      cursor: pointer;
+      color: #4588e6;
+      font-size: 12px;
+      height: 25px;
+      padding-right:5px; 
+      flex-basis: 40px;
+      text-align: right;
+    }
+  }
+  .flex{
+    display: flex;
+    justify-content: space-between;
   }
 </style>
