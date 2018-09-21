@@ -43,7 +43,7 @@
 	import psde from "@/psde";
 	import ImageManage from "@/psde/ImageManage";
 	import * as allotypemgr from "@/script/allOtype";
-	import { vm, operate } from "@/script/operate";
+	import { vm, operate,manager } from "@/script/operate";
 	export default {
 		data() {
 			return {
@@ -52,10 +52,9 @@
 				relationList: [],
 				typeList: [],
 				dict: new psde.GetDict(),
-				objectDetail:{}
 			}
 		},
-		// props: ["objectDetail"],
+		props: ["objectDetail"],
 		components: {
 			"no-data-model": () => import("@/components/noDataModel")
 		},
@@ -93,13 +92,13 @@
 		},
 		activated() {
 			this.listenEvent();
+			this.initData();
 		},
 		methods: {
 			listenEvent(){
-				vm.$on('currentSobject',obj=>{
-					this.objectDetail = obj;
-					this.initData();
-				})
+				// vm.$on('currentSobject',obj=>{
+					
+				// })
 			},
 			initData() {
 				var val = this.objectDetail;
@@ -111,7 +110,7 @@
 				
 			},
 			addRelationOtype(val) {
-				console.log(val,'val')
+				console.log(val,'ffffffffff')
 				if(val.otype && val.otype.id) {
 					//根据对象otypeid，获取对象关系列表
 					this.otypeDetail = allotypemgr.getOtypeById(val.otype.id);
@@ -161,10 +160,16 @@
 				vm.$emit(operate.currentComp,{name:'objectContent'});
 			},
 			openRelationObject(data){
-				this.$emit("openRelationObject" , data);
+				// this.$emit("openRelationObject" , data);
+				console.log(data,'dfata')
+				manager.currentRelation(data);
+				vm.$emit(operate.currentComp,{name:'relationObject'})
 			}
 			
-		}
+		},
+		destroyed() {
+			vm.$off(['currentSobject'])
+		},
 	}
 </script>
 <style scoped lang="less">

@@ -1,7 +1,7 @@
-import GeometryEdit from './GeometryEdit'
+
 import dmes from '@/script/common'
 import { vm, operate } from '@/script/operate'
-import { psdeApi, apiConfig } from '@/psde/config'
+import { psdeApi } from '@/psde/config'
 
 import { toJson, getType } from './utils'
 
@@ -49,9 +49,7 @@ let EditManage = {
       }
     })
     map.addControl(draw)
-    // geometryEdit = new GeometryEdit(map, draw)
     
-
     map.on('draw.create', geometryEdit.create)
     map.on('draw.delete', geometryEdit.delete)
     map.on('draw.update', geometryEdit.update)

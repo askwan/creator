@@ -188,8 +188,8 @@ class EditSave {
       let sobject = currentGraph.sobjectList[key];
       this.addSObjectList(resultSobjectList, sobject);
       // console.log(sobject,'sobje');
+      // console.log(sobject)
     }
-
     for (var key in osmCollection) {
       let entity = osmCollection[key];
 

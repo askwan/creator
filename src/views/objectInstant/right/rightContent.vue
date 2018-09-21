@@ -200,6 +200,7 @@
 					let sobject = typeData.copyObject(obj);
 
 					this.objectDetail = sobject;
+					
 					setTimeout(() => {
 						vm.$emit('currentSobject',sobject);
 					}, 100);

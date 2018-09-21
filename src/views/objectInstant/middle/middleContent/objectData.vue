@@ -83,13 +83,6 @@
 						map.resize();
 					}, 500);
 				});
-				vm.$on(operate.flyTo, obj => {
-					console.log(obj,'objectData')
-					map.flyTo({
-						center: obj.position,
-						zoom: obj.zoom
-					});
-				});
 				vm.$on("currentOtype", otype => {
 					this.currentOtype = otype;
 				});
@@ -120,7 +113,6 @@
 				zoom: map.getZoom()
 			};
 			window.posi = sess;
-			vm.$off();
 			sessionStorage.setItem('position',JSON.stringify(sess));
 			window._POSITION_ = sess;
 		}

@@ -68,7 +68,7 @@ function createMap (container) {
 					maxzoom: 22
 				}]
     },
-    center: [113.6249284647 , 34.7472541716],
+    center: [103.6249284647 , 34.7472541716],
     zoom: 12
   })
   

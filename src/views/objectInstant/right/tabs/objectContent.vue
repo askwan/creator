@@ -67,6 +67,9 @@
 		watch:{
 
 		},
+		activated() {
+			
+		},
 		methods: {
 			listenEvent() {
 				vm.$on('currentSobject',obj=>{

@@ -32,7 +32,7 @@
 	import psde from "@/psde";
 	import ImageManage from "@/psde/ImageManage";
 	import * as allotypemgr from "@/script/allOtype";
-	import { vm, operate } from "@/script/operate";
+	import { vm, operate,manager } from "@/script/operate";
 	export default {
 		data() {
 			return {
@@ -41,9 +41,10 @@
 				objectList: [],
 				copyObjectList: [],
 				searchValue: "",
+				currentRelation:{}
 			}
 		},
-		props: ["objectDetail", "currentRelation"],
+		props: ["objectDetail"],
 		components: {
 			"no-data-model": () => import("@/components/noDataModel"),
 			"common-search-bar": () => import("@/components/common/searchBar/searchBar")
@@ -51,7 +52,7 @@
 		watch: {
 			objectDetail(val) {
 				if (val) {
-					this.$emit("openRelationInfo");
+					// this.$emit("openRelationInfo");
 				}
 			}
 		},
@@ -64,7 +65,11 @@
 				}
 			}
 		},
-		mounted() {
+		// mounted() {
+		// 	this.initData();
+		// },
+		activated() {
+			this.currentRelation = manager.currentRelation();
 			this.initData();
 		},
 		methods: {
@@ -78,6 +83,7 @@
 			},
 			initData() {
 				var val = this.objectDetail;
+				console.log(this.objectDetail,'objectDetail')
 				if(val.otype && val.otype.id) {
 					//根据对象otypeid，获取对象关系列表
 					this.otypeDetail = allotypemgr.getOtypeById(val.otype.id);
@@ -85,7 +91,9 @@
 				var list = [];
 				this.objectList = [];
 				if(this.otypeDetail.connectors && this.otypeDetail.connectors.connectors && this.otypeDetail.connectors.connectors.length > 0) {
+
 					this.otypeDetail.connectors.connectors.forEach((item, index) => {
+						console.log(this.currentRelation,item.relation,456456);
 						if(item.relation && item.relation.id) {
 							if (item.relation.id == this.currentRelation.id) {
 								var obj = {
@@ -102,7 +110,7 @@
 			},
 			backStep(){
 				this.searchList("");
-				this.$emit("openRelationList");
+				vm.$emit(operate.currentComp,{name:'relationList'})
 			},
 			openRelationInfo(data){
 				var str = JSON.stringify(this.objectDetail);

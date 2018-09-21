@@ -92,7 +92,7 @@ class IdEdit {
       let entityId = ele;
       let aimSobject = this.getSObjectByOsmEntity(entityId);
       // console.log(aimSobject,55555555);
-      // console.log(osmContent.entity(ele))
+      // console.log(osmContent.entity(ele));
       vm.$emit(operate.currentObject, aimSobject);
       let entity = ele.replace(/[^0-9]/ig, '')
       vm.$emit(operate.currentForm,entity);

@@ -176,7 +176,6 @@
 				      data: arr
 				    })
 				}
-				console.log(arr);
 			},
 			getKeysName(keys, otItem){
 				var name = keys;

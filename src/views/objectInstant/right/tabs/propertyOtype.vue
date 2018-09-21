@@ -5,6 +5,34 @@
 		</div>
 		<div class="diagram-otype-content" v-if="filterDiagrams && filterDiagrams.length>0">
 
+
+			<div class="otype-content margin" v-if="hotOtypes.length>0">
+				<div class="otype-list" v-for="(it,ix) in hotOtypes" :key="ix" @click="openOtype(it,ix)">
+					<div class="otype-image">
+						<img v-if="it.icon" :src="ImageManage.getImgUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
+						<span v-else>{{it.name|initialName}}</span>
+					</div>
+					<div class="otype-title">
+						<span>{{it.name}}</span>
+					</div>
+					<div class="otype-btn" v-if="it.formStyles && it.formStyles.styles && it.formStyles.styles.length>0">
+						<div class="otype-button">
+							<span v-for="(m,n) in it.formStyles.styles" :key="n" :title="getName(m.type)" @click.prevent.stop="addObject(m,it)">
+								<i v-if="m.type==21" class="iconfont icon-dian"></i>
+								<i v-if="m.type==22" class="iconfont icon-xian1"></i>
+								<i v-if="m.type==23" class="iconfont icon-mian1"></i>
+								<i v-if="m.type==31" class="iconfont icon-yuedengyu"></i>
+								<span v-if="m.type==32">Dem</span>
+								<span v-if="m.type==33">Tin</span>
+								<i v-if="m.type==40" class="iconfont icon-bim"></i>
+								<i v-if="m.type==50" class="iconfont icon-ic_d_rotation"></i>
+								<i v-if="m.type==61" class="iconfont icon-ganlanqiu"></i>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="diagram-content" v-if="searchValue.length==0">
 				<span class="diagram-top-line"></span>
 				<div class="diagram-detail" @click="pathTo">
@@ -17,6 +45,8 @@
 					</div>
 				</div>
 			</div>
+
+			
 
 
 
@@ -64,6 +94,8 @@
 					</transition>
 				</div>
 			</div>
+
+
 			<div class="otype-content" v-if="searchOtypeList.length>0 && !showDiagramList">
 				<div class="otype-list" v-for="(it,ix) in searchOtypeList" :key="ix" @click="openOtype(it,ix)">
 					<div class="otype-image">
@@ -121,7 +153,8 @@
 				searchOtypeList: [],
 				showDiagramList: true,
 				formList: [],
-				diagrams:[]
+				diagrams:[],
+				hotOtypes:[]
 			};
 		},
 		props: [ "entityObj"],
@@ -189,7 +222,9 @@
 		},
 		mounted() {
 			this.listenEvent();
-			this.diagrams = allOtype.orginData();
+			// console.log(common.getInfo('id'))
+			// this.diagrams = allOtype.userDiagram(common.getInfo('id'));
+			// console.log(this.diagrams,'diagrams')
 		},
 		methods: {
 			listenEvent() {
@@ -197,7 +232,7 @@
 					this.formList = res;
 				});
 				vm.$on('readyDiagram',(list)=>{
-					this.diagrams = allOtype.orginData();
+					this.diagrams = allOtype.userDiagram(common.getInfo('id'));
 				})
 			},
 			getName(data) {
@@ -254,21 +289,29 @@
 				});*/
 			},
 			addObject(m, it) {
-				
+				this.addHot(it);
 				//let style = otype.formStyles.styles[0];
 				let fromtype = m.type;
 				let geotype = m.positions[0];
 				let otype = getOtypeById(it.id);
-				console.log(this.entityId, otype, fromtype, geotype,m);
+
 				if(IdEdit.osmContent.entity(this.entityId).type=='relation') geotype = 24;
-				console.log(IdEdit.osmContent.entity(this.entityId).type)
+
 				// return 
 				IdEdit.createSobject(this.entityId, otype, fromtype, geotype);
-
+				this.currentDiagram = null;
 				this.$emit("enterDetail", false);
 			},
 			pathTo(){
 				vm.$emit('toRelation');
+			},
+			addHot(otype){
+				let index = this.hotOtypes.findIndex(el=>el.id==otype.id);
+				if(index>-1){
+					this.hotOtypes.splice(index,1);
+				}else{
+					}
+				this.hotOtypes.unshift(otype);
 			}
 		}
 	};
@@ -510,5 +553,8 @@
 				}
 			}
 		}
+	}
+	.margin{
+		margin: 20px 0;
 	}
 </style>

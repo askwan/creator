@@ -4,7 +4,7 @@
    <!-- <div class='property-root' id="property-root"></div> -->
    <div class="slider-box" :class="{'hidden-el':isOpen}">
      <transition name="slider">
-          <instant-otype @closeOperate="closeOperate" v-show="isOpen"></instant-otype>
+          <instant-otype @closeOperate="closeOperate"></instant-otype>
       </transition>
    </div>
    

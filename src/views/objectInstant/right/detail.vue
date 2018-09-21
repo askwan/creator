@@ -58,7 +58,8 @@
 			// relationOperate:()=>import('./tabs/relationOperate'),
 			relationParentObject:()=>import('./tabs/relationParentObject'),
 			relationList:()=>import('./tabs/relationList'),
-			relationOperate:()=>import('./tabs/relationTab')
+			relationOperate:()=>import('./tabs/relationTab'),
+			relationObject:()=>import('./tabs/relationObject')
 		},
 		computed: {
 

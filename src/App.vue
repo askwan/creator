@@ -19,7 +19,7 @@ export default {
       this.$router.push({
         path: "/instant"
       })
-    })
+    });
   },
   methods: {
   	closeRightMenuFn(){

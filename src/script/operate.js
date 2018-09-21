@@ -5,43 +5,43 @@ const operate = {
    * 操作侧边
    * {hideLeft:boolean,hideRight:boolean}
    */
-  changeSlider:"changeSlider",
+  changeSlider: "changeSlider",
   /**
    * 操作类模板编辑菜单
    * {status:boolean,loc:{x:Number,y:Number}
    */
-  operateEditMenu:"operateEditMenu",
+  operateEditMenu: "operateEditMenu",
   /**
    * 
    */
-  openInstant:"openInstant",
+  openInstant: "openInstant",
   /**
    * 获取实例化对象{object:Object}
    */
-  instantOtype:"instantOtype",
+  instantOtype: "instantOtype",
   /*
    * 拖动tab页
    */
-  pageSize:"pageSize",
+  pageSize: "pageSize",
 
   /**
    * 选择类视图
    */
-  chooseDiagram:'chooseDiagram',
+  chooseDiagram: 'chooseDiagram',
 
   /**
    * 
    * 进入编辑
    */
-  ifEdit:'ifEdit',
-  exitEdit:'exitEdit',
+  ifEdit: 'ifEdit',
+  exitEdit: 'exitEdit',
   /**
    * fly
    */
-  fly:'fly',
+  fly: 'fly',
 
-  showLeft:'showLeft',
-  flyTo:'flyTo',
+  showLeft: 'showLeft',
+  flyTo: 'flyTo',
   /**
    * 关闭右键菜单
    */
@@ -53,16 +53,16 @@ const operate = {
   /**
    * 点击对象时所触发的事件
    */
-  currentObject:'currentObject',
+  currentObject: 'currentObject',
   /**
    * 编辑普通几何
    */
-  generalEdit:'generalEdit',
+  generalEdit: 'generalEdit',
   /**
    * 删除树节点时所触发的事件
    */
-	deleteTreeNode: 'deleteTreeNode',
-	/**
+  deleteTreeNode: 'deleteTreeNode',
+  /**
    * 添加对象关系的时候搜索与当前对象有关系的对象列表
    */
   relationSearchObject: 'relationSearchObject',
@@ -70,36 +70,57 @@ const operate = {
   /**
    * 
    */
-  getOsmType:'getOsmType',
+  getOsmType: 'getOsmType',
 
   /**
    * 当前点击的对象的当前形态
    */
-  currentForm:'currentForm',
+  currentForm: 'currentForm',
   /**
    * 3D模型上传模型
    */
-  modelUploadEvent:'modelUploadEvent',
+  modelUploadEvent: 'modelUploadEvent',
   /**
    * 左边栏编辑与显示状态下内容的切换
    */
-  leftContentChange:'leftContentChange',
+  leftContentChange: 'leftContentChange',
   /**
    * 点击历史后的内容的切换
    */
-  viewHistoryEvent:'viewHistoryEvent',
+  viewHistoryEvent: 'viewHistoryEvent',
 
-  mapBoxZoom:'mapBoxZoom',
+  mapBoxZoom: 'mapBoxZoom',
 
-  currentComp:'currentComp',
+  currentComp: 'currentComp',
+  showClick: 'showClick',
+  showClickdel: 'showClickdel',
 
 }
 let context;
-const getContext = (_)=>{
-  if(!_) return context;
+const getContext = (_) => {
+  if (!_) return context;
   context = _;
   return context;
 }
 
 const vm = new Vue();
-export { vm , operate,getContext}
+
+let _relation;
+const manager = {
+  currentRelation(_) {
+    if (!_) return _relation;
+    _relation = _
+  }
+}
+
+
+
+
+
+
+export {
+  vm,
+  operate,
+  getContext,
+  manager
+}

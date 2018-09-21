@@ -18,6 +18,9 @@ allOtype.orginData = function (arr) {
   getAllOtypes(arr)
   return orgCollection
 }
+allOtype.userDiagram = function(userId){
+  return orgCollection.filter(el=>el.user.uid==userId)
+}
 allOtype.otypes = function () {
   return otypesCollection
 }
