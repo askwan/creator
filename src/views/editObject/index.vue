@@ -7,30 +7,23 @@
 		<div class="root" :class="{'left-hide':hideLeft&&!hideRight,'default':!hideLeft&&!hideRight,'right-hide':hideRight&&!hideLeft,'hide-both':hideLeft&&hideRight}">
 			
 			<div class="mapbox-left" v-show="viewContentSearch">
-				<el-input placeholder="请输入内容" v-model="viewInput">
+				<el-input size="medium" placeholder="请输入内容" v-model="viewInput">
 				    <el-button slot="append" icon="el-icon-search" @click="searchViewObject"></el-button>
 				</el-input>
-		
-				<left-object></left-object>
+
+        <div class="left-box">
+				  <left-object v-if='manager.showObjectDetail' :objDetail="objDetail"></left-object>
+          <view-object v-else-if="manager.showObjectList" :viewSearchValue="viewInput"></view-object>
+          <view-export v-else-if="manager.showExport"></view-export>
+          <view-history v-else-if="manager.showHistory"></view-history>
+        </div>
 			</div>
 			
 			<div class="class-box">
 				<!-- 这个是开启第一个固定tab用  -->
 				<!--<bk-tabs :activeTab="activeTab" @chooseOne="getCurrentTarget"></bk-tabs>-->
 				<div class="middle">
-					
 					<router-view></router-view>
-					
-					<!--<middle-content v-show="ifEdit" :detail="detail" :dataId="activeTab" childName="地图编辑" childValue="main" :class="{zindex:true}"></middle-content>
-				 	<object-data childName="数据对象" childValue="objectData" v-show="!ifEdit" :class="{zindex:true}"></object-data> -->
-				 		
-				 	<!--<object-data childName="数据对象" childValue="objectData" v-if="tabManage.getItemById('objectData').isShow&&!ifEdit" :class="{zindex:tabManage.getItemById('objectData').isTabActive()}"></object-data>--> 
-				 	<!--<object-query childName="对象查询" childValue="objectQuery" v-if="tabManage.getItemById('objectQuery').isShow" :class="{zindex:tabManage.getItemById('objectQuery').isTabActive()}"></object-query>-->
-					<!--<behavior-list childName="行为列表" childValue="behaviorList" v-if="tabManage.getItemById('behaviorList').isShow" :class="{zindex:tabManage.getItemById('behaviorList').isTabActive()}"></behavior-list>-->
-					<!--<o-style-list childName="样式列表" childValue="styleList" v-if="tabManage.getItemById('styleList').isShow" :class="{zindex:tabManage.getItemById('styleList').isTabActive()}"></o-style-list>-->
-					<!--<object-manager childName="对象管理" childValue="objectManager" v-if="tabManage.getItemById('objectManager').isShow" :class="{zindex:tabManage.getItemById('objectManager').isTabActive()}"></object-manager>-->
-					<!--<model-manager childName="模型管理" childValue="modelManager" v-if="tabManage.getItemById('modelManager').isShow" :class="{zindex:tabManage.getItemById('modelManager').isTabActive()}"></model-manager>-->
-
 				</div>
 			</div>
 			<div class="left" v-if="false">
@@ -102,7 +95,14 @@ export default {
       viewInput: "",
       viewContentSearch: false,
       
-      flotCon: ""
+      flotCon: "",
+      manager:{
+        showObjectDetail:false,
+        showExport:false,
+        showObjectList:false,
+        showHistory:false
+      },
+      objDetail:{}
     };
   },
   components: {
@@ -113,6 +113,9 @@ export default {
     headContent: () => import("@/views/headContent/mainContent"),
     middleContent: () => import("../objectInstant/middle/middleContent"),
     leftObject:()=>import('./left'),
+    viewObject: () => import("../objectInstant/right/viewObject"),
+    viewHistory: () => import("../objectInstant/right/viewHistory"),
+    viewExport: () => import("../objectInstant/right/viewExport"),
     bkTabs: () => ({
       component: import("@/views/objectInstant/middle/bkTabs"),
       loading: loadingPage,
@@ -239,6 +242,14 @@ export default {
         });
       }
     },
+    changeTab(obj){
+      for(let key in this.manager){
+        this.manager[key] = false;
+      }
+      if(obj){
+        this.manager[obj.name] = true;
+      }
+    },
     cancleRelation() {
       this.dialogFormVisible = !this.dialogFormVisible;
       this.middleSelectVal = false;
@@ -259,12 +270,25 @@ export default {
           this[key] = data[key];
         }
       });
+      vm.$on(operate.showClick, data => {
+        if (data) {
+          vm.$emit('changeTabs',{name:'showObjectDetail'});
+          this.objDetail = data;
+          // this.openflot(data);
+        } else {
+          // this.onclickshow = false;
+          vm.$emit('changeTabs');
+        }
+      });
       vm.$on(operate.ifEdit, obj => {
         this.ifEdit = obj.status;
 
         if (this.ifEdit) {
           this.detail = obj.data;
         }
+      });
+      vm.$on('changeTabs',obj=>{
+        this.changeTab(obj);
       });
       vm.$on(operate.modelUploadEvent, data => {
         if (data.sign == "upload") {
@@ -334,11 +358,12 @@ export default {
     },
     searchViewObject() {
       if (this.viewInput) {
-        vm.$emit(operate.changeSlider, { hideLeft: true, hideRight: false });
+        // vm.$emit(operate.changeSlider, { hideLeft: true, hideRight: false });
         vm.$emit(operate.leftContentChange, {
           value: true,
           data: this.viewInput
         });
+        this.changeTab({name:'showObjectList'})
       }
     }
   }
@@ -497,18 +522,29 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  width: 350px;
-  //   height: 50px;
+  width: 300px;
   z-index: 1000;
   .el-input {
     position: absolute;
     left: 0;
     top: 0;
     z-index: 10;
-    width: 350px;
+    width: 300px;
     margin: 10px 25px;
-    background: #eee;
+    // background: #eee;
   }
   
+  
+}
+.left-box{
+  position: absolute;
+  // height: 50px;
+  // background-color: red;
+  width: 300px;
+  left: 25px;
+  top: 50px;
+  border-radius: 5px;
+  // height: 300px;
+  // overflow: hidden;
 }
 </style>

@@ -46,8 +46,7 @@ export default {
     };
   },
   components: {
-    leftContent: () => import("./left/leftContent"),
-    rightContent: () => import("./right/rightContent"),
+ 
     headContent: () => import("@/views/headContent/mainContent"),
     middleContent: () => ({
       component: import("./middle/middleContent"),

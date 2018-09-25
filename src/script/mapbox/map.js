@@ -1,6 +1,6 @@
 import { psdeHost } from '../../psde/config'
 import { vm, operate } from '@/script/operate'
-import _debounce from 'lodash-es/debounce';
+import _debounce from 'lodash-es/debounce'
 
 import axios from 'axios'
 
@@ -8,26 +8,26 @@ import EditManage from './EditManage'
 import vectorSelect from './VectorSelect'
 
 // 全局mapbox地图对象
-let mapboxMap = {};
-let marker = null;
+let mapboxMap = {}
+let marker = null
 
 function createMapboxMap (container) {
   let map = createMap(container)
   axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
-  	console.log(res , "layer")
+    console.log(res , 'layer')
     EditManage.layers(res.data)
     for (let i = 0; i < res.data.length; i++) {
-      let layer = res.data[i];
+      let layer = res.data[i]
       if (layer.type) {
         // if(layer.paint){
         //   layer.paint['fill-opacity'] = 0.2
         // }
-      	map.addLayer(layer)
+        map.addLayer(layer)
       }
     }
-    
-//  EditManage.setMap(map)
-//  EditManage.startEdit()
+
+    //  EditManage.setMap(map)
+    //  EditManage.startEdit()
 
   })
   mapboxMap = map
@@ -61,55 +61,55 @@ function createMap (container) {
         }
       },
       layers: [{
-					id: "raster-tiles",
-					type: "raster",
-					source: "raster-tiles",
-					minzoom: 0,
-					maxzoom: 22
-				}]
+        id: 'raster-tiles',
+        type: 'raster',
+        source: 'raster-tiles',
+        minzoom: 0,
+        maxzoom: 22
+      }]
     },
     center: [103.6249284647 , 34.7472541716],
     zoom: 12
   })
-  
-	map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-	map.addControl(new mapboxgl.ScaleControl({
-		maxWidth: 80,
-		unit: 'metric'
-  }));
-  
-  let moveEvent = function(e){
-    vm.$emit(operate.mapBoxZoom,map.getBounds().toArray());
-  };
-  let _moveEvent = _debounce(moveEvent,200)
-	
-	map.on('mousemove', _moveEvent);
 
-	
+  map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
+  map.addControl(new mapboxgl.ScaleControl({
+    maxWidth: 80,
+    unit: 'metric'
+  }))
+
+  let moveEvent = function (e) {
+    vm.$emit(operate.mapBoxZoom, map.getBounds().toArray())
+  }
+  let _moveEvent = _debounce(moveEvent, 200)
+
+  map.on('mousemove', _moveEvent)
+
+
   vectorSelect.initMap(map)
 
-  let source = map.getSource();
-//   console.log(source,"数据一")
-//   console.log(map, "map");
+  let source = map.getSource()
+  //   console.log(source,"数据一")
+  //   console.log(map, "map")
   return map
 }
 
-function addMarker(data){
-	  mapboxMap.flyTo({
-		  center: data,
-		  zoom: 15,
-		  speed: 2,
-		  curve: 1,
-		  easing(t) {
-		    return t;
-		  }
-		});
-		if (marker && marker.remove()) {
-			marker.remove();
-		}
-		marker = new mapboxgl.Marker()
-	  .setLngLat(data)
-	  .addTo(mapboxMap);
+function addMarker (data) {
+  mapboxMap.flyTo({
+    center: data,
+    zoom: 15,
+    speed: 2,
+    curve: 1,
+    easing(t) {
+      return t
+    }
+  })
+  if (marker && marker.remove()) {
+    marker.remove()
+  }
+  marker = new mapboxgl.Marker()
+    .setLngLat(data)
+    .addTo(mapboxMap)
 }
 
 export { createMapboxMap, mapboxMap, addMarker }

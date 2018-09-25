@@ -1,12 +1,12 @@
 <template>
 	<div class="object-list">
-		<!--<div class="search-header">
+		<!-- <div class="search-header">
 			<common-search-bar @startSearch="searchList" :searchValue="searchNameVal"></common-search-bar>
-		</div>-->
+		</div> -->
 		<div class="object-content">
-			<div class="search-list" v-if="objectListShow">
+			<div class="search-list">
 				<ul>
-					<li v-for="(item,index) in objectList" :key="index" v-if="item.name && item.actions && item.actions.length>0" :class="{'history-bdcolor': addBgColor==index}" @click="addBgColorFn(item,index)">
+					<li v-for="(item,index) in objectList" :key="index" v-if="item.actions && item.actions.length>0" :class="{'history-bdcolor': addBgColor==index}" @click="addBgColorFn(item,index)">
 						<img v-if="item.version && item.version.user && item.version.user.userAvatar" :src="common.getAvatar(item.version.user.userAvatar)" :onerror="errorOtypeImg" alt="加载失败" />
 						<img v-else-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 						<i v-else-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
@@ -20,18 +20,19 @@
 						<i v-else-if="item.forms[0].type==61" class="iconfont icon-ganlanqiu"></i>
 						<i v-else class="iconfont icon-meiyougengduo"></i>
 						<div>
-							<!--<el-tooltip class="item" effect="dark" :content="item.version.user.userNickName" placement="bottom-start">-->
 							<span v-if="item.version && item.version.user && item.version.user.userNickName">
-						    	{{item.version.user.userNickName}}
+						    	{{item.version.user.uik}}
 							</span>
-							<!--</el-tooltip>-->
 							<span v-else>未知用户</span>
 							<span v-if="item.actions && item.actions.length>0">
 							    {{item.actions[0].ae.name}}
 							</span>
 						</div>
-				    	<span>{{item.name}} ({{getOtypeName(item)}})</span>
+				    	<span>{{item.name|filterName}} ({{getOtypeName(item)}})</span>
 					</li>
+					<!-- <div v-for="(item,i) in objectList" :key="i">
+						{{item.name|filterName}}
+					</div> -->
 				</ul>
 			</div>
 			<div class="earth-null-list" v-if="earthListShow">
@@ -80,12 +81,17 @@
 			this.objectList = [];
 			this.searchListFn(this.currentTime);
 		},
+		filters:{
+			filterName(str){
+				return str ? str : 'default'
+			}
+		},
 		methods: {
 			addBgColorFn(item,index){
 				this.addBgColor = index;
 				if (item.forms && item.forms.length>0) {
 					if (item.forms[0].geom) {
-						var obj = wkt(item.forms[0].geom);
+						var obj = JSON.parse(item.forms[0].geom);
 						if (obj.coordinates && obj.coordinates.length==1 && obj.coordinates[0].length>0) {
 							btMap.addMarker(obj.coordinates[0][0]);
 						} else if (obj.coordinates && obj.coordinates.length==2) {
@@ -129,8 +135,8 @@
 				var cur = this.commonTimeShift(this.currentTime);
 				var bac = this.commonTimeShift(this.backCurrentTime);
 				let filter = {
-					beginTime: this.backCurrentTime,
-					endTime: this.currentTime,
+					beginTime: bac,
+					endTime: cur,
 					loadVersion: true,
 					loadAttr: true,
 					loadNetwork: true,
@@ -140,12 +146,16 @@
 					geoEdit:false
 			    }
 				psde.objectQuery.query(filter).then(res => {
+					console.log(res.list,456456)
 					this.objectList = this.objectList.concat(res.list);
 					//console.log(res.list , "修改集合")
 				})
 			},
 			searchObject(){
 				this.searchListFn(this.backCurrentTime);
+			},
+			searchList(){
+				console.log(123)
 			}
 			
 		}
@@ -166,7 +176,7 @@
 		.object-content {
 			position: relative;
 			width: 100%;
-			height: calc(~"100% - 0px");
+			height: calc(~"100vh - 150px");
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;

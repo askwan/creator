@@ -4,7 +4,7 @@
     <div class="ul-list">
       <div class="o-title">
         <div class="object-name">{{flotCon.name|formateName}}</div>
-        <div class="del" @click="closeFlot">
+        <div class="del" @click.stop.prevent="closeFlot">
           <i class="iconfont icon-chuangjian"></i>
         </div>
       </div>
@@ -42,23 +42,33 @@
   export default {
     data(){
       return {
-        onclickshow: false,
+        onclickshow: true,
         flotCon:{
           nodes:[]
         },
 
       }
     },
-    props:{},
+    props:{
+      objDetail:{
+        type:[Object],
+        default:{}
+      }
+    },
     components:{},
     computed:{},
+    beforeMount() {
+      },
     mounted(){
+      this.openflot(this.objDetail);
       this.listenEvent();
     },
     filters:{
       formateName(str){
         return str?str:'defalut'
       }
+    },
+    watch:{
     },
     methods:{
       listenEvent(){
@@ -73,6 +83,7 @@
       closeFlot() {
         this.onclickshow = false;
         vm.$emit(operate.showClickdel, {});
+        
       },
       openflot(val) {
         this.onclickshow = true;
@@ -82,7 +93,8 @@
           })
           .then(response => {
             this.flotCon = response.list[0];
-            console.log(this.flotCon);
+            // console.log(this.flotCon);
+            
           });
       }
       
@@ -92,9 +104,7 @@
 <style lang='less' scoped>
   .floatingWindow {
     position: absolute;
-    left: 25px;
-    top: 10px;
-    width: 350px;
+    width: 300px;
     height: 0;
     background-color: #fff;
     transition: all linear 0.2s;
@@ -105,16 +115,8 @@
     padding-right: 10px;
     overflow-y: scroll;
     .del {
-      // position: absolute;
-      // right: 0;
-      // top: 0;
-      // width: 25px;
-      // height: 0;
-      // line-height: 25px;
       transform: rotate(45deg);
       cursor: pointer;
-      // transition: all linear 0.2s;
-
       &:hover {
         color: red;
       }
@@ -144,7 +146,7 @@
             justify-content: flex-end;
           }
           .two {
-            width: 200px;
+            width: 150px;
             padding-left: 20px;
             justify-content: flex-start;
           }
@@ -164,7 +166,7 @@
     }
   }
   .show {
-    top: 20px;
+    // top: 50px;
     height: 500px;
     padding-top: 25px;
   }

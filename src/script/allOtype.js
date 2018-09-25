@@ -85,7 +85,7 @@ var relations = [];
 const relationArr = (relation)=>{
   if(!relation) return relations;
   let index = relations.findIndex(el=>el.id==relation.id);
-  if(index==-1) relations.push(relation);
+  if(index==-1) relations.unshift(relation);
 }
 const clearRelationArr = ()=>{
   relations = [];

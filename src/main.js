@@ -41,7 +41,7 @@ Vue.directive("drag", drag);
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 /* eslint-disable no-new */
-import commonComponents from "@/components/common.js";
+//import commonComponents from "@/components/common.js";
 // import $message from "@/components/message.js";
 
 new Vue({

@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import common from '@/script/common'
 import Token from '@/views/token'
 import objectInstant from '@/views/objectInstant/index'
-import operateBusiness from '@/views/operateBusiness/index'
+
 import editObject from '@/views/editObject'
 
 import edit from '@/views/objectInstant/middle/middleContent'
@@ -21,9 +21,6 @@ var router = new Router({
 		}, {
 			path: '/instant',
 			component: objectInstant
-		}, {
-			path: "/business",
-			component: operateBusiness,
 		},{
 			path:"*",
 			redirect:'/'

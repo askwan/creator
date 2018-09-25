@@ -239,7 +239,8 @@
 						this.$router.push({path:'/view'});
 					}
 					setTimeout(() => {
-						vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
+						// vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
+						vm.$emit('changeTabs',{name:'showHistory'})
 						vm.$emit(operate.viewHistoryEvent , "viewHistory");
 					}, 500)
 				}
@@ -254,7 +255,8 @@
 						this.$router.push({path:'/view'});
 					}
 					setTimeout(() => {
-						vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
+						// vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
+						vm.$emit('changeTabs',{name:'showExport'})
 						vm.$emit(operate.viewHistoryEvent , "viewExport");
 					}, 500)
 				}

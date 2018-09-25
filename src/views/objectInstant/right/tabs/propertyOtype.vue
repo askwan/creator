@@ -6,8 +6,8 @@
 		<div class="diagram-otype-content" v-if="filterDiagrams && filterDiagrams.length>0">
 
 
-			<div class="otype-content margin" v-if="hotOtypes.length>0">
-				<div class="otype-list" v-for="(it,ix) in hotOtypes" :key="ix" @click="openOtype(it,ix)">
+			<div class="otype-content margin" v-if="hotFilterDiagram.length>0">
+				<div class="otype-list" v-for="(it,ix) in hotFilterDiagram" :key="ix" @click="openOtype(it,ix)">
 					<div class="otype-image">
 						<img v-if="it.icon" :src="ImageManage.getImgUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 						<span v-else>{{it.name|initialName}}</span>
@@ -196,6 +196,13 @@
 				});
 				// console.log(arr,'arr')
 				return arr;
+			},
+			hotFilterDiagram(){
+				return this.hotOtypes.filter(el=>{
+					el.formStyles = el.formStyles || []
+					let index = el.formStyles.styles.findIndex(ev=>ev.type==this.type);
+					if(index>-1) return true
+				})
 			}
 		},
 		watch: {

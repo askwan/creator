@@ -1,39 +1,6 @@
 <template>
 	<div class='object-list'>
-		<div class="tree">
-			<div class="tree-box">
-
-				<el-tree 
-					class="filter-tree" 
-					ref="tree" 
-					node-key="id" 
-					:highlight-current="true" 
-					:default-expanded-keys="[0]"
-					@node-click="handleNodeClick" 
-					:expand-on-click-node="false" 
-					@node-contextmenu="rightEvent"
-					:show-checkbox="true" 
-					:props="defaultProps" 
-					lazy 
-					:load="loadNode" 
-					:render-content="renderContent">
-					<!--  @node-contextmenu="rightEvent" --右键   :default-expand-all="true" --展开所有节点   :expand-on-click-node="false"--点击节点不自动展开,点击三角才展开 -->
-				</el-tree>
-				
-				<div class="right-menus">
-					<div class="right-menu" v-if="showContextMenu" :style="{left:left+'px',top:top+'px'}">
-						<ul>
-							<!-- <li @click="editOsmMenu">编辑OSM</li> -->
-							<li @click="editInConstruction">编辑结构</li>
-							<li v-show="currentItem.geoBox" @click="location">定位坐标</li>
-							<li @click="reloadTreeNode">重新加载</li>
-							<li v-show="currentItem.geoBox" @click="deleteTreeNode">删除节点</li>
-						</ul>
-					</div>
-				</div>
-				
-			</div>
-		</div>
+		
 		<div class="list">
 			<div class="object-tree-search">
 				<el-input placeholder="请输入内容" class="object-tree-input" v-model="searchField" @input="filterNode">

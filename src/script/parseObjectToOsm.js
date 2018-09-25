@@ -49,10 +49,9 @@ function parseObjectToOsm (jsonObjects, callback) {
 }
 
 function parseObject (entities, sobject) {
-  // console.log(sobject,'sobject')
   let tags = getAttributeTag(sobject)
   // 循环形态列表
-  if (!sobject.forms) return
+  if (!sobject.forms) return [];
   for (let i = 0; i < sobject.forms.length; i++) {
     let form = sobject.forms[i];
     let geom = form.geom;

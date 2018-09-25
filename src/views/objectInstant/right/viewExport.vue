@@ -61,6 +61,7 @@
 		left: 0;
 		top: 0;
 		bottom: 0;
+		height: 300px;
 		background: #FFFFFF;
 		.export-content{
 			position: relative;

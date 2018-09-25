@@ -149,7 +149,8 @@
 				this.addBgColor = index;
 				if (item.forms && item.forms.length>0) {
 					if (item.forms[0].geom) {
-						var obj = wkt(item.forms[0].geom);
+						// var obj = wkt(item.forms[0].geom);
+						var obj  = JSON.parse(item.forms[0].geom);
 						console.log(obj , "wkt")
 						if (obj.coordinates && obj.coordinates.length==1 && obj.coordinates[0].length>0) {
 							btMap.addMarker(obj.coordinates[0][0]);
@@ -178,7 +179,7 @@
 		.object-content {
 			position: relative;
 			width: 100%;
-			height: calc(~"100% - 60px");
+			height: calc(~"100vh - 150px");
 			display: flex;
 			flex-direction: column;
 			justify-content: flex-start;

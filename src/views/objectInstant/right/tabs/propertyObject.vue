@@ -3,7 +3,7 @@
 		<div class="search-header">
 			<common-search-bar @startSearch="searchList" :searchValue="searchNameVal"></common-search-bar>
 		</div>
-		<div class="object-content">
+		<div class="object-content-1">
 			<div class="search-list" v-if="objectListShow">
 				<ul>
 					<li v-for="(item,index) in objectList" :key="index" v-if="item.forms && item.forms.length>0 && item.name">
@@ -195,7 +195,7 @@ export default {
     margin: 10px;
     border: 1px solid #dcdfe6;
   }
-  .object-content {
+  .object-content-1 {
     position: relative;
     width: 100%;
     height: calc(~"100% - 60px");

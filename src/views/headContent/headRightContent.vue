@@ -21,30 +21,7 @@
 		<!-- <select-menu title="开始编辑" :lists="lists" class="sub-menu" :width="80" :height="height" @select="selectList" methods="click" v-if="!ifEdit&&!generalEdit">
 
 		</select-menu> -->
-		<div v-if="false">
-			<common-submenu class="sub-menu" v-if="!ifEdit&&!generalEdit">
-				<a href="javascript:;" slot="title" class="sub-tit cle">
-					<div class="user-name">
-						开始编辑
-					</div>
-					<i class="iconfont icon-icon1"></i>
-				</a>
-				<div slot="down" class="down-box">
-					<a v-for="(item,i) in lists" :key="i" @click="selectList(item)">{{item.name}}</a>
-					<!-- <a href="http://bluethink.cn" target="_blank">BlueThink</a> -->
-					<!-- <a href="http://www.onegis.org" target="_blank">OneGis</a> -->
-				</div>
-			</common-submenu>
 	
-			<common-submenu class="sub-menu" v-else>
-				<a href="javascript:;" slot="title" class="sub-tit cle" @click="updateStatus">
-					<div class="user-name">
-						{{textMessage}}
-					</div>
-					<i class="iconfont icon-icon1"></i>
-				</a>
-			</common-submenu>
-		</div>
 
 		<!-- <div class="sub-menu">开始编辑</div> -->
 		<!-- <a href="javascript:void(0);" @click="updateStatus" class="head-one" :class="{'change-color':businessColor}" v-else>
