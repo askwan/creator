@@ -100,7 +100,6 @@ function getOtypeById (id) {
     let otype = otypesCollection[i]
 
     if (otype.id == id) {
-      //console.log('chenggong')
       return otype
     }
   }
