@@ -104,7 +104,7 @@ class EditSave {
     let _change = this.formateOsm(context,sArr,flagType.modified);
 
 
-    _osmChange = _osmChange.concat(created,modified,deleted,_change);
+    _osmChange = _osmChange.concat(_change,created,modified,deleted);
 
     // _osmChange = getRoot(context,_osmChange)
 

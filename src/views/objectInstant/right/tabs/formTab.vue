@@ -226,6 +226,9 @@
 		activated() {
 			this.requestList();
 		},
+		mounted() {
+			this.requestList();
+		},
 		methods: {
 			positionRefList(item,index){
 				let context = getContext();
@@ -395,6 +398,7 @@
 				this.ModelList = [];
 				axios.get(queryModelFile.baseURL, {})
 				.then(response => {
+					console.log(response,'response')
 					this.ModelList = response.data.data.list;
 				})
 				.catch(function(error) {

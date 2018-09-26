@@ -10,7 +10,7 @@ export { dataShortcuts } from './shortcuts.json';
 
 export { default as dataImperial } from './imperial.json';
 export { default as dataDriveLeft } from './drive-left.json';
-export { en as dataEn } from '../dist/locales/en.json';
+export { en as dataEn } from '../locales/en.json';
 
 import { dataImagery } from './imagery.json';
 import { presets } from './presets/presets.json';

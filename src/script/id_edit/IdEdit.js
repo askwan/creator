@@ -145,6 +145,7 @@ class IdEdit {
   loadBoxSObject (minx, maxx, miny, maxy, callback) {
     objectQuery.getBoxSObject(minx, maxx, miny, maxy).then(res => {
       // 更新当前sobject
+      console.log(res.list,'44444000000')
       this.addSobject(res.list)
       callback(res.list)
     })
