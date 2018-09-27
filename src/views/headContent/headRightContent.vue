@@ -1,35 +1,5 @@
 <template>
 	<div class="head-fr cle">
-		<!-- <router-link to="/designer" class="cle icon-a"><i class="iconfont icon-duixiangjianmo"></i><span>对象建模</span></router-link>  
-    	<div class="head-border"></div> -->
-		<!-- <router-link to="/business" class="head-one" :class="{'change-color':diagramColor}">
-			<i class="iconfont icon-yewuguanli1"></i><span>类视图管理</span>
-		</router-link> -->
-
-		<!-- <common-submenu class="sub-menu">
-			<a href="javascript:;" slot="title" class="sub-tit cle">
-				<div class="user-name head-one">
-					<i class="iconfont icon-yewuguanli1"></i><span>类视图管理</span>
-				</div>
-				<i class="iconfont icon-icon1"></i>
-			</a>
-			<div slot="down" class="down-box">
-				<a v-for="(list,i) in lists" :key="i" href="javascript:;" class="el-list" @click="selectList(list)">{{list.name}}</a>
-			</div>
-		</common-submenu> -->
-
-		<!-- <select-menu title="开始编辑" :lists="lists" class="sub-menu" :width="80" :height="height" @select="selectList" methods="click" v-if="!ifEdit&&!generalEdit">
-
-		</select-menu> -->
-	
-
-		<!-- <div class="sub-menu">开始编辑</div> -->
-		<!-- <a href="javascript:void(0);" @click="updateStatus" class="head-one" :class="{'change-color':businessColor}" v-else>
-			<i class="iconfont icon-yewuguanli"></i><span>{{textMessage}}</span>
-		</a> -->
-		<!-- <router-link to="/diagram" class="head-one" :class="{'change-color':businessColor}">
-			<i class="iconfont icon-yewuguanli"></i><span>业务管理</span>
-		</router-link> -->
 		<common-submenu class="sub-menu">
 			<a :href="common.ucJumpUrl" target="_blank" slot="title" class="sub-tit cle">
 				<div class="user-avatar">
@@ -63,7 +33,6 @@
 	import common from "@/script/common";
 	import { vm, operate } from "@/script/operate.js";
 	import psde from "@/psde";
-	import { tabManage } from "@/components/designer/tabmanage";
 	import EditManage from '@/script/mapbox/EditManage'
 	export default {
 		data() {
@@ -162,24 +131,17 @@
 				}
 			},
 			updateStatus() {
-				// this.ifEidt = !this.ifEidt;
-				// vm.$emit(operate.ifEdit,{status:false});
 				if(this.ifEdit) {
 					this.ifEdit = false;
 					vm.$emit(operate.ifEdit, {
 						status: this.ifEdit
 					});
-					// vm.$emit(operate.exitEdit);
-					// let list = tabManage.getDesignerChildren();
-					// tabManage.setTabItem(list[0]);
-					// console.log('tuichuosm');
 				} else {
 					this.generalEdit = false;;
 					vm.$emit(operate.generalEdit, {
 						status: this.generalEdit
 					});
 					EditManage.exitEdit();
-					// console.log('tuichumapbox')
 				}
 
 			}

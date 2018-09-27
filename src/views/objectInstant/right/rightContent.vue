@@ -1,9 +1,6 @@
 <template>
 	<div class='root-rightcontent'>
 
-		<!--<div class="menu">
-      <o-menu @chooseCom="chooseCom" :currentTab='currentCom'></o-menu>
-    </div>-->
 		<div class="content-left" v-show="viewContent">
 			<div class="close-right-icon">
 				<span v-if="viewObjectShow">搜索结果</span>
@@ -64,7 +61,6 @@
 			diagrams: Array
 		},
 		components: {
-			oMenu: () => import("./menu"),
 			oDetail: () => import("./detail"),
 			viewObject: () => import("./viewObject"),
 			viewHistory: () => import("./viewHistory"),

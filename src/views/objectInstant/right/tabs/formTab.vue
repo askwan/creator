@@ -415,18 +415,9 @@
 					this.currentFormId = Number(data);
 				})
 				
-				//上传模型之后添加到模型下拉框列表
-				// vm.$on(operate.modelUploadEvent , data => {
-				// 	if (data.sign == "success") {
-				// 		var obj = data.data;
-				// 		this.ModelList.unshift(obj);
-				// 		this.formateList[this.curCollapse].formref.refid = obj.fid;
-				// 	}
-				// });
 				
 			},
 			toArr(options) {
-				//console.log(options,"toarr")
 				if(typeof options == "string" && options != "") {
 					return JSON.parse(options);
 				} else {

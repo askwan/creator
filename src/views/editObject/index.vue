@@ -21,13 +21,12 @@
 			
 			<div class="class-box">
 				<!-- 这个是开启第一个固定tab用  -->
-				<!--<bk-tabs :activeTab="activeTab" @chooseOne="getCurrentTarget"></bk-tabs>-->
 				<div class="middle">
 					<router-view></router-view>
 				</div>
 			</div>
 			<div class="left" v-if="false">
-				<left-content :diagrams="diagrams"></left-content>
+				<!-- <left-content :diagrams="diagrams"></left-content> -->
 			</div>
 			<div class="right">
 				<right-content :hideRight="hideRight" :diagrams="diagrams"></right-content>
@@ -73,7 +72,6 @@ import { vm, operate } from "@/script/operate";
 import { allOtype } from "@/script/allOtype";
 import _dispatch from "@/script/dispatchEvent";
 import loadingPage from "@/components/loadingPage";
-import { tabManage } from "@/components/designer/tabmanage";
 import psde from "@/psde";
 import EditManage from "@/script/mapbox/EditManage";
 export default {
@@ -84,7 +82,6 @@ export default {
       pageDelay: 200,
       pageTimeout: 5000,
       activeTab: null,
-      tabManage: tabManage,
       ifEdit: false,
       detail: {},
       diagrams: [],
@@ -108,7 +105,6 @@ export default {
   components: {
     formModelUpload: () =>
       import("../objectInstant/right/tabs/formModelUpload"),
-    leftContent: () => import("../objectInstant/left"),
     rightContent: () => import("../objectInstant/right/rightContent"),
     headContent: () => import("@/views/headContent/mainContent"),
     middleContent: () => import("../objectInstant/middle/middleContent"),
@@ -116,48 +112,6 @@ export default {
     viewObject: () => import("../objectInstant/right/viewObject"),
     viewHistory: () => import("../objectInstant/right/viewHistory"),
     viewExport: () => import("../objectInstant/right/viewExport"),
-    bkTabs: () => ({
-      component: import("@/views/objectInstant/middle/bkTabs"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    objectData: () => ({
-      component: import("../objectInstant/middle/middleContent/objectData"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    objectQuery: () => ({
-      component: import("../objectInstant/middle/middleContent/objectQuery"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    behaviorList: () => ({
-      component: import("../objectInstant/middle/middleContent/behaviorList"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    oStyleList: () => ({
-      component: import("../objectInstant/middle/middleContent/styleList.vue"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    objectManager: () => ({
-      component: import("../objectInstant/middle/middleContent/objectManager.vue"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    modelManager: () => ({
-      component: import("../objectInstant/middle/middleContent/modelManager.vue"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    })
   },
 
   watch: {
@@ -448,9 +402,6 @@ export default {
   /*.root(0px, 50px);*/
   .root(0px, 0px);
 }
-/*::-webkit-scrollbar-thumb{
-    background-clip:none !important;
-  }*/
 
 .zindex {
   z-index: 115;

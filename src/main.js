@@ -24,13 +24,6 @@ import "@/iD-2.7.1/css/60_photos.css";
 import "@/iD-2.7.1/css/70_fills.css";
 import "@/iD-2.7.1/css/80_app.css";
 
-import * as iD from "@/iD-2.7.1/modules";
-
-
-import dragContent from '@/components/designer/dragContent/dragContent';
-Vue.component('drag-content', dragContent);
-import Loading from "@/components/common/loading/loading.vue";
-Vue.component('Loading', Loading);
 import {
   drop,
   drag

@@ -222,7 +222,6 @@ class IdEdit {
     vm.$emit(operate.currentObject, sobject)
   }
   deleteObjectForm (sobject, form) {
-    console.log(sobject,form,"删除形态")
     sobject.deleteForm(form);
     
     this.updateAndHistory(sobject)

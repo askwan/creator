@@ -3,7 +3,6 @@
   <div class="nav_bar">
     <head-content></head-content>
   </div>
-  <!-- <bk-tabs :activeTab="activeTab" @chooseOne="getCurrentTarget"></bk-tabs> -->
   <div class="class-box">
 
   
@@ -13,12 +12,8 @@
     </div>
     <div class="middle" >
       <middle-content :dataId="activeTab" childName="地图编辑" childValue="main" :class="{zindex:true}"></middle-content>
-				<!-- <object-query childName="对象查询" childValue="objectQuery" v-if="tabManage.getItemById('objectQuery').isShow" :class="{zindex:tabManage.getItemById('objectQuery').isTabActive()}"></object-query>
-    		<object-data childName="数据对象" childValue="objectData" v-if="tabManage.getItemById('objectData').isShow" :class="{zindex:tabManage.getItemById('objectData').isTabActive()}"></object-data>
-    		<behavior-list childName="行为列表" childValue="behaviorList" v-if="tabManage.getItemById('behaviorList').isShow" :class="{zindex:tabManage.getItemById('behaviorList').isTabActive()}"></behavior-list> -->
     </div>
     <div class="right">
-      <!-- <right-content :hideRight="hideRight"></right-content> -->
     </div>
   </div>
   </div>
@@ -32,7 +27,6 @@ import { allOtype } from "@/script/allOtype";
 import _dispatch from "@/script/dispatchEvent";
 
 import loadingPage from "@/components/loadingPage";
-import { tabManage } from "@/components/designer/tabmanage";
 
 export default {
   data() {
@@ -41,8 +35,7 @@ export default {
       hideRight: true,
       pageDelay: 200,
       pageTimeout: 5000,
-      activeTab: null,
-      tabManage: tabManage
+      activeTab: null
     };
   },
   components: {
@@ -50,30 +43,6 @@ export default {
     headContent: () => import("@/views/headContent/mainContent"),
     middleContent: () => ({
       component: import("./middle/middleContent"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    bkTabs: () => ({
-      component: import("@/views/objectInstant/middle/bkTabs"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-  /*   objectData: () => ({
-      component: import("./middle/middleContent/objectData"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }), */
-    objectQuery: () => ({
-      component: import("./middle/middleContent/objectQuery"),
-      loading: loadingPage,
-      delay: this.pageDelay,
-      timeout: this.pageTimeout
-    }),
-    behaviorList: () => ({
-      component: import("./middle/middleContent/behaviorList"),
       loading: loadingPage,
       delay: this.pageDelay,
       timeout: this.pageTimeout

@@ -104,7 +104,7 @@ class EditSave {
     let _change = this.formateOsm(context,sArr,flagType.modified);
 
 
-    _osmChange = _osmChange.concat(_change,created,modified,deleted);
+    _osmChange = _osmChange.concat(created,modified,deleted);
 
     // _osmChange = getRoot(context,_osmChange)
 
@@ -183,13 +183,20 @@ class EditSave {
     // let osmCollection = this.getOsmChanges(context);
     let osmCollection = this.getOsmChanges1(context);
     // 检测osm变化，currentgraph未检测到的变化
-    console.log(osmCollection,'osmCollecto')
     for (let key in currentGraph.sobjectList) {
       let sobject = currentGraph.sobjectList[key];
+      sobject.forms.forEach(form=>{
+        if(typeof form.geom =='string'){
+          let _arr = [context.entity(form.geom)];
+          let changed = this.formateOsm(context,_arr,0);
+          osmCollection = osmCollection.concat(changed);
+        }
+      })
       this.addSObjectList(resultSobjectList, sobject);
       // console.log(sobject,'sobje');
       // console.log(sobject)
     }
+    console.log(osmCollection,'osmCollecto')
     for (var key in osmCollection) {
       let entity = osmCollection[key];
 

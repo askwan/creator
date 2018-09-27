@@ -1,14 +1,6 @@
 <template>
   <div class='root-middle'>
    <div id="id-container"></div>
-   <!-- <div class='property-root' id="property-root"></div> -->
-   <div class="slider-box" :class="{'hidden-el':isOpen}">
-     <transition name="slider">
-          <instant-otype @closeOperate="closeOperate"></instant-otype>
-      </transition>
-   </div>
-   
-   
   </div>
 </template>
 <script>
@@ -17,7 +9,6 @@ import { vm, operate, getContext } from "@/script/operate";
 import { allOtype } from "@/script/allOtype";
 import psde from "@/psde";
 
-import { initUi } from "../left/modes";
 import IdEdit from "@/script/id_edit/IdEdit";
 
 import mapposition from "../../../script/mapposition";
@@ -34,13 +25,10 @@ export default {
   },
   props: ["detail"],
   components: {
-    instantOtype: () => import("./instantOtype")
+
   },
   computed: {},
   watch: {
-    posi(val) {
-      // console.log(val,'var')
-    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -55,7 +43,6 @@ export default {
       context = iD.Context().assetPath("static/");
       context.ui()(document.getElementById("id-container"), () => {
         console.log("ready");
-        //        initUi();
         context.flush();
         IdEdit.initEdit(context);
         getContext(context);

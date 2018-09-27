@@ -18,86 +18,19 @@
 		    	<span @click="viewExportFn" :class="{'current-span':currentSpan==3}">导出</span>
 		    </el-tooltip>
 		</div>
-		<div class="current-status cle" v-if="false">
-			<!--<div class="page-fl cle">
-        <a href="./designer" class="page-jump"></a>
-        <div class="border"></div>
-        <div class="round"></div>
-        <div class="text">D</div>
-      </div>
-       <div class="page-center cle">
-        <a href="./creator" class="page-jump"></a>
-        <div class="border"></div>
-        <div class="round"></div>
-        <div class="text">C</div>
-      </div>
-       <div class="page-right cle">
-        <a href="" class="page-jump"></a>
-        <div class="border"></div>
-        <div class="round"></div>
-        <div class="text">B</div>
-      </div>-->
-		</div>
-		<div class="head-menu cle" v-show="loading" v-if="false">
-			<div class="child-list-box" style="width:600px">
-				<div class="list-position cle">
-					<div class="d-box cle">
-						<ul class="child-list">
-							<li class="pd-2" @click="pathTo">返回</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="head-menu cle" v-show="!loading" v-if="false">
-			<!--<router-link to="/designer" class="cle icon-a"><i class="iconfont icon-duixiangjianmo"></i><span>对象建模</span></router-link>-->
-			<div class="child-list-box" :style="{'width':'600px'}">
-				<!--<div class="child-list-box" :style="{'width':this.designerWidth+'px'}">-->
-				<div class="list-position cle">
-					<div class="d-box cle" ref="dBox">
-						<!--<div class="iconfont icon-youjiantou1"></div>-->
-						<ul class="child-list">
-							<li v-for="(child,index) in designerList" :key="index" @click="pathTo('designerList',child,index)" :class="{'pd-2':true,'actived':child.id===tabManage.activeTabItem&&child.isShow}" v-if="child.isCompontent">{{child.name}}</li>
-
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!--<router-link to="/business" class="cle icon-a">
-      <i class="iconfont icon-tubiao-"></i><span>业务建模</span>
-    </router-link>
-     <div class="child-list-box" :style="{'width':this.businessWidth+'px'}">
-       <div class="list-position cle">
-         <div class="b-box cle" ref="bBox">
-           <div class="iconfont icon-youjiantou1"></div>
-           <ul class="child-list">
-            <li 
-            v-for="(child,index) in businessList" 
-            :key="index" 
-            @click="pathTo('businessList',child,index)"
-            :class="{'pd-2':true,'actived':child.id===tabManage.activeTabItem&&child.isShow}" v-if="child.isCompontent"
-            >{{child.name}}</li>
-          </ul>
-          </div>
-        </div>  
-      </div>-->
-			<!-- <router-link to="/designer" class="cle icon-a"><i class="iconfont icon-duixiangjianmo"></i><span>对象建模</span></router-link>   -->
-		</div>
+		
+		
 	</div>
 </template>
 <script>
 	import common from "@/script/common";
-	import { tabManage } from "@/components/designer/tabmanage";
 	import { vm, operate } from "@/script/operate.js";
 	import EditManage from '@/script/mapbox/EditManage';
 	export default {
 		data() {
 			return {
 				common,
-				tabManage,
 				loading: true,
-				designerList: tabManage.getDesignerChildren(),
-				//businessList: tabManage.getBusinessChildren(),
 				designerWidth: 0,
 				businessWidth: 0,
 				ifEdit:true,
@@ -168,23 +101,6 @@
 			}
 		},
 		methods: {
-			pathTo(tag, obj, index) {
-				if(this.$route.path == '/editObject') {
-					this[tag].forEach((item, index) => {
-						if(item.id == obj.id) {
-							this.tabManage.setTabItem(obj);
-						}
-					})
-				} else if(this.$route.path == '/business' || this.$route.path == '/instant') {
-					this.$router.push({
-						path: '/editObject'
-					})
-				}
-				// this.tabManage.setTabItem(obj);
-				/*this.choose = index;
-				this.$emit("selectClass", obj);
-				obj.isShow = true;*/
-			},
 			listenEvent(){
 				var str = location.hash;
 				var hre = str.substring(2, str.length);
@@ -197,35 +113,21 @@
 					this.changeGrayed = true;
 				}
 				
-				/*vm.$emit(operate.ifEdit,{status:this.ifEdit});
-				vm.$on(operate.ifEdit,data=>{
-					this.ifEdit = data.status;
-				})*/
 			},
 			updateStatus(){
 				this.currentSpan = 1;
-				// this.ifEidt = !this.ifEidt;
-				// vm.$emit(operate.ifEdit,{status:false});
 				if(this.ifEdit){
 					this.$router.push({path:'/view'});
 					this.ifEdit = false;
 					vm.$emit(operate.ifEdit,{status:this.ifEdit});
 					//左边栏与右边栏全隐藏
 					vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:true});
-					// vm.$emit(operate.exitEdit);
-					// let list = tabManage.getDesignerChildren();
-					// tabManage.setTabItem(list[0]);
-					// console.log('tuichuosm');
 				}else{
 					this.$router.push({path:'/edit'});
 					this.ifEdit = true;
 					vm.$emit(operate.ifEdit,{status:this.ifEdit});
 					//一个隐藏，一个显示
 					vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
-					/*this.generalEdit = false;
-					vm.$emit(operate.generalEdit,{status:this.generalEdit});
-					EditManage.exitEdit();*/
-					// console.log('tuichumapbox')
 				}
 				
 			},
@@ -239,7 +141,6 @@
 						this.$router.push({path:'/view'});
 					}
 					setTimeout(() => {
-						// vm.$emit(operate.changeSlider,{hideLeft:true,hideRight:false});
 						vm.$emit('changeTabs',{name:'showHistory'})
 						vm.$emit(operate.viewHistoryEvent , "viewHistory");
 					}, 500)
