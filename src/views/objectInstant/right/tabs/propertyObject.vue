@@ -129,7 +129,8 @@ export default {
     searchObject() {
       //this.objectList = [];
       var obj = {
-        names: this.searchNameVal
+        names: this.searchNameVal,
+        geoEdit:true
       };
       psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
         response.list.forEach((item, index) => {
@@ -156,29 +157,34 @@ export default {
       let x = (bbox.maxx + bbox.minx) / 2;
       let y = (bbox.maxy + bbox.miny) / 2;
       IdEdit.osmContent.map().centerZoom([x, y], 17);
-      
+      console.log(item)
+      // return
       //选中对象高亮
       if (item.forms && item.forms.length>0) {
-	      let context = getContext();
+        let context = getContext();
+        item.forms.forEach(form=>{
+          if(typeof form.geom!='string'){
+            if(form.geotype==21){
+              form.geom= 'n'+form.geom.id;
+            }else if(form.geotype==22||form.geotype==23){
+              form.geom='w'+form.geom.id;
+            }else if(form.geotype==24){
+              form.geom = 'r'+form.geom.id;
+            }
+          }
+        })
 	      try{
 			  setTimeout(()=>{
-			  	let geomId = item.forms[0].geomref;
-			  	if(item.forms[0].geotype==21){
-			  		geomId = 'n'+item.forms[0].geomref;
-			  	}else if(item.forms[0].geotype==23||item.forms[0].geotype==22){
-			  		geomId = 'w'+item.forms[0].geomref;
-			  	}
 			  	positionEntity(context,[geomId]);
-			  },500)
+          vm.$emit(operate.currentObject, item);
+			  },1000)
 		      //IdEdit.osmContent.enter(modeSelect(context, [d.entity.id]));
 	      }catch(e){
 	      	//TODO handle the exception
 	      }
-      }
 
-      vm.$emit(operate.currentObject, item);
+      }
       //context.map().center(d.entity.loc);
-      console.log(item);
     }
   }
 };

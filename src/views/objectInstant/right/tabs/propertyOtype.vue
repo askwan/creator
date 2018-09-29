@@ -212,7 +212,7 @@
 			entityObj(obj){
 				this.showDiagramList = true;
 				this.searchValue = "";
-
+				console.log(obj,'obj')
 				this.type = obj.type;
 				this.entityId = obj.entityId;
 				this.$emit("enterDetail", true);
@@ -227,8 +227,16 @@
 				}
 			}
 		},
+		beforeMount() {
+			this.diagrams = allOtype.userDiagram(common.getInfo('id'));
+		},
 		mounted() {
 			this.listenEvent();
+			console.log(122222222222222)
+			setTimeout(() => {
+				
+				this.diagrams = allOtype.userDiagram(common.getInfo('id'));
+			}, 500);
 			// console.log(common.getInfo('id'))
 			// this.diagrams = allOtype.userDiagram(common.getInfo('id'));
 			// console.log(this.diagrams,'diagrams')
@@ -238,9 +246,10 @@
 				this.getDict.query({}, "form").then(res => {
 					this.formList = res;
 				});
-				vm.$on('readyDiagram',(list)=>{
-					this.diagrams = allOtype.userDiagram(common.getInfo('id'));
-				})
+				// vm.$on('readyDiagram',(list)=>{
+				// 	this.diagrams = allOtype.userDiagram(common.getInfo('id'));
+				// 	console.log(this.diagrams,456456)
+				// })
 			},
 			getName(data) {
 				var find = this.formList.find(item => item.value == data);

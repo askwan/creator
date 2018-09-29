@@ -21,7 +21,7 @@
 		<div class="content-left" v-show="!viewContent">
 			<div class="header" v-show="!hideRight">
 				<el-tooltip class="item" effect="dark" :content="headObjectName + '(' + headOtypeName + ')' + headUserName" placement="bottom-start">
-			    	<span v-show="objectDetail.id">{{headObjectName}} ( {{headOtypeName}} ) {{headUserName}}</span>
+			    	<span v-show="objectDetail.id">{{headObjectName}} ( {{headOtypeName}} )</span>
 			    </el-tooltip>
 				<!-- <i class="iconfont icon-guanbi1" @click="closeRight"></i> -->
 			</div>
@@ -41,7 +41,7 @@
 	export default {
 		data() {
 			return {
-				currentCom: "propertyList",
+				currentCom: "propertyObject",
 				oTypeCtrl: oTypeCtrl,
 				osmData: {},
 				headObjectName: "",
@@ -183,7 +183,7 @@
 					if(obj == null) {
 						this.currentCom = 'propertyList';
 					} else if(obj !== null && !obj.id) {
-						this.currentCom = 'propertyList';
+						this.currentCom = 'propertyObject';
 					}
 					if(obj && obj.otype) {
 						let otypeDetail = allotypemgr.getOtypeById(obj.otype.id);

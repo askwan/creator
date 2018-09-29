@@ -209,7 +209,9 @@ class EditSave {
       if(sobject){
         let bool = adjustChange(entity);
         if(!bool) continue;
-        this.updateSObjectForm(sobject, entity)
+        sobject = this.updateSObjectForm(sobject, entity);
+        console.log(sobject,88888888888888888)
+        this.addSObjectList(resultSobjectList,sobject);
       }
       // if (sobject != null) {
       //   console.log(sobject,99999999999)
@@ -260,10 +262,8 @@ class EditSave {
   updateSObjectForm (sobject, entity) {
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
+    
     form.geom = entity;
-    // console.log(entity.refOb)
-    // return
-    // form.formref.geometry = entity;
 
     if (form.type < 30) {
       form.formref.refid = entityId
@@ -279,6 +279,15 @@ class EditSave {
       }
 
     }
+    if(entity.flag==1){
+      form.geomref=null;
+      if(form.type<30){
+        form.formref.refid=null;
+      }
+      console.log(JSON.stringify(form))
+    }
+    console.log(form,'form')
+
     if (entity.flag == 1) {
       sobject.modifyForm(form)
     }else if (entity.flag == 2) {
@@ -287,9 +296,10 @@ class EditSave {
       sobject.deleteForm(form)
     }
     
+    return sobject;
+    
   }
   addSObjectList (sobjectlist, sobject) {
-    console.log(sobjectlist,sobject,'sobjectlist')
     let idx = sobjectlist.findIndex(el => el.id == sobject.id)
     if (idx == -1) {
       sobjectlist.push(sobject)

@@ -645,7 +645,13 @@
 			},
 			modifyFormFn(item, index) {
 				if (item.geomref && item.geomref!="" && item.geomref!="重新编辑位置") {
-					item.geom = "n" + item.geomref;
+					if(item.geotype==21){
+						item.geom = "n" + item.geomref;
+					}else if(item.geotype==22||item.geotype==23){
+						item.geom = 'w'+item.geomref;
+					}else if(item.geotype==24){
+						item.geom = 'r'+item.geomref;
+					}
 				}
 				if (item.geomref=="重新编辑位置") {
 					item.geom = "";

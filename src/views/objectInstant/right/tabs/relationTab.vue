@@ -19,7 +19,7 @@
     props:{
       name:{
         type:String,
-        default:'propertyList'
+        default:'propertyObject'
       }
     },
     components:{

@@ -98,10 +98,12 @@ class IdEdit {
       vm.$emit(operate.currentForm,entity);
       if (!aimSobject) {
         let type = TYPE[osmContent.geometry(entityId)]
-        vm.$emit(operate.getOsmType, {
-          type: type,
-          entityId: entityId
-        })
+        setTimeout(() => {
+          vm.$emit(operate.getOsmType, {
+            type: type,
+            entityId: entityId
+          })
+        }, 100);
       }
     })
   }

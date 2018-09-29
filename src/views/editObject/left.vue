@@ -92,8 +92,43 @@
             ids: val.oid
           })
           .then(response => {
-            this.flotCon = response.list[0];
-            // console.log(this.flotCon);
+            new psde.OType().query({ids:response.list[0].otype.id}).then(res=>{
+              let arr = res.list[0].fields.fields;
+              let object = response.list[0];
+              if(object.attributes.length==0){
+                arr.forEach(el=>{
+                  let obj = {
+                    fid:el.id,
+                    name:el.name,
+                    value:''
+                  }
+                  object.attributes.push(obj);
+                })
+              }
+              let _arr = []
+              arr.forEach(el=>{
+                let obj = {
+                  fid:el.id,
+                  name:el.name,
+                  value:''
+                };
+                let aim = object.attributes.find(ev=>ev.fid==el.id);
+                if(aim){
+              
+                }else{
+                  object.attributes.push(obj);
+                }
+              });
+              
+              object.attributes.forEach(attr=>{
+                let field = arr.find(el=>el.id==attr.fid);
+                if(field) attr.name = field.caption||field.name;
+              })
+
+
+              this.flotCon = response.list[0];
+            })
+
             
           });
       }

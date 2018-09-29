@@ -53,6 +53,7 @@
 		components: {
 			objectContent: () => import("./tabs/objectContent"),
 			propertyList: () => import("./tabs/propertyList"),
+			propertyObject:()=>import('./tabs/propertyObject'),
 			relationsTab: () => import("./tabs/relationsTab"),
 			behaviorList: () => import("./tabs/behaviorList"),
 			// relationOperate:()=>import('./tabs/relationOperate'),
