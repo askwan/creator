@@ -1,37 +1,53 @@
 <template>
-  <div id="app" @click="closeRightMenuFn">  
-  	<edit-object></edit-object>
-    <!--<router-view/>-->
+  <div id="app" class="fill">
+    <nav class="header-box">
+      <header-box></header-box>
+    </nav>
+    <div class="map-content">
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script>
-import { vm, operate } from "@/script/operate.js";
-import editObject from '@/views/editObject';
+
+import {vm,operate} from '@/script/operate'
 export default {
-  name: "app",
-  components: {
-  	editObject
-  },
+  name: 'App',
   mounted(){
-    vm.$on(operate.chooseDiagram,item=>{
-      sessionStorage.setItem("instant", item.id);
-      this.$router.push({
-        path: "/instant"
-      })
-    });
+    vm.$on(operate.notice,obj=>{
+      if(obj.message){
+        obj.message = obj.message.slice(0,20);
+      }else{
+        obj.message = '未知错误'
+      };
+      obj.type = obj.type || 'info';
+      obj.title = obj.title || '提示';
+      this.$notify(obj);
+    })
   },
-  methods: {
-  	closeRightMenuFn(){
-  		vm.$emit(operate.closeRightMenu, {value:false});
-  	}
-  }
-};
+  methods:{
+    history(){
+      vm.$emit(operate.openTab,{name:'history'});
+    }
+  },
+  components:{
+    'headerBox':()=>import('@/components/header')
+  },
+}
 </script>
 
-<style>
-#app {
-  height: 100%;
-  width: 100%;
-}
+<style scoped lang='scss'>
+  $height:53px;
+  .header-box{
+    height: $height;
+    border-bottom: 1px solid #ccc;
+  }
+  .map-content{
+    position: absolute;
+    left:0;
+    right: 0;
+    top: $height;
+    bottom:0;
+  }
 </style>

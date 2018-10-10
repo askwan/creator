@@ -1,4 +1,4 @@
-import psde from '../../psde'
+
 import {
   vm,
   operate
@@ -50,7 +50,7 @@ class VectorSelect {
 
     if (features.length > 0) {
       this.pitchOn = features[0].properties
-      vm.$emit(operate.showClick, this.pitchOn)
+      // vm.$emit(operate.showClick, this.pitchOn)
 
       let feature = features[0]
       self.feature = feature
@@ -99,23 +99,25 @@ class VectorSelect {
       }
 
       //点击对象左边显示详细信息
-
+      // console.log(feature,feature.properties.oid);
+      vm.$emit(operate.selectObject,{id:feature.properties.oid})
     } else {
       this.pitchOn = ''
-      vm.$emit(operate.showClick, this.pitchOn)
-      console.log('kongbai')
+      // vm.$emit(operate.showClick, this.pitchOn)
+      vm.$emit(operate.selectObject,{id:null})
       // self.feature = null
     }
 
     // map.setFilter("polygon-highlighted", filter)
   }
   loadObjectById(id) {
-    let self = this
-    psde.objectQuery.getDetailById.query({
-      ids: id
-    }).then(response => {
-      vm.$emit(operate.currentObject, response.list[0])
-    })
+    let self = this;
+    console.log(id,'selectId')
+    // psde.objectQuery.getDetailById.query({
+    //   ids: id
+    // }).then(response => {
+    //   vm.$emit(operate.currentObject, response.list[0])
+    // })
   }
 
 }

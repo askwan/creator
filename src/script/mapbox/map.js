@@ -1,21 +1,18 @@
-import { psdeHost } from '../../psde/config'
+import { psdeHost } from '../editor/psde/config'
 import { vm, operate } from '@/script/operate'
 import _debounce from 'lodash-es/debounce'
 
 import axios from 'axios'
 
-import EditManage from './EditManage'
 import vectorSelect from './VectorSelect'
 
 // 全局mapbox地图对象
 let mapboxMap = {}
 let marker = null
 
-function createMapboxMap (container) {
+function createMapboxMap (container,callback) {
   let map = createMap(container)
   axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
-    console.log(res , 'layer')
-    EditManage.layers(res.data)
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       if (layer.type) {
@@ -25,9 +22,10 @@ function createMapboxMap (container) {
         map.addLayer(layer)
       }
     }
-
-    //  EditManage.setMap(map)
-    //  EditManage.startEdit()
+    
+    if(callback){
+      callback();
+    }
 
   })
   mapboxMap = map

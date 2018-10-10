@@ -2,7 +2,7 @@
  * common 全局函数及变量
  */
 import axios from 'axios'
-import { ucBaseUrl, UcServerUrl } from '@/psde/config'
+import { ucBaseUrl, UcServerUrl } from '@/script/editor/psde/config'
 var common = {}
 
 
@@ -48,6 +48,7 @@ common.getItem = function (name) { // 获取cookie
   return localStorage.getItem(name)
 }
 common.setInfo = function (name, val) { // 设置cookie
+  if(typeof window.user !=='object') window.user = {};
   window.user[name] = val
 }
 common.getInfo = function (name) { // 获取cookie
@@ -63,7 +64,9 @@ common.getAvatar = function (avatar) { // 获取用户头像
 common.setUserInfo = function (data) {
   for ( let i in data) {
     common.setInfo(i, data[i])
-  }
+  };
+  sessionStorage.setItem('user',JSON.stringify(window.user));
+  // console.log(window.user)
 }
 common.TimeShift = function (timeStamp, select) { // 时间戳格式转换日期
   if (timeStamp == '') {
