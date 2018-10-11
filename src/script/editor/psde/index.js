@@ -38,6 +38,7 @@ import Proxy from './Proxy'
 
 import { objectQuery } from './objectService'
 import {psdeApi} from './config'
+import versionServer from './versionService'
 
 export default {
   Field,
@@ -75,4 +76,6 @@ export default {
   RNode,
   RObject,
   psdeApi,
-objectQuery}
+  objectQuery,
+  versionServer
+}

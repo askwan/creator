@@ -58,6 +58,9 @@ export default class Editor {
   listen(){
     this.idContext.on('selectEle',ele=>{
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
+      if(ele){
+        console.log(this.idContext.entity(ele));
+      }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
         if(_form){

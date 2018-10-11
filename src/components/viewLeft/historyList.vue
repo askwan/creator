@@ -32,7 +32,7 @@
 					</div> -->
 				</ul>
 			</div>
-			<div class="earth-null-list" v-if="earthListShow">
+			<div class="earth-null-list" v-if="showMore">
 				<ul>
 					<li>
 						<span class="earth-span" @click="searchObject">更多结果</span>
@@ -63,7 +63,9 @@
 				earthListShow: true,
 				currentTime: new Date().getTime(),
 				backCurrentTime: "",
-				addBgColor: "",
+				addBgColor: 1000,
+				pageNum:1,
+				showMore:true
 			};
 		},
 		props: [],
@@ -139,13 +141,17 @@
 					loadObjType: true,
 					loadForm: true,
 					loadAction: true,
-					geoEdit:false
+					geoEdit:false,
+					pageNum:this.pageNum,
+					pageSize:20
 			    }
 				psde.objectQuery.query(filter).then(res => {
+					if(res.list==0) this.showMore = false
 					this.objectList = this.objectList.concat(res.list);
 				})
 			},
 			searchObject(){
+				this.pageNum++;
 				this.searchListFn(this.backCurrentTime);
 			},
 			searchList(){
@@ -163,6 +169,7 @@
 		top: 0;
 		bottom: 0;
 		background: #f6f6f6;
+		overflow-y: auto;
 		.search-header {
 			margin: 10px;
 			border: 1px solid #dcdfe6;

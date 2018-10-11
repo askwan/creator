@@ -21,7 +21,10 @@
 			}
 		},
 		mounted() {
-			
+			this.textVal = this.searchValue;
+		},
+		activated() {
+			this.textVal = this.searchValue;
 		},
 		methods: {
 			searchInputFn() {

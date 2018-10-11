@@ -67,26 +67,28 @@
 						    </el-tooltip>
 						</el-form-item>
 						<el-form-item label="维度 :" :label-width="classNameWidth">
-							<el-select class="width-200" v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
+							<el-select v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
 								<el-option v-for="(da, ix) in dimension" :key="ix" :label="da.name" :value="da.value">
 								</el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item label="位置 :" :label-width="classNameWidth">					
-							<el-select class="width-200" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
+							<el-select class="width" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
 								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.id" :value="da.id">
 								</el-option>
 							</el-select>
 							
 							<el-tooltip effect="dark" content="编辑位置" placement="bottom">
-						    	<el-button type="primary" size="mini" icon="el-icon-edit" circle v-if="!item.geom" @click="setTool(item)"></el-button>
+						    	<el-button class="diy-size" type="primary" size="mini" icon="el-icon-edit" circle v-if="!item.geom" @click="setTool(item)"></el-button>
 						    </el-tooltip>
 						</el-form-item>
 						<el-form-item label="最小可见 :" :label-width="classNameWidth">
-							<input :readonly="!ifEdit" type="number" placeholder="请输入最小可见" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.minGrain" class="objtype-input" />
+							<!-- <input :readonly="!ifEdit" type="number" placeholder="请输入最小可见" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.minGrain" class="objtype-input" /> -->
+							<el-input type="number" placeholder="请输入最小可见" @change="modifyFormFn(item,index)" v-model="item.minGrain"></el-input>
 						</el-form-item>
 						<el-form-item label="最大可见 :" :label-width="classNameWidth">
-							<input :readonly="!ifEdit" type="number" placeholder="请输入最大可见" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.maxGrain" class="objtype-input" />
+							<!-- <input :readonly="!ifEdit" type="number" placeholder="请输入最大可见" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.maxGrain" class="objtype-input" /> -->
+							<el-input type="number" placeholder="请输入最大可见" @change="modifyFormFn(item,index)" v-model="item.maxGrain"></el-input>
 						</el-form-item>
 						
 						<el-form-item label="缩放比例 :" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
@@ -594,7 +596,7 @@
 			},
 			addRelation(item){
 				
-				vm.$emit(operate.changeTab,{name:'relationOperate'})
+				vm.$emit(operate.changeTab,{name:'addRelation'})
 
 			},
 			changePosi(item,index){
@@ -745,7 +747,10 @@
 		cursor: pointer;
 		font-size: 12px;
 	}
-	.width-200{
-		width: 200px;
+	.width{
+		width: 150px;
+	}
+	.diy-size{
+
 	}
 </style>

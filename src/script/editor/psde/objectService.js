@@ -73,4 +73,8 @@ objectQuery.getBoxSObject = function (minx, maxx, miny, maxy) {
   return this.query(filter)
 }
 
+objectQuery.getVersion = function(filter){
+  return this.query(filter);
+}
+
 export { objectQuery }

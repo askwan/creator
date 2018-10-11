@@ -1,6 +1,6 @@
 <template>
   <div class="fill relation-box">
-    <div class="pd-left-small pd-right-small">
+    <div class="pd-left-small pd-right-small relation-header">
       <common-head title="关系列表" @back="back"></common-head>
     </div>
     <div class='relation-list pd-big'>
@@ -89,8 +89,13 @@
 <style lang='scss' scoped>
   .relation-box{
     background: #fff;
+    .relation-header{
+      border-bottom: 1px solid #ccc;
+    }
   }
   .relation-list{
+    height: calc(100% - 41px);
+    overflow-y: auto;
     .relation-el{
       border: 1px solid #ccc;
       .relation-text{

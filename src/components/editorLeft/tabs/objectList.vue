@@ -1,10 +1,13 @@
 <template>
   <div class="object-box fill">
-    <div class="pd-left-small pd-right-small">
+    <div class="pd-left-small pd-right-small object-header">
       <common-head title="对象列表" @back="back"></common-head>
     </div>
+    <div class="mg-left-small mg-right-small object-search flex-center">
+      <common-search @startSearch="startSearch" :searchValue="searchValue"></common-search>
+    </div>
   
-    <div class='object-list pd-big'>
+    <div ref="list" class='object-list pd-big'>
       <div v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
         <div class="icon-text flex-center radius-2 mg-right-big">
           <span class="font-14 font-white">{{item.name|splice2}}</span>
@@ -15,11 +18,14 @@
           <div class="align-right"><span class="pointer-danger font-info" @click.stop="deleteObj(item)">删除</span></div>
         </div>
       </div>
-      <div class="block">
+      <div v-if="total>20" class="block flex-center">
         <el-pagination
           layout="prev, pager, next"
           small
-          :total="1000">
+          :total="total"
+          :pager-count="5"
+          :page-size="pageSize"
+          @current-change="loadMore">
         </el-pagination>
       </div>
     </div>
@@ -36,11 +42,16 @@
         objectList:[],
         currentRelation:{},
         otype:{},
+        total:0,
+        pageNum:1,
+        searchValue:'',
+        pageSize:20
       }
     },
     props:['currentObject'],
     components:{
-      commonHead:()=>import('@/components/common/tabHead.vue')
+      commonHead:()=>import('@/components/common/tabHead.vue'),
+      commonSearch:()=>import('@/components/common/searchBar.vue')
     },
     computed:{
 
@@ -76,19 +87,36 @@
         this.otype = this.currentObject.otype;
         this.getObjectByRelation();
       }else{
+        this.searchValue = ''
         this.queryObject();
       }
     },
     methods:{
       queryObject(){
+        this.$refs.list.scrollTop = 0;
+        if(!this.searchValue) {
+          this.pageNum = 1;
+          this.objectList = [];
+          for(let id in State.sobjects){
+            this.objectList.push(State.sobjects[id]);
+            this.total = this.objectList;
+          }
+            // console.log(this.objectList,789789)
+            return
+        }
         var obj = {
-					names: '',
+					names: this.searchValue,
 					otNames: '',
-					pageNum: 1,
-					pageSize: 20
+					pageNum: this.pageNum,
+					pageSize: this.pageSize
 				};
         psde.objectQuery.ByNameAndOTName.query(obj).then(res => {
+          console.log(res,456);
+          this.total = res.total;
+          this.pageNum = res.pageNum;
+
           this.objectList = res.list;
+          
 				});
       },
       getObjectByRelation(){
@@ -121,18 +149,42 @@
       },
       back(){
         if(IdEdit.currentRelation){
+          IdEdit.currentRelation = null;
           vm.$emit(operate.changeTab,{name:'relationList'});
         }else{
           vm.$emit(operate.changeTab,{name:'objectDetail'});
         }
+      },
+      loadMore(num){
+        console.log(num);
+        this.pageNum = num;
+        
+        this.queryObject();
+      },
+      startSearch(val){
+        this.searchValue = val;
+        this.queryObject();
       }
     }
   }
 </script>
 <style lang='scss' scoped>
+  .object-box{
+    background: #fff;
+    .object-header{
+      border-bottom: 1px solid #ccc;
+    }
+    .object-search{
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      height: 40px;
+    }
+  }
   .object-list{
+    height: calc(100% - 91px);
+    overflow-y: auto;
     .object-el{
-      background-color: #fff;
+      // background-color: #fff;
       height: 80px;
       border: 1px solid #ccc;
       .icon-text{

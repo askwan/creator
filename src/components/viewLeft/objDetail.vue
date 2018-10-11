@@ -7,7 +7,7 @@
       <div class="property-title font-14 mg-bottom-mini">属性</div>
       <ul class="property-table">
         <li class="property-row flex" v-for="(item,key) in attrs" :key="key">
-          <div class="e-name pd-mini font-12 text-ellipsis">{{item.name}}：</div>
+          <div class="e-name pd-mini font-12 text-ellipsis">{{item.caption}}：</div>
           <div class="e-value pd-mini font-12 text-ellipsis">{{item.value}}</div>
         </li>
       </ul>
@@ -70,16 +70,18 @@
             let arr = res.list[0].fields.fields;  
             arr.forEach(el=>{
               let obj = {};
-              obj.name = el.caption;
+              obj.name = el.name;
+              obj.caption = el.caption;
               obj.value = '';
-              obj.fid = el.id;
+
               this.attrs.push(obj);
             })
             this.sobject.attributes.forEach(attr=>{
-              let field = this.attrs.find(el=>el.fid==attr.fid);
+              let field = this.attrs.find(el=>el.name==attr.name);
               if(field) {
                 field.value = attr.value;
               }else{
+                attr.caption = attr.name;
                 this.attrs.push(attr);
               }
             })

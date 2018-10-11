@@ -5,12 +5,18 @@
     </div>
     <div id="mapbox" class="fill"></div>
     <div class="view-left" v-show="showLeft">
-      <component :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject"></component>
+      <div class="close-bar flex-between pd-right-mini">
+        <i></i>
+        <i class="el-icon-close font-20 pointer-default" @click="close"></i>
+      </div>
+      <div class="left-box fill">
+        <component :isShow="showLeft" :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject"></component>
+      </div>
     </div>
   </div>
 </template>
 <script>
-  import {vm,operate} from '@/script/operate'
+  import {vm,operate,getMap} from '@/script/operate'
   import * as mapbox from '@/script/mapbox'
   import psde from '@/script/editor/psde'
   import mapposition from '@/script/mapposition'
@@ -21,7 +27,8 @@
         currentObject:{},
         showLeft:false,
         componentId:'',
-        viewSearchValue:""
+        viewSearchValue:"",
+        bbox:''
       }
     },
     props:{},
@@ -45,6 +52,7 @@
         map.setCenter([position.lng, position.lat], position.zoom );
         map.setZoom(position.zoom);
       });
+      getMap(map);
       this.listenEvent();
     },
     methods:{
@@ -65,12 +73,16 @@
         vm.$on(operate.openTab,obj=>{
           this.componentId = obj.name;
           this.showLeft = true;
-        })
+        });
+        
       },
       search(val){
         this.viewSearchValue = val;
         this.componentId = 'searchResult'
         this.showLeft = true;
+      },
+      close(){
+        this.showLeft = false;
       }
     },
     destroyed(){
@@ -103,6 +115,14 @@
       width: 300px;
       overflow-y: auto;
       overflow-x: hidden;
+    }
+    .close-bar{
+      height: 40px;
+      border-bottom: 1px solid #ccc;
+    }
+    .left-box{
+      position: relative;
+      height: calc(100% - 41px);
     }
   }
 </style>

@@ -17,4 +17,10 @@ const getEditor = (_)=>{
   _editor = _;
 }
 
-export {vm,getEditor};
+let _map
+const getMap = (_)=>{
+  if(!_) return _map;
+  _map = _;
+}
+
+export {vm,getEditor,getMap};

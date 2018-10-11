@@ -1,7 +1,11 @@
 <template>
-  <div class='add-relations fill pd-small'>
-    <common-head title="创建关系" @back="back"></common-head>
-    <relation-operate></relation-operate>
+  <div class='add-relations fill'>
+    <div class="relations-head pd-left-small pd-right-small mg-bottom-small">
+      <common-head title="创建关系" @back="back"></common-head>
+    </div>
+    <div class="relations-operate pd-big">
+      <relation-operate></relation-operate>
+    </div>
   </div>
 </template>
 <script>
@@ -32,6 +36,10 @@
 <style lang='scss' scoped>
   .add-relations{
     background: #fff;
+    .relations-head{
+      border-bottom: 1px solid #ccc;
+    }
+    
   }
   
 </style>
