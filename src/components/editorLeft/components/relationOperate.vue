@@ -129,7 +129,7 @@
         let r;
         var member = {id:id,role:'outer',type:type,index:0}
         r = IdEdit.relationOperate.createRelation(context,member);
-        State.relations.push(r);
+        State.cacheRelation(r);
         // this.selectRelation = r;
         // this.relationCollection.push(r);
         this.selectRelation = r.id;
@@ -160,9 +160,10 @@
           });
         }
         let re = context.graph().hasEntity(this.selectRelation);
-        IdEdit.relationOperate.setRole({id:id,index:re.members.length,role:role,type:type},this.selectRelation);
+        IdEdit.relationOperate.setRole({id:id,index:re.members.length,role:role,type:type},this.selectRelation,(relation)=>{
+          State.cacheRelation(relation);
+        });
           let sobject = IdEdit.getSObjectByOsmEntity(id);
-          // console.log(sobject,'soje')
           if(sobject){
             let form = sobject.forms.find(el=>el.geom==id);
             form.geom = this.selectRelation

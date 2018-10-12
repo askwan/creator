@@ -130,7 +130,6 @@ class OsmWay extends OsmEntity {
   clearId(){
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"")
-    // if(this.flag==1) this.id = 0;
     this.nodes.forEach(node=>{
       node.clearId();
     })
@@ -232,5 +231,6 @@ export default {
   OsmNode: OsmNode,
   OsmWay: OsmWay,
   OsmRelation: OsmRelation,
+  OsmEntity:OsmEntity,
   clearCollection
 }

@@ -164,13 +164,15 @@ export default class SObject extends DObject {
     return this
   }
   addParent (parent) {
-    let index = this.parents.findIndex(el => el == parent.id)
-    if (index == -1) this.parents.push(parent.id)
+    let index = this.parents.findIndex(el => el.id == parent.id)
+    if (index == -1) this.parents.push({id:parent.id})
     this.addAction(this.id, Action.MODIFY | Action.BASE)
     return this
   }
   deleteParent (parent) {
-    this.parents = this.parents.filter(el => el != parent.id)
+    console.log(this.parents,parent,88888888888)
+    this.parents = this.parents.filter(el => el.id != parent.id)
+    console.log(this.parents,777777777)
     this.addAction(this.id, Action.MODIFY | Action.BASE)
     return this
   }

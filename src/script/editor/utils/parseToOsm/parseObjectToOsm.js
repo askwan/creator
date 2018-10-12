@@ -93,8 +93,7 @@ function parseObject (entities, sobject) {
 
       entities.push(obj.entity)
       form.geom = obj.entity.id;
-      // relationArr(obj.entity);
-      State.relations.push(obj.entity);
+      State.cacheRelation(obj.entity);
     }
   }
   // sobject.otype = getOtypeById(sobject.otype.id)

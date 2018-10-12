@@ -1,8 +1,8 @@
-import * as Relation from './relationOperate';
+import {RelationOperate} from './relationOperate';
 import * as Delete from './deleteOperate'
 
 
 export {
-  Relation,
+  RelationOperate,
   Delete
 }

@@ -131,7 +131,8 @@
 	import psde from "@/script/editor/psde";
 	import ImageManage from "@/script/editor/psde/ImageManage";
   import { vm, operate,getEditor } from "@/script/operate";
-  import {State} from '@/script/editor/utils/store'
+	import {State,userDiagram} from '@/script/editor/utils/store'
+	import common from '@/script/common'
 	var IdEdit;
 	var Type = {
 		node:21,
@@ -236,8 +237,9 @@
 		},
 		activated(){
 			this.listenEvent();
-      IdEdit = getEditor();
-			this.diagrams = State.diagrams;
+			IdEdit = getEditor();
+			let user = JSON.parse(sessionStorage.getItem('user'));
+			this.diagrams = userDiagram(user.id);
 			let obj = this.entityObj;
 			this.showDiagramList = true;
 			this.searchValue = "";
@@ -248,8 +250,9 @@
 		},
 		beforeMount(){
 			this.listenEvent();
-      IdEdit = getEditor();
-			this.diagrams = State.diagrams;
+			IdEdit = getEditor();
+			let user = JSON.parse(sessionStorage.getItem('user'));
+			this.diagrams = userDiagram(user.id);
 			let obj = this.entityObj;
 			this.showDiagramList = true;
 			this.searchValue = "";

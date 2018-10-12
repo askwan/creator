@@ -63,10 +63,26 @@ export const State = {
     value: 5
   }
   ],
-  relationType:[]
+  relationType:[],
+  cacheRelation(relation){
+    let index = this.relations.findIndex(el=>el.id==relation.id);
+    if(index==-1) {
+      this.relations.push(relation);
+    }else{
+      this.relations.splice(index,1,relation);
+    }
+  },
+  findRelationByMember(memberId){
+    let aimRelation;
+    this.relations.forEach(relation=>{
+      let aimMember = relation.members.find(member=>member.id==memberId&&member.role=='outer');
+      if(aimMember) aimRelation = relation;
+    })
+    return aimRelation;
+  }
 }
 
-export const userDiatram = userId=>{
+export const userDiagram = userId=>{
   return State.diagrams.filter(el=>el.user.uid==userId);
 }
 

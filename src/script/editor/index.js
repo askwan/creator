@@ -23,7 +23,7 @@ import { State,findOtypeById } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
 import editsave from './utils/EditSave'
 
-import {Relation,Delete} from './operates'
+import {RelationOperate,Delete} from './operates'
 
 
 const dispatch = d3_dispatch('currentObject','notice')
@@ -50,7 +50,7 @@ export default class Editor {
       utilRebind(this,dispatch,'on');
       this.listen();
       //operate
-      this.relationOperate = Relation;
+      this.relationOperate = new RelationOperate(this.idContext);
       this.deleteOperate = Delete;
       if(callback) callback(this.idContext);
     });
@@ -59,7 +59,13 @@ export default class Editor {
     this.idContext.on('selectEle',ele=>{
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
-        console.log(this.idContext.entity(ele));
+        
+        let relation = State.findRelationByMember(ele);
+        if(relation){
+          ele = relation.id;
+          this.relationOperate.highLightEntity([ele])
+        } 
+          
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
@@ -116,7 +122,7 @@ export default class Editor {
   }
   modifySobject (sobject) {
     this.currentGraph.updateSObject(sobject)    
-    console.log('更新', this.currentGraph)
+    // console.log('更新', this.currentGraph)
   }
   modifyAttr(attr,sobject){
     let tags = {};
@@ -161,13 +167,6 @@ export default class Editor {
   }
   getSobjectById (sid) {
     return State.sobjects[sid];
-    // if (this.currentGraph.sobjectList[sid]) {
-    //   return this.currentGraph.sobjectList[sid]
-    // }
-    // if (this.sobjectlist[sid]) {
-    //   return this.sobjectlist[sid]
-    // }
-    // return null
   }
   saveEdit (context) {
     let json = editsave.getSaveSObject(context, this);
@@ -175,17 +174,12 @@ export default class Editor {
 
     // return 
     let token = localStorage.getItem('token');
-
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
-    
-    
     if (isAjax) {
       isAjax = false;
       psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
-        // console.log(result)
         isAjax = true
         if (result.data.status == 200) {
-          
           context.flush();
           this.clearGraph();
           dispatch.call('notice',this,{
@@ -200,6 +194,12 @@ export default class Editor {
             message:'保存失败'
           })
         };
+      },()=>{
+        dispatch.call('notice',{
+          type:'error',
+          title:'错误',
+          message:'保存失败'
+        })
       })
     }
   }
@@ -221,13 +221,12 @@ export default class Editor {
     this.updateAndHistory(sobject)
   }
   updateAndHistory (sobject) {
-    this.currentGraph.updateSObject(sobject)
+    this.currentGraph.updateSObject(sobject);
     dispatch.call('currentObject',this,{object:sobject,entityId:null});
   }
   deleteObjectForm (sobject, form) {
     sobject.deleteForm(form);
     this.deleteOperate.deleteEntity(this.idContext,form.geom);
-    console.log('deleteFOro')
     this.updateAndHistory(sobject)
   }
   modifyObjectForm (sobject, form) {
@@ -253,7 +252,11 @@ export default class Editor {
     return result
   }
   createSObjectNetwork (srcObject, tagObject, relation) {
-    let node = new psde.RNode()
+    let node = new psde.RNode();
+    let bbox = tagObject.geoBox;
+    node.point.x = (bbox.minx+bbox.maxx)/2;
+    node.point.y = (bbox.miny+bbox.maxy)/2;
+    node.point.z = (bbox.minz+bbox.maxz)/2;
     node.oType = {
       id: tagObject.otype.id,
       name: tagObject.otype.name
@@ -275,12 +278,12 @@ export default class Editor {
     }
     this.updateAndHistory(this.currentSobject);
   }
-  deleteParent(id){
-    this.currentSobject.deleteParent({id:id});
+  deleteParent(obj){
+    this.currentSobject.deleteParent(obj);
+    this.updateAndHistory(this.currentSobject);
   }
   updateObject(object){
     let sobject = this.getSobjectById(object.id);
-    console.log(sobject,4444554)
     sobject.modifyObject(object);
     this.updateAndHistory(object)
   }

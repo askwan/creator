@@ -4,7 +4,7 @@
       <span class="font-14 no-select">+选择父对象</span>
     </div>
     <div class="">
-      <el-tag v-for="parent in parents" class="mg-right-small mg-bottom-small" :key="parent" @close="deleteParent(parent)" closable disable-transitions>{{parent}}</el-tag>
+      <el-tag v-for="parent in parents" class="mg-right-small mg-bottom-small" :key="parent.id" @close="deleteParent(parent)" closable disable-transitions>{{parent.id}}</el-tag>
     </div>
   </div>
 </template>
@@ -39,7 +39,7 @@
       deleteParent(parent){
         console.log('deleteParent');
         getEditor().deleteParent(parent);
-        this.parents = this.parents.filter(el=>el!=parent);
+        this.parents = this.parents.filter(el=>el.id!=parent.id);
       },
       chooseParent(){
         vm.$emit(operate.changeTab,{name:'objectList'});

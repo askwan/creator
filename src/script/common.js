@@ -52,6 +52,7 @@ common.setInfo = function (name, val) { // 设置cookie
   window.user[name] = val
 }
 common.getInfo = function (name) { // 获取cookie
+  console.log(window.user)
   return !window.user ? '' : window.user[name]
 }
 common.getAvatar = function (avatar) { // 获取用户头像
