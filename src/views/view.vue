@@ -74,6 +74,13 @@
           this.componentId = obj.name;
           this.showLeft = true;
         });
+        window.onbeforeunload = function() {
+            mapposition.saveMapPosition({
+              lng: map.getCenter().lng,
+              lat: map.getCenter().lat,
+              zoom: map.getZoom() 
+            });
+        };
         
       },
       search(val){

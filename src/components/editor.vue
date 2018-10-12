@@ -61,13 +61,20 @@
             this.$notify(obj);
           })
         });
+        window.onbeforeunload = function(){
+          let map = editor.idContext.map();
+          mapposition.saveMapPosition({
+            lng: map.center()[0],
+            lat: map.center()[1],
+            zoom: map.zoom()
+          });
+          return editor.idContext.save();
+        }
         getEditor(editor);
       }
     },
     destroyed(){
-      console.log('d-editor');
       let map = editor.idContext.map();
-      console.log(map.center())
       mapposition.saveMapPosition({
         lng: map.center()[0],
         lat: map.center()[1],

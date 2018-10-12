@@ -24,7 +24,10 @@ export default {
       obj.type = obj.type || 'info';
       obj.title = obj.title || '提示';
       this.$notify(obj);
-    })
+    });
+    // window.onbeforeunload = function() {
+    //     return context.save();
+    // };
   },
   methods:{
     history(){

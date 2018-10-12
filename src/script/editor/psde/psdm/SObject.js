@@ -148,7 +148,9 @@ export default class SObject extends DObject {
    */
   modifyForm (form) {
     let index = this.forms.findIndex(el => el.id == form.id)
-    let addAction = this.getAction(form.id, Action.ADDING | Action.FORM)
+    console.log(index,form,9999999)
+    let addAction = this.getAction(form.id, Action.ADDING | Action.FORM);
+    console.log(addAction,'addaction')
     if (addAction) {
       this.forms.splice(index, 1, form)
     }else {

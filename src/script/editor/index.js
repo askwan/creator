@@ -172,7 +172,7 @@ export default class Editor {
     let json = editsave.getSaveSObject(context, this);
     console.log(json,'save');
 
-    // return 
+    return 
     let token = localStorage.getItem('token');
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {

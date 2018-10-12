@@ -267,9 +267,9 @@ export function uiInit(context) {
             .call(svgIcon('#icon-close'));
  
 
-        window.onbeforeunload = function() {
-            return context.save();
-        };
+        // window.onbeforeunload = function() {
+        //     return context.save();
+        // };
 
         window.onunload = function() {
             context.history().unlock();

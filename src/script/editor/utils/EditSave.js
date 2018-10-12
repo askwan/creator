@@ -247,18 +247,25 @@ class EditSave {
     resultSobjectList.forEach(obj => {
       obj.otype = {id: obj.otype.id};
       obj.forms.forEach(form => {
+        if(typeof form.formref.refid =='string'){
+          form.formref.refid = this.toNum(form.formref.refid);
+        }
       	if ((form.style instanceof Array) && form.style.length>0) {
       		form.style = JSON.stringify(form.style);
       	} else{
       		form.style = "";
         }
+        
         if(typeof form.geom == 'string'){
           if(form.geotype==21){
-            form.geom = this.createNode(context,context.entity(form.geom))
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createNode(context,context.entity(form.geom));
           }else if((form.geotype==22) || (form.geotype==23)){
-            form.geom = this.createWay(context,context.entity(form.geom));
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createWay(context,context.entity(form.geom));
           }else if(form.geotype==24){
-            form.geom = this.createRelation(context,context.entity(form.geom));
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createRelation(context,context.entity(form.geom));
           }
         }
         if(form.geom instanceof osm.OsmEntity){
@@ -274,13 +281,13 @@ class EditSave {
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
-    // console.log(entity.refOb)
     // return
     // form.formref.geometry = entity;
 
     if (form.type < 30) {
-      form.formref.refid = entityId
-      form.geomref = entityId;
+      form.formref.refid = this.toNum(entityId)
+      form.geomref = this.toNum(entityId);
+
     }else {
       form.geomref = entityId;
       if(entity.flag==1) {
@@ -293,12 +300,13 @@ class EditSave {
 
     }
     if (entity.flag == 1) {
-      sobject.modifyForm(form)
+      sobject.modifyForm(form);
     }else if (entity.flag == 2) {
       sobject.modifyForm(form)
     }else if (entity.flag == 3) {
       sobject.deleteForm(form)
     };
+    
     return sobject
   }
   addSObjectList (sobjectlist, sobject) {
@@ -317,6 +325,9 @@ class EditSave {
     let obj = new SObject();
     obj.copyObject(str);
     return obj;
+  }
+  toNum(str){
+    return str.replace(/[^0-9]/ig,"")
   }
 
 }
