@@ -29,6 +29,7 @@
         this.initIdEditor();
       })
     },
+    
     methods:{
       initIdEditor(){
         editor = new Editor();
@@ -61,7 +62,7 @@
             this.$notify(obj);
           })
         });
-        window.onbeforeunload = function(){
+        window.onbeforeunload = function(event){
           let map = editor.idContext.map();
           mapposition.saveMapPosition({
             lng: map.center()[0],
@@ -73,6 +74,8 @@
         getEditor(editor);
       }
     },
+    
+    
     destroyed(){
       let map = editor.idContext.map();
       mapposition.saveMapPosition({
@@ -80,7 +83,9 @@
         lat: map.center()[1],
         zoom: map.zoom()
       });
-    }
+      
+    },
+    
   }
 </script>
 <style lang='scss' scoped>

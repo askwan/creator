@@ -51,7 +51,7 @@ let objectQuery = new QueryProxy(`${psdeUrl}object/`, SObject)
 objectQuery.ByNameAndOTName = new QueryProxy(`${psdeUrl}object/`, SObject, {
   loadAttr: true,
   loadForm: true,
-  loadObjType: false,
+  loadObjType: true,
   orderType: 'ID',
 descOrAsc: true})
 

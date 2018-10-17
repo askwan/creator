@@ -1,10 +1,10 @@
 <template>
   <div class='view fill'>
-    <div class="search">
+    <div class="search shadow">
       <search-bar @startSearch="search" :searchValue="viewSearchValue"></search-bar>
     </div>
     <div id="mapbox" class="fill"></div>
-    <div class="view-left" v-show="showLeft">
+    <div class="view-left shadow" v-show="showLeft">
       <div class="close-bar flex-between pd-right-mini">
         <i></i>
         <i class="el-icon-close font-20 pointer-default" @click="close"></i>
@@ -122,6 +122,7 @@
       width: 300px;
       overflow-y: auto;
       overflow-x: hidden;
+
     }
     .close-bar{
       height: 40px;

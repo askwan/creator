@@ -110,4 +110,16 @@ function addMarker (data) {
     .addTo(mapboxMap)
 }
 
-export { createMapboxMap, mapboxMap, addMarker }
+function flyTo(x,y,z,level=16){
+  mapboxMap.flyTo({
+    center:[x,y],
+    zoom: level,
+    speed: 2,
+    curve: 1,
+    easing(t) {
+      return t
+    }
+  })
+}
+
+export { createMapboxMap, mapboxMap, addMarker,flyTo }

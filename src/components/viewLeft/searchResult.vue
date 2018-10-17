@@ -74,11 +74,7 @@
 		methods: {
 			//根据id获取otype名称
 			getOtypeName(sobject) {
-				// let otype = getOtypeById(sobject.otype.id);
-				// if(otype) {
-				// 	return otype.name;
-				// }
-				return "未定义";
+				return sobject.otype.name || "未定义";
 			},
 
 			searchList(data) {

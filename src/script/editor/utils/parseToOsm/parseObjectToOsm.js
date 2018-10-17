@@ -67,7 +67,7 @@ function parseObject (entities, sobject) {
         entities.push(oNode)
       }
       // let way = createWay(nodeids, geom.id, {highway:'bridleway',name:tags.name}, sobject)
-      let way = createWay(nodeids, geom.id, {name:tags.name}, sobject);
+      let way = createWay(nodeids, geom.id, tags, sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
@@ -82,7 +82,7 @@ function parseObject (entities, sobject) {
         entities.push(oNode)
         form.geom = oNode.id
       }
-      let way = createWay(nodeids, geom.id, {area: 'yes',name:tags.name}, sobject);
+      let way = createWay(nodeids, geom.id, Object.assign({area: 'yes'},tags), sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)

@@ -22,12 +22,12 @@
 							<el-date-picker v-else-if="getIntypeVal(item.fid)=='Date'" v-model="item.value" @change="lastValue(item,index)" type="datetime" placeholder="选择日期时间" default-time="00:00:00">
 							</el-date-picker>
 
-							<el-select v-else-if="getIntypeVal(item.fid)=='Radio' || getIntypeVal(item.fid)=='Select'" v-model="item.value" @change="lastValue(item,index)" filterable allow-create default-first-option placeholder="请选择,单选,可输入">
+							<el-select size="mini" v-else-if="getIntypeVal(item.fid)=='Radio' || getIntypeVal(item.fid)=='Select'" v-model="item.value" @change="lastValue(item,index)" filterable allow-create default-first-option placeholder="请选择,单选,可输入">
 								<el-option v-for="(it,ix) in getCheckboxList(item.fid)" :key="ix" :label="it" :value="it">
 								</el-option>
 							</el-select>
 
-							<el-select v-else-if="getIntypeVal(item.fid)=='Checkbox'" v-model="item.value" @change="checkboxValue(item,index)" multiple collapse-tags default-first-option placeholder="请选择,可多选">
+							<el-select size="mini" v-else-if="getIntypeVal(item.fid)=='Checkbox'" v-model="item.value" @change="checkboxValue(item,index)" multiple collapse-tags default-first-option placeholder="请选择,可多选">
 								<el-option v-for="(it,ix) in getCheckboxList(item.fid)" :key="ix" :label="it" :value="it">
 								</el-option>
 							</el-select>
@@ -212,7 +212,6 @@
 				let otype = sobject.otype;
 				if(otype && otype.fields) {
 					let fields = otype.fields.fields;
-					console.log(otype,fields,'feildd')
 					//根据otype中的字段定义顺序，显示获取排列字段
 					for(let i = 0; i < fields.length; i++) {
 						let field = fields[i];

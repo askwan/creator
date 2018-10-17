@@ -10,7 +10,7 @@ class Proxy {
     return new Promise(function(resolve, reject){
       axios.get(url,{params:params}).then(res=>{
         if(res.status==200){
-          resolve(res.data);
+          resolve(res.data.data);
         }else{
           reject(res);
         }

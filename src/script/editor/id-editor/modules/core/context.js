@@ -527,7 +527,6 @@ export function coreContext() {
     context.getParents = function(nodeId){
         let ways = context.graph()._childNodes;
         let aim = [];
-        console.log(ways,'ways')
         for(let id in ways){
             let way = ways[id];
             let index =  way.find(el=>el.id==nodeId);

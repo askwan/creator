@@ -39,6 +39,7 @@ export default class Editor {
     this.currentSobject = null;
     this.currentRelation = null;
     this.currentForm = null;
+    this.isChanges = false;
   }
   config(obj){
     Object.assign(this.options,obj);
@@ -171,8 +172,8 @@ export default class Editor {
   saveEdit (context) {
     let json = editsave.getSaveSObject(context, this);
     console.log(json,'save');
-
-    return 
+    // console.log(JSON.stringify(json));
+    // return 
     let token = localStorage.getItem('token');
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
@@ -205,6 +206,7 @@ export default class Editor {
   }
   clearGraph () {
     this.currentGraph.clearSobject();
+    this.isChanges = false;
     dispatch.call('currentObject',this,{object:null,entityId:null});
   }
   selectSobjects () {
@@ -222,6 +224,7 @@ export default class Editor {
   }
   updateAndHistory (sobject) {
     this.currentGraph.updateSObject(sobject);
+    this.isChanges = true;
     dispatch.call('currentObject',this,{object:sobject,entityId:null});
   }
   deleteObjectForm (sobject, form) {

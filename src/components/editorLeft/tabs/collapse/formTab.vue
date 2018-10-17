@@ -42,7 +42,7 @@
 						<el-form-item v-show="item.type===50" label="模型内容 :" :label-width="classNameWidth">
 							<el-select 
 								v-if="item.type===50"
-								class="change-select-style"
+								class="change-select-style width"
 								v-model="item.formref.refid" 
 								@change="checkboxValue(item,index)"
 								filterable 
@@ -92,19 +92,24 @@
 						</el-form-item>
 						
 						<el-form-item label="缩放比例 :" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
-							<input :readonly="!ifEdit" type="number" placeholder="缩放比例" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].scale" class="objtype-input" />
+							<el-input type="number" placeholder="缩放比例" @change="modifyFormFn(item,index)" v-model="item.style[0].scale"></el-input>
 						</el-form-item>
 						
-						<el-form-item label="最小像素值:" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
-							<input :readonly="!ifEdit" type="number" placeholder="最小像素值" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].smallPX" class="objtype-input" />
+						<el-form-item label="最小像素:" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
+							<el-input type="number" placeholder="最小像素值" @change="modifyFormFn(item,index)" v-model="item.style[0].smallPX"></el-input>
 						</el-form-item>
 						
-						<el-form-item label="旋转(角度) :" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
-							<input :readonly="!ifEdit" type="number" placeholder="X轴旋转" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].x" class="objtype-rotate-input" />
-							<input :readonly="!ifEdit" type="number" placeholder="Y轴旋转" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].y" class="objtype-rotate-input" />
-							<input :readonly="!ifEdit" type="number" placeholder="Z轴旋转" autocomplete="off" @blur="modifyFormFn(item,index)" v-model="item.style[0].z" class="objtype-rotate-input" />
+						<el-form-item label="x轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
+							<el-input type="number" placeholder="X轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].x"></el-input>
 						</el-form-item>
-						<el-form-item label="关联:" :label-width="classNameWidth">
+						<el-form-item label="y轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
+							<el-input type="number" placeholder="Y轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].y"></el-input>
+						</el-form-item>
+						<el-form-item label="z轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
+							<el-input type="number" placeholder="Z轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].z"></el-input>
+						</el-form-item>
+						
+						<el-form-item label="关联：" :label-width="classNameWidth">
 							<div>
 								<div class="add">
 									<span class="operate-btn" @click="addRelation(item)">添加</span>
@@ -117,6 +122,7 @@
 				</el-collapse-item>
 			</el-collapse>
 		</div>
+		<upload-mode v-show="showDiag" @close="showDiag = false" :centerDialogVisible="showDiag" @successFn="changeMode"></upload-mode>
 	</div>
 </template>
 
@@ -159,12 +165,14 @@
 				currentFormId: null,//当前点击形态的id
 				getDict: new psde.GetDict(),
         formList: [],
-        ifEdit:true
+				ifEdit:true,
+				showDiag:false
 			};
 		},
 		props: ["objectDetail"],
 		components: {
-			relationOperate:()=>import('../../components/relationOperate')
+			relationOperate:()=>import('../../components/relationOperate'),
+			uploadMode:()=>import('../../components/uploadMode.vue')
 		},
 		beforeMount(){
 			IdEdit = getEditor();
@@ -304,7 +312,8 @@
 				return "请选择位置";
 			},
 			modelUploadFn(){
-				vm.$emit(operate.modelUploadEvent , {value: true , sign: "upload"});
+				// vm.$emit(operate.modelUploadEvent , {value: true , sign: "upload"});
+				this.showDiag = true;
 			},
 			modelDownloadFn(a, b) {
 		    	return a + "/" + b;
@@ -336,14 +345,6 @@
 			checkboxValue(item,index){
 				var str = JSON.stringify(item);
 				var obj = JSON.parse(str);
-//				if (obj.style && obj.style.length>0) {
-//					obj.style.forEach((it,ix) => {
-//						if (!it.id) {
-//							var find = this.styleList.find(m => m.id==it);
-//							obj.style[ix] = find;
-//						}
-//					})
-//				}
 				this.modifyForm(this.objectDetail, obj);
 			},
 			getName(id){
@@ -418,15 +419,15 @@
 					this.currentFormId = Number(data);
 				})
 				
-				//上传模型之后添加到模型下拉框列表
-				// vm.$on(operate.modelUploadEvent , data => {
-				// 	if (data.sign == "success") {
-				// 		var obj = data.data;
-				// 		this.ModelList.unshift(obj);
-				// 		this.formateList[this.curCollapse].formref.refid = obj.fid;
-				// 	}
-				// });
 				
+			},
+			changeMode(data){
+				var obj = data.data;
+				this.ModelList.unshift(obj);
+				this.formateList[this.curCollapse].formref.refid = obj.fid;
+				this.showDiag= false;
+				// this.modifyForm(this.objectDetail,this.curCollapse);
+				this.checkboxValue(this.formateList[this.curCollapse]);
 			},
 			toArr(options) {
 				//console.log(options,"toarr")
@@ -658,9 +659,6 @@
 		left: 0;*/
 		width: 100%;
 		height: 100%;
-		.change-select-style{
-			width: 79%;
-		}
 		.drag-area {
 			display: block;
 			width: 200px;

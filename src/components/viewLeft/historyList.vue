@@ -3,10 +3,10 @@
 		<div class="object-content">
 			<div class="search-list">
 				<ul>
-					<li v-for="(item,index) in objectList" :key="index" v-if="item.actions && item.actions.length>0 &&item.forms.length>0" :class="{'history-bdcolor': addBgColor==index}" @click="addBgColorFn(item,index)">
-						<!-- <img v-if="item.version && item.version.user && item.version.user.userAvatar" :src="common.getAvatar(item.version.user.userAvatar)" :onerror="errorOtypeImg" alt="加载失败" />
-						<img v-else-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" /> -->
-						<i v-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
+					<li v-for="(item,index) in objectList" :key="index" :class="{'history-bdcolor': addBgColor==index}" @click="addBgColorFn(item,index)">
+						<img v-if="item.user" :src="common.getAvatar(item.user.userAvatar)" :onerror="errorOtypeImg" alt="加载失败" />
+						<!-- <img v-else-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" /> -->
+						<!-- <i v-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
 						<i v-else-if="item.forms[0].type==22" class="iconfont icon-xian1"></i>
 						<i v-else-if="item.forms[0].type==23" class="iconfont icon-mian1"></i>
 						<i v-else-if="item.forms[0].type==31" class="iconfont icon-yuedengyu"></i>
@@ -15,17 +15,17 @@
 						<i v-else-if="item.forms[0].type==40" class="iconfont icon-bim"></i>
 						<i v-else-if="item.forms[0].type==50" class="iconfont icon-ic_d_rotation"></i>
 						<i v-else-if="item.forms[0].type==61" class="iconfont icon-ganlanqiu"></i>
-						<i v-else class="iconfont icon-meiyougengduo"></i>
+						<i v-else class="iconfont icon-meiyougengduo"></i> -->
 						<div>
-							<span v-if="item.version && item.version.user && item.version.user.userNickName">
-						    	{{item.version.user.uik}}
+							<span v-if="item.user && item.user.userNickName">
+						    	{{item.user.userNickName}}
 							</span>
 							<span v-else>未知用户</span>
-							<span v-if="item.actions && item.actions.length>0">
-							    {{item.actions[0].ae.name}}
+							<span>
+							    {{item.msg}}
 							</span>
 						</div>
-				    	<span>{{item.name|filterName}} ({{getOtypeName(item)}})</span>
+				    	<span>{{commonTimeShift(item.vtime)}}</span>
 					</li>
 					<!-- <div v-for="(item,i) in objectList" :key="i">
 						{{item.name|filterName}}
@@ -47,16 +47,16 @@
 	import { vm, operate } from "@/script/operate";
 	import ImageManage from "@/script/editor/psde/ImageManage";
 	// import { getOtypeById } from "@/script/allOtype";
-	// import common from "@/script/common.js";
-	
+	import common from "@/script/common.js";
+	// import '../../../static/images/errorDiagram'
 	import * as btMap from "@/script/mapbox";
 	
 	export default {
 		data() {
 			return {
-				// common: common,
+				common: common,
 				ImageManage: ImageManage,
-				// errorOtypeImg: 'this.src="' + require("../../../../static/images/errorOtype.jpg") + '"',
+				errorOtypeImg: 'this.src="' + require("../../../static/images/errorDiagram.jpg") + '"',
 				searchNameVal: "",
 				objectList: [],
 				objectListShow: true,
@@ -87,16 +87,27 @@
 		methods: {
 			addBgColorFn(item,index){
 				this.addBgColor = index;
-				if (item.forms && item.forms.length>0) {
-					if (item.forms[0].geom) {
-						var obj = JSON.parse(item.forms[0].geom);
-						if (obj.coordinates && obj.coordinates.length==1 && obj.coordinates[0].length>0) {
-							btMap.addMarker(obj.coordinates[0][0]);
-						} else if (obj.coordinates && obj.coordinates.length==2) {
-							btMap.addMarker(obj.coordinates);
-						}
-					}
-				}
+				// if (item.forms && item.forms.length>0) {
+				// 	if (item.forms[0].geom) {
+				// 		var obj = JSON.parse(item.forms[0].geom);
+				// 		if (obj.coordinates && obj.coordinates.length==1 && obj.coordinates[0].length>0) {
+				// 			btMap.addMarker(obj.coordinates[0][0]);
+				// 		} else if (obj.coordinates && obj.coordinates.length==2) {
+				// 			btMap.addMarker(obj.coordinates);
+				// 		}
+				// 	}
+				// };
+				console.log(item)
+				let posi = this.getCenter(item.bbox);
+				btMap.flyTo(posi.x,posi.y,posi.z,17);
+
+			},
+			getCenter(bbox){
+				let posi ={};
+				posi.x = (bbox.minx+bbox.maxx)/2;
+				posi.y = (bbox.miny+bbox.maxy)/2;
+				posi.z = (bbox.minz+bbox.maxz)/2;
+				return posi;
 			},
 			//根据id获取otype名称
 			getOtypeName(sobject) {
@@ -104,7 +115,7 @@
 				// if(otype) {
 				// 	return otype.name;
 				// }
-				return "未定义";
+				return sobject.otype.name || "未定义";
 			},
 			commonTimeShift(timeStamp) { //时间戳格式转换日期
 				if(timeStamp == "") {
@@ -133,8 +144,8 @@
 				var cur = this.commonTimeShift(this.currentTime);
 				var bac = this.commonTimeShift(this.backCurrentTime);
 				let filter = {
-					beginTime: bac,
-					endTime: cur,
+					// beginTime: bac,
+					// endTime: cur,
 					loadVersion: true,
 					loadAttr: true,
 					loadNetwork: true,
@@ -143,12 +154,21 @@
 					loadAction: true,
 					geoEdit:false,
 					pageNum:this.pageNum,
-					pageSize:20
-			    }
-				psde.objectQuery.query(filter).then(res => {
+					pageSize:20,
+					descOrAsc:false,
+					orderType:'VID'
+					}
+					
+				psde.versionServer.query({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
+					console.log(res,7777777)
 					if(res.list==0) this.showMore = false
 					this.objectList = this.objectList.concat(res.list);
 				})
+
+				// psde.objectQuery.query(filter).then(res => {
+				// 	if(res.list==0) this.showMore = false
+				// 	this.objectList = this.objectList.concat(res.list);
+				// })
 			},
 			searchObject(){
 				this.pageNum++;

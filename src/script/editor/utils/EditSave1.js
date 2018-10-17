@@ -8,27 +8,19 @@ let flagType = {
   deleted: 3
 }
 
-const TYPE = {
-  21:{
-    type:21,
-    fnName:'createNode'
-  },
-  22:{
-    type:22,
-    fnName:'createWay'
-  },
-  23:{
-    type:23,
-    fnName:'createWay'
-  },
-  24:{
-    type:24,
-    fnName:'createRelation'
-  }
+let GEOMETRY = {
+  21:'node',
+  22:'way',
+  23:'way',
+  24:'relation'
 }
 
 class EditSave {
-  constructor(){}
+  constructor () {}
+  /**
+  获取osm变化集
+   */
+  
   createNode(context,entity,flag){
     flag = flag||0;
     let node = new osm.OsmNode(entity);
@@ -49,6 +41,7 @@ class EditSave {
     relation.updateFlag(flag);
     return relation;
   }
+
   formateOsm(context,arr,flag){
     let result = [];
     arr.forEach(el=>{
@@ -59,11 +52,15 @@ class EditSave {
           let ways = context.getParents(el.id);
 
           ways.forEach(w=>{
-            let way = this.createWay(context,context.entity(w),2);
+            // let way = new osm.OsmWay();
+            // way.setOsmWay(context,context.entity(w));
+            let way = this.createWay(context,context.entity(w));
             addObj(result,way);
             let res = context.getRelations(w);
             res.forEach(r=>{
-              let relation = this.createRelation(context,context.entity(r),2);
+              // let relation = new osm.OsmRelation();
+              // relation.setOsmRelation(context,context.entity(r));
+              let relation = this.createRelation(context,context.entity(r));
               addObj(result,relation)
             })
 
@@ -72,27 +69,39 @@ class EditSave {
 
           el.orgData.forms.forEach(ev=>{
             if(ev.geotype==21){
+              // let node = new osm.OsmNode(context.entity(ev.geom));
               let node = this.createNode(context,context.entity(ev.geom));
               addObj(result,node);
             }else if(ev.geotype==23||ev.geotype==22){
+              // let way = new osm.OsmWay();
+              // way.setOsmWay(context,context.entity(ev.geom));
               let way = this.createWay(context,context.entity(ev.geom));
               addObj(result,way)
             }else if(ev.geotype==24){
-              let relation = this.createRelation(context,context.entity(ev.geom),2);
+              // let relation = new osm.OsmRelation();
+              // relation.setOsmRelation(context,context.entity(ev.geom));
+              let relation = this.createRelation(context,context.entity(ev.geom));
               addObj(result,relation)
             }
           })
         }
+        // entity = new osm.OsmNode(el);
         entity = this.createNode(context,el);
       }else if(el.type ==='way'){
+        // entity = new osm.OsmWay();
+        // entity.setOsmWay(context,el);
         entity = this.createWay(context,el)
         let relations = context.getRelations(entity.id);
         relations.forEach(r=>{
+          // let relation = new osm.OsmRelation();
+          // relation.setOsmRelation(context,context.entity(r));
           let relation = this.createRelation(context,context.entity(r));
           if(relation.flag!==1) relation.updateFlag(2);
           addObj(result,relation);
         })
       }else if(el.type==='relation'){
+        // entity = new osm.OsmRelation();
+        // entity.setOsmRelation(context,el)
         entity = this.createRelation(context,el);
       }
       entity.updateFlag(flag);
@@ -100,6 +109,7 @@ class EditSave {
     });
     return result
   }
+
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
     let _osmChange = [];
@@ -109,7 +119,21 @@ class EditSave {
     let modified = this.formateOsm(context,changes.modified,flagType.modified);
     //deleted
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
-    _osmChange = _osmChange.concat(created,modified,deleted);
+
+    let sobjectCanged = Idedit.currentGraph;
+    let sArr = [];
+    for(let id in sobjectCanged.sobjectList){
+      let s = sobjectCanged.sobjectList[id]
+      s.forms.forEach(form=>{
+        sArr.push(context.entity(form.geom));
+      })
+    }
+    let _change = this.formateOsm(context,sArr,flagType.modified);
+
+
+    _osmChange = _osmChange.concat(_change,created,modified,deleted);
+
+    // _osmChange = getRoot(context,_osmChange)
 
     let ways = _osmChange.filter(el=>el.type == 'way');
 
@@ -119,7 +143,6 @@ class EditSave {
         if(i>-1){
           let node = _osmChange[i];
           way.nodes.splice(k,1,node);
-          way.updateFlag(2);
         }; 
       });
       
@@ -180,46 +203,47 @@ class EditSave {
     return _osmChange
 
   }
-  getSaveSObject(context,idedit){
-    //sobjectchange
-    let sobjects = idedit.currentGraph.sobjectList;
-    let resultSobjectList = [];
-    //osmchange
-    let osmCollection = this.getOsmChanges1(context,idedit);
-    console.log(osmCollection,'com')
-    for(let id in sobjects){
-      let sobject = sobjects[id];
-      this.addSObjectList(resultSobjectList,sobject)
-    }
-    
-    resultSobjectList.forEach(obj=>{
-      obj.forms.forEach(form=>{
-        if(typeof form.geom=='string'){
-          form.geom = this[TYPE[form.geotype]];
-        }
-      })
-    });
 
-    for(let i in osmCollection){
-      let entity = osmCollection[i];
-      let sobject = this.getSobjectByEntityId(resultSobjectList,entity.id);
-      if(!sobject) {
-        sobject = this.getSobjectByEntityId(State.sobjects,entity.id);
-        // console.log(State.sobjects,sobject)
+  getSaveSObject (context, idedit) {
+    let currentGraph = idedit.currentGraph;
+    let osmCollection = this.getOsmChanges1(context,idedit);
+    // 检测osm变化，currentgraph未检测到的变化
+    console.log(osmCollection,'osmCollecto')
+    // return []
+    //sobject变化集合
+    let resultSobjectList = [];
+
+    for (var key in osmCollection) {
+      let entity = osmCollection[key];
+
+      let sobject = idedit.getSObjectByListOsmEntity(currentGraph.sobjectList, entity.id);
+
+      if (!sobject) {
+        sobject = idedit.getSObjectByListOsmEntity(State.sobjects, entity.id);
+        if(sobject) this.addSObjectList(resultSobjectList, sobject);
       }
       if(sobject){
+        let bool = adjustChange(entity);
+        if(!bool) continue;
         this.addSObjectList(resultSobjectList,sobject);
-        this.updateSObjectForm(resultSobjectList,sobject.id,entity);
+        this.updateSObjectForm(resultSobjectList,sobject.id, entity);
       }
+    };
+
+    for (let key in currentGraph.sobjectList) {
+      let sobject = currentGraph.sobjectList[key];
+      this.addSObjectList(resultSobjectList, sobject);
     }
 
+    
+
+    //删除没有form的sobject;
     resultSobjectList.forEach(el=>{
       if(el.forms.length==0){
         el.deleteObject();
       }
     })
-
-
+    
     resultSobjectList.forEach(obj => {
       obj.otype = {id: obj.otype.id};
       obj.forms.forEach(form => {
@@ -232,6 +256,18 @@ class EditSave {
       		form.style = "";
         }
         
+        if(typeof form.geom == 'string'){
+          if(form.geotype==21){
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createNode(context,context.entity(form.geom));
+          }else if((form.geotype==22) || (form.geotype==23)){
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createWay(context,context.entity(form.geom));
+          }else if(form.geotype==24){
+            let entity = osmCollection.find(el=>el.id==form.geom);
+            form.geom = entity || this.createRelation(context,context.entity(form.geom));
+          }
+        }
         if(form.geom instanceof osm.OsmEntity){
           form.geom.clearId();
         }
@@ -239,42 +275,6 @@ class EditSave {
     })
 
     return resultSobjectList
-
-
-
-
-  }
-  addSObjectList(sobjectlist, sobject){
-    let _sobject = this.clone(sobject);
-    let idx = sobjectlist.findIndex(el => el.id == _sobject.id)
-    if (idx == -1) {
-      sobjectlist.push(_sobject)
-    }else{
-      sobjectlist.splice(idx,1,_sobject);
-    }
-    return sobjectlist
-  }
-  clone(s){
-    console.log(s,999999999999)
-    let str = JSON.parse(JSON.stringify(s));
-    let obj = new SObject();
-    obj.copyObject(str);
-    return obj;
-  }
-  toNum(str){
-    return str.replace(/[^0-9]/ig,"")
-  }
-  getSobjectByEntityId(list,id){
-    let sobject;
-    for(let key in list){
-      let obj = list[key];
-      obj.forms.forEach(form=>{
-        if(form.geom==id){
-          sobject = obj;
-        }
-      })
-    }
-    return sobject;
   }
   updateSObjectForm (collection,sobjectId, entity) {
     let sobject = collection.find(el=>el.id==sobjectId);
@@ -309,6 +309,27 @@ class EditSave {
     
     return sobject
   }
+  addSObjectList (sobjectlist, sobject) {
+    let _sobject = this.clone(sobject);
+    let idx = sobjectlist.findIndex(el => el.id == _sobject.id)
+    if (idx == -1) {
+      sobjectlist.push(_sobject)
+    }else{
+      _sobject.attributes = sobjectlist[idx].attributes;
+      sobjectlist.splice(idx,1,_sobject);
+
+    }
+  }
+  clone(s){
+    let str = JSON.parse(JSON.stringify(s));
+    let obj = new SObject();
+    obj.copyObject(str);
+    return obj;
+  }
+  toNum(str){
+    return str.replace(/[^0-9]/ig,"")
+  }
+
 }
 
 const addObj=(arr,obj)=>{
@@ -318,6 +339,41 @@ const addObj=(arr,obj)=>{
   }else{
     arr.push(obj);
   }
+}
+
+const adjustChange = (entity)=>{
+  let bool = true;
+  if(entity.flag>0) return bool = true;
+  if(entity['@type']==='Way'){
+    let n = entity.nodes.find(node=>node.flag>0);
+    if(n){
+      bool = true
+    }else{
+      bool = false;
+    }
+  }
+  return bool;
+}
+
+const getWayFromRelation = (nodeId,relation)=>{
+  if(!relation.refOb) return;
+  let aimIds = [];
+  let forms = relation.refOb.forms;
+  let form = forms.find(el=>el.formref.geometry.id==relation.id.replace(/[^0-9]/ig,""));
+  if(form){
+    let _relation = form.formref.geometry;
+    _relation.members.forEach(member=>{
+
+      if(member.id==nodeId.replace(/[^0-9]/ig,"")){
+        aimId = [_relation.id];
+      }else if(member.refEntity){
+        let way = member.refEntity;
+        let node = way.nodes.find(el=>el.id==nodeId.replace(/[^0-9]/ig,""));
+        if(node) aimIds.push(way.id);
+      }
+  })
+}
+  return aimIds
 }
 
 let editSave = new EditSave()

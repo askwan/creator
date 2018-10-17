@@ -22,8 +22,8 @@ let apiConfig = {
 }
 
 //const psdeBaseUrl = "http://10.17.18.27:8080";
-//const psdeBaseUrl = "http://192.168.1.113:8080";
-//const psdeBaseUrl = "http://47.104.96.210:8080";
+// const psdeBaseUrl = "http://192.168.1.177:8001";
+// const psdeBaseUrl = "http://47.104.96.210:8080";
 const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api/dae';
 
 //const psdeBaseUrl = "http://192.168.1.113:8001";
@@ -64,7 +64,7 @@ let fileUpload = {
 };
 //上传模型文件地址
 let modelFileUpload = {
-	baseURL: modelUrl + "/bim-service/api/onegis/file/upload?token=" + common.getItem("token")
+	baseURL: modelUrl + "/bim-service/api/onegis/file/upload?"
 //baseURL: modelUrl + "/block/api/onegis/file/upload?token=" + common.getItem("token")
 };
 //模型列表
@@ -112,6 +112,6 @@ export {
   behaviorFile,
   behaviorQuery,
   behaviorDelete,
-  behaviorUpdate
-
+  behaviorUpdate,
+  modelUrl
 };

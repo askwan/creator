@@ -37,8 +37,9 @@ import Diagram from './diagram/Diagram'
 import Proxy from './Proxy'
 
 import { objectQuery } from './objectService'
-import {psdeApi} from './config'
+import {psdeApi,modelUrl} from './config'
 import versionServer from './versionService'
+import {fileServer} from './fileServer'
 
 export default {
   Field,
@@ -77,5 +78,7 @@ export default {
   RObject,
   psdeApi,
   objectQuery,
-  versionServer
+  versionServer,
+  fileServer,
+  modelUrl,
 }

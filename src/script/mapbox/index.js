@@ -1,7 +1,8 @@
-import { createMapboxMap, mapboxMap, addMarker } from './map'
+import { createMapboxMap, mapboxMap, addMarker,flyTo } from './map'
 
 export {
   createMapboxMap,
   mapboxMap,
-  addMarker
+  addMarker,
+  flyTo
 }

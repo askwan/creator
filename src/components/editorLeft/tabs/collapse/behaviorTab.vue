@@ -4,7 +4,7 @@
 			<div class="accordion-top pd-left-small pd-right-small">
 				<el-collapse v-model="accordionName" accordion class="accordion" v-if="topData && topData.length>0">
 					<el-collapse-item v-for="(n,i) in topData" :key="i" :title="getName(n)" :name='i' v-if="n">
-						<el-form label-position="right" label-width="60px" :model="n">
+						<el-form size="mini" label-position="right" label-width="60px" :model="n">
 							<el-form-item label="语言:">
 								<el-input :value="getLanguageName(n.pLanguage)" :disabled="true" class="accordion-input"></el-input>
 							</el-form-item>
@@ -15,16 +15,16 @@
 								<el-input :value="timeChange(n.mtime)" :disabled="true" class="accordion-input"></el-input>
 							</el-form-item>
 							<el-form-item label="输入:">
-								<div class="behavior-intypes" v-if="n.mdef && n.mdef.id && n.mdef.inTypesList.length>0">
-									<span v-for="(tag,index) in n.mdef.inTypesList" :key="index" :title="tag.caption+'('+tag.name+')'+tag.des">{{tag.caption}}</span>
+								<div v-if="n.mdef && n.mdef.id && n.mdef.inTypesList.length>0">
+									<el-tag class="mg-right-mini" :disable-transitions="true" v-for="(tag,index) in n.mdef.inTypesList" size="mini" :key="index">{{tag.caption}}</el-tag>
 								</div>
 								<div class="behavior-intypes" v-else>
 									<span>default</span>
 								</div>
 							</el-form-item>
 							<el-form-item label="输出:">
-								<div class="behavior-intypes" v-if="n.mdef && n.mdef.id && n.mdef.outTypesList.length>0">
-									<span v-for="(tag,index) in n.mdef.outTypesList" :key="index" :title="tag.caption+'('+tag.name+')'+tag.des">{{tag.caption}}</span>
+								<div v-if="n.mdef && n.mdef.id && n.mdef.outTypesList.length>0">
+									<el-tag class="mg-right-mini" size="mini" v-for="(tag,index) in n.mdef.outTypesList" :key="index">{{tag.caption}}</el-tag>
 								</div>
 								<div class="behavior-intypes" v-else>
 									<span>default</span>
@@ -35,7 +35,7 @@
 				</el-collapse>
 			</div>
 		</div>
-		<div class="down" v-if="ifEdit">
+		<div class="down" v-if="false">
 			<div class="right-objtype-save">
 				<span @click.stop="amend">编辑保存</span>
 			</div>
@@ -427,8 +427,8 @@
 			white-space: nowrap;
 		}
 		.behavior-intypes {
-			position: absolute;
-			width: 200px;
+			// position: absolute;
+			// width: 200px;
 			min-height: 30px;
 			border-bottom: 1px solid #e4e7ed;
 			display: flex;

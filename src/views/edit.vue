@@ -8,7 +8,7 @@
   import {State,getDiagram} from '@/script/editor/utils/store'
   import axios from 'axios'
   import { queryModelFile, downloadFile } from "@/script/editor/psde/config";
-  import {vm,operate} from '@/script/operate'
+  import {vm,operate,getEditor} from '@/script/operate'
   export default {
     data(){
       return {
@@ -26,6 +26,24 @@
       this.getRelationType();
       // localStorage.setItem('token','eyJ1aWQiOjE4OTczLCJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE1MzkwNDQ4MTMsImlzcyI6Imh0dHA6Ly93d3cuYmx1ZXRoaW5rLmNuIiwidHlwIjoiSldUIiwiZXhwIjoxNTM5MDU1NjEzLCJhbGciOiJIUzI1NiIsImlhdCI6MTUzOTA0NDgxM30.AZP4GZHmUYIPYC3GWMbXCwICR9Xhsadq75uy53wqVqo')
     }, 
+    beforeRouteLeave(to,from,next){
+      let idEdit = getEditor();
+      let osmChange = idEdit.idContext.history().hasChanges();
+      let objectChange = idEdit.isChanges;
+      if(osmChange||objectChange){
+        this.$confirm('是否忽略此次编辑','信息提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          next()
+        }).catch(()=>{
+          next(false);
+        })
+      }else{
+        next();
+      }
+    },
     methods:{
       getDiagram(){
         new psde.Diagram()

@@ -6,9 +6,9 @@
         <span class="font-18">Creator</span>
       </div>
       <el-button-group>
-        <el-button class="btn" size="small" :type="activeName==1?'primary':''" @click="change">{{chooseItem}}</el-button>
-        <el-button class="btn" :disabled="!ifEdit" size="small" :type="activeName==2?'primary':''" @click="select('historyList')">历史</el-button>
-        <el-button class="btn" :disabled="!ifEdit" size="small" :type="activeName==3?'primary':''" @click="select('viewExport')">导出</el-button>
+        <el-button class="btn" size="small" :type="path!=='/view'?'primary':'success'" @click="change">{{chooseItem}}</el-button>
+        <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('historyList')">历史</el-button>
+        <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('viewExport')">导出</el-button>
       </el-button-group>
     </div>
     <div class="header-right flex-align">
@@ -36,7 +36,8 @@
         icon:'',
         chooseItem:'浏览',
         activeName:1,
-        ifEdit:false
+        ifEdit:false,
+        path:''
       }
     },
     props:{},
@@ -45,6 +46,7 @@
     },
     watch:{
       $route(a,b){
+        this.path = a.path;
         if(a.path=='/view'){
           this.chooseItem = '编辑';
           this.ifEdit = true;
@@ -107,10 +109,11 @@
       },
       change(){
         this.activeName = 1
-        this.chooseItem=='浏览'?this.chooseItem = '编辑':this.chooseItem = '浏览';
-        let path = '';
-        this.chooseItem=='编辑'?path = '/view':path = '/edit';
-        this.$router.push(path)
+        // this.chooseItem=='浏览'?this.chooseItem = '编辑':this.chooseItem = '浏览';
+        // let path = '';
+        this.path = this.path =='/view'?'/edit':'/view'
+        // this.path=='编辑'?path = '/view':path = '/edit';
+        this.$router.push(this.path);
       }
     }
   }
