@@ -17,7 +17,7 @@
             <relation-tab :objectDetail="sobject"></relation-tab>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="组成结构" name="6">
+        <el-collapse-item title="组成" name="6">
           <div class="tab-box">
             <constitute-tab :objectDetail="sobject"></constitute-tab>
           </div>

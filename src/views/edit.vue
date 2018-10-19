@@ -94,6 +94,8 @@
   }
 </script>
 <style scoped lang="scss">
-
+  .map{
+    overflow: hidden;
+  }
 </style>
 

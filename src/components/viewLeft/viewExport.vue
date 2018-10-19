@@ -1,10 +1,14 @@
 <template>
 	<div class="object-list">
 		<div class="export-content">
-			<span>{{eastLongitude}}</span>
+			<input type="text" v-model="eastLongitude">
+			<input type="text" v-model="westLongitude">
+			<input type="text" v-model="southLatitude">
+			<input type="text" v-model="northLatitude">
+			<!-- <span>{{eastLongitude}}</span>
 			<span>{{westLongitude}}</span>
 			<span>{{southLatitude}}</span>
-			<span>{{northLatitude}}</span>
+			<span>{{northLatitude}}</span> -->
 		</div>
 		<div class="export-button">
 			<span class="export-span" @click="exportJsonFn">导出</span>
@@ -47,7 +51,7 @@
 			},
 			exportJsonFn(){
 				let boxArray = mapboxMap.getBounds().toArray();
-				let bbox = `BBOX(${boxArray[0][0]} ${boxArray[1][0]} ${boxArray[0][1]} ${boxArray[1][1]})`;
+				let bbox = `BBOX(${this.eastLongitude} ${this.westLongitude} ${this.southLatitude} ${this.northLatitude})`;
 				let url = `${psdeUrl}object/query?token=${localStorage.getItem('token')||''}&geoWkt=${bbox}&loadForm=true`;
 				window.open(url)
 			}
@@ -70,7 +74,8 @@
 			background: #F0F0F0;
 			margin: 20px 20px;
 			border: 1px solid #ccc;
-			span{
+			input{
+				display: inline-block;
 				position: absolute;
 				width: 70px;
 				height: 24px;
@@ -78,22 +83,21 @@
 				text-align: center;
 				background: #FFF;
 				border: 1px solid #ccc;
-				cursor: pointer;
 				overflow: hidden;
 			}
-			span:nth-of-type(1){
+			input:nth-of-type(1){
 				left: -1px;
 				top: 37px;
 			}
-			span:nth-of-type(2){
+			input:nth-of-type(2){
 				right: -1px;
 				top: 37px;
 			}
-			span:nth-of-type(3){
+			input:nth-of-type(3){
 				left: 95px;
 				top: -1px;
 			}
-			span:nth-of-type(4){
+			input:nth-of-type(4){
 				left: 95px;
 				top: 75px;
 			}

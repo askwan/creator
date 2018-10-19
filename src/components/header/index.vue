@@ -59,11 +59,7 @@
     computed:{},
     mounted(){
       this.listenEvent();
-      // this.userName = common.getInfo('nickName');
-      // this.icon = common.getAvatar(common.getInfo('avatar'));
-      if(!this.userName){
-        // common.exitUser.exitAddress();
-      }
+      
     },
     created: function() {
       if(sessionStorage.getItem('user')){

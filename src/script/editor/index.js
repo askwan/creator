@@ -273,6 +273,11 @@ export default class Editor {
     this.updateAndHistory(srcObject)
     return node
   }
+  deleteNetwork(sobjectid,nodeId){
+    let sobject = State.sobjects[sobjectid];
+    sobject.deleteNetworkNode({id:nodeId});
+    this.updateAndHistory(sobject);
+  }
   updateParent(object){
     if(!object){
       this.currentSobject.deleteParent(object);

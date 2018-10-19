@@ -29,13 +29,13 @@ export function behaviorTail() {
         container.append('div')
             .text(text);
 
-        selection
-            .on('mousemove.tail', mousemove)
-            .on('mouseenter.tail', mouseenter)
-            .on('mouseleave.tail', mouseleave);
+        // selection
+        //     .on('mousemove.tail', mousemove)
+        //     .on('mouseenter.tail', mouseenter)
+        //     .on('mouseleave.tail', mouseleave);
 
-        container
-            .on('mousemove.tail', mousemove);
+        // container
+        //     .on('mousemove.tail', mousemove);
 
         tooltipSize = utilGetDimensions(container);
         selectionSize = utilGetDimensions(selection);

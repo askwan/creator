@@ -37,7 +37,6 @@ class VectorSelect {
       [e.point.x + 5, e.point.y + 5]
     ]
     var features = this.map.queryRenderedFeatures(bbox)
-
     if (this.map.getLayer('polygon-highlighted')) {
       this.map.removeLayer('polygon-highlighted')
     }

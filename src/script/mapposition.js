@@ -15,6 +15,19 @@ let mapposition = {
       lat: 34,
       zoom: 6
     }
+  },
+  saveArea(obj){
+    if(obj){
+      localStorage.setItem('areaObj',JSON.stringify(obj));
+    }
+  },
+  getArea(){
+    let str = localStorage.getItem('areaObj');
+    if(str&&str!='undefined') {
+      return JSON.parse(str);
+    }else{
+      return {};
+    }
   }
 }
 

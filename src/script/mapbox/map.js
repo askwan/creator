@@ -16,9 +16,6 @@ function createMapboxMap (container,callback) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       if (layer.type) {
-        // if(layer.paint){
-        //   layer.paint['fill-opacity'] = 0.2
-        // }
         map.addLayer(layer)
       }
     }

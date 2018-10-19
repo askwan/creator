@@ -19,7 +19,7 @@
               <span class="font-14">{{node.label}}</span>
               <i class="el-icon-delete mg-left-big pointer font-danger font-16"></i>
             </div> -->
-            <common-connect :left="objectDetail.name|formateName" :right="node.label" :center="node.edge.relation.name"></common-connect>
+            <common-connect :left="objectDetail.name|formateName" :right="node.label" :center="node.edge.relation.name" :id='node.id' @deleteIt="deleteIt"></common-connect>
           </template>
           <div>
             <el-form size="mini" label-width="80px" v-if="node.edge.relation" >
@@ -60,7 +60,7 @@
       }
     },
     watch:{
-      objectDetail(){
+      'objectDetail.network.nodes'(){
         this.parents = this.objectDetail.parents;
         this.nodes = this.objectDetail.network.nodes;
         
@@ -68,26 +68,22 @@
     },
     mounted(){
       this.parents = this.objectDetail.parents;
-      this.nodes = this.objectDetail.network.nodes;
+      // this.nodes = this.objectDetail.network.nodes;
     },
     activated(){
       this.parents = this.objectDetail.parents;
+      console.log(this.objectDetail,7777777777)
       this.nodes = this.objectDetail.network.nodes;
     },
     methods:{
-      deleteParent(parent){
-        console.log('deleteParent');
-        getEditor().deleteParent(parent);
-        this.parents = this.parents.filter(el=>el!=parent);
-      },
-      deleteRelation(){
-        console.log('deleteRelation');
-      },
       chooseParent(){
         vm.$emit(operate.changeTab,{name:'objectList'});
       },
       chooseRelation(){
         vm.$emit(operate.changeTab,{name:'relationList'});
+      },
+      deleteIt(id){
+        getEditor().deleteNetwork(this.objectDetail.id,id);
       }
     }
   }

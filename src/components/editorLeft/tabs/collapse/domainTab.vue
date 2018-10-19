@@ -45,7 +45,7 @@
           this.trs = sobject.trs.id;
         }
         if (sobject.srs) {
-          this.srs = sobject.srs.id;
+          this.srs = sobject.otype.srs.id||'';
         }
       },
       changeTrs(val){

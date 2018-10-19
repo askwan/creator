@@ -24,6 +24,7 @@
 								v-if="item.type!==50 && item.type!==40"
 								v-model="item.style" 
 								@change="checkboxValue(item,index)"
+								ref="selectStyle"
 								multiple 
 								filterable 
 								collapse-tags 
@@ -45,6 +46,7 @@
 								class="change-select-style width"
 								v-model="item.formref.refid" 
 								@change="checkboxValue(item,index)"
+								ref="selectStyle"
 								filterable 
 								collapse-tags 
 								placeholder="请选择">
@@ -67,13 +69,13 @@
 						    </el-tooltip>
 						</el-form-item>
 						<el-form-item label="维度 :" :label-width="classNameWidth">
-							<el-select v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
+							<el-select ref="selectStyle" v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
 								<el-option v-for="(da, ix) in dimension" :key="ix" :label="da.name" :value="da.value">
 								</el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item label="位置 :" :label-width="classNameWidth">					
-							<el-select class="width" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
+							<el-select class="width" ref="selectStyle" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
 								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.id" :value="da.id">
 								</el-option>
 							</el-select>
@@ -243,6 +245,11 @@
 		},
 		activated() {
 			this.requestList();
+		},
+		deactivated() {
+			this.$refs.selectStyle.forEach(el=>{
+				el.blur();
+			})
 		},
 		mounted() {
 			this.requestList();
@@ -688,17 +695,20 @@
 			/*position: absolute;
 			top: 0px;*/
 			width: 295px;
-			height: 30px;
+			// height: 30px;
 			display: flex;
 			flex-direction: row;
-			flex-wrap: nowrap;
+			flex-wrap: wrap;
 			justify-content: flex-start;
 			align-items: center;
+			
 			span {
+				flex-shrink: 0;
 				width: 75px;
 				height: 25px;
 				line-height: 25px;
-				margin-left: 3px;
+				margin-left: 5px;
+				margin-bottom: 5px;
 				text-align: center;
 				cursor: pointer;
 				color: #409eff;
@@ -747,8 +757,5 @@
 	}
 	.width{
 		width: 150px;
-	}
-	.diy-size{
-
 	}
 </style>

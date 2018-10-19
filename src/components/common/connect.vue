@@ -11,6 +11,7 @@
           </div>
         </div>
         <span class="r-obj font-12 text-ellipsis">{{right}}</span>
+        <i class="el-icon-delete pointer-danger" @click.stop="deleteIt"></i>
       </li>
     </ul>
   </div>
@@ -22,14 +23,17 @@
 
       }
     },
-    props:['left','right','center'],
+    props:['left','right','center','id'],
     components:{},
     computed:{},
     mounted(){
 
     },
     methods:{
-
+      deleteIt(){
+        // console.log(this.id)
+        this.$emit('deleteIt',this.id);
+      }
     }
   }
 </script>

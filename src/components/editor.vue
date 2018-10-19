@@ -1,9 +1,9 @@
 <template>
-  <div class='editor-box fill flex'>
-    <div class="left">
-      <left-content :sobject="currentObj" :entity='entity'></left-content>
+  <div class='editor-box fill flex' >
+    <div class="left" ref="left" >
+      <left-content ref="leftContent" :sobject="currentObj" :entity='entity'></left-content>
     </div>
-    <div class="fill" id="container"></div>
+    <div @click="appClick" class="fill" id="container"></div>
   </div>
 </template>
 <script>
@@ -16,7 +16,8 @@
     data(){
       return {
         currentObj:{},
-        entity:{}
+        entity:{},
+        isShow:true
       }
     },
     props:{},
@@ -72,6 +73,9 @@
           return editor.idContext.save();
         }
         getEditor(editor);
+      },
+      appClick(){
+        document.body.click();
       }
     },
     

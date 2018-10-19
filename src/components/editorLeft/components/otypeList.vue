@@ -322,9 +322,10 @@
 				let fromtype = m.type;
 				let geotype = m.positions[0];
 				let otype = it;
+				// console.log(this.entityObj.id,999999)
 				// console.log(this.entityId,123123)
-				if(IdEdit.idContext.entity(this.entityId).type=='relation') geotype = 24;
-				IdEdit.createSobject(this.entityId, otype, fromtype, geotype);
+				if(IdEdit.idContext.entity(this.entityObj.id).type=='relation') geotype = 24;
+				IdEdit.createSobject(this.entityObj.id, otype, fromtype, geotype);
 				this.currentDiagram = null;
 				// vm.$emit(operate.changeTab,{name:'objectDetail'})
 				// this.$emit("enterDetail", false);

@@ -4,7 +4,9 @@
       <header-box></header-box>
     </nav>
     <div class="map-content">
-      <router-view/>
+      <transition name="fade">
+        <router-view/>
+      </transition>
     </div>
   </div>
 </template>
@@ -52,5 +54,11 @@ export default {
     right: 0;
     top: $height;
     bottom:0;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: all .2s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
 </style>

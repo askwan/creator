@@ -8,7 +8,7 @@
     </div>
   
     <div ref="list" class='object-list pd-big'>
-      <div v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
+      <div v-if="objectList.length>0" v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
         <div class="icon-text flex-center radius-2 mg-right-big">
           <span class="font-14 font-white">{{item.name|splice2}}</span>
         </div>
@@ -17,6 +17,9 @@
           <p class="font-info font-12 text-ellipsis" :title="item.attributes|toString">属性：{{item.attributes|toString}}</p>
           <div class="align-right"><span class="pointer-danger font-info" @click.stop="deleteObj(item)">删除</span></div>
         </div>
+      </div>
+      <div v-if="objectList.length==0" class="font-gray font-18 align-center pd-top-large">
+        没有相关对象
       </div>
       <div v-if="total>20" class="block flex-center">
         <el-pagination

@@ -3,7 +3,17 @@
     <div class="search shadow">
       <search-bar @startSearch="search" :searchValue="viewSearchValue"></search-bar>
     </div>
+    <div class="district-bar font-16 flex-between pd-left-small pd-right-mini shadow" >
+      <span class="pd-right-small pointer text-ellipsis" @click="showDistrict=true" :title="areaObj.name">{{areaObj.name||'定位'}}</span>
+      <i class="el-icon-location pointer-default font-18" @click="posiCenter"></i>
+    </div>
+    <transition name="right">
+      <div class="position shadow" v-show="showDistrict">
+        <common-district @close="showDistrict=false" @select="getPosiObj" :currentObj="areaObj"></common-district>
+      </div>
+    </transition>
     <div id="mapbox" class="fill"></div>
+    <transition name="height">
     <div class="view-left shadow" v-show="showLeft">
       <div class="close-bar flex-between pd-right-mini">
         <i></i>
@@ -13,6 +23,7 @@
         <component :isShow="showLeft" :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject"></component>
       </div>
     </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -28,7 +39,9 @@
         showLeft:false,
         componentId:'',
         viewSearchValue:"",
-        bbox:''
+        bbox:'',
+        showDistrict:false,
+        areaObj:{}
       }
     },
     props:{},
@@ -37,7 +50,8 @@
       'searchBar':()=>import('@/components/common/searchBar'),
       'historyList':()=>import('@/components/viewLeft/historyList'),
       'viewExport':()=>import('@/components/viewLeft/viewExport'),
-      'searchResult':()=>import('@/components/viewLeft/searchResult')
+      'searchResult':()=>import('@/components/viewLeft/searchResult'),
+      'commonDistrict':()=>import('@/components/common/district')
     },
     computed:{},
     watch:{
@@ -51,6 +65,7 @@
         let position = mapposition.getMapPosition();
         map.setCenter([position.lng, position.lat], position.zoom );
         map.setZoom(position.zoom);
+        this.areaObj = mapposition.getArea();
       });
       getMap(map);
       this.listenEvent();
@@ -58,6 +73,7 @@
     methods:{
       listenEvent(){
         vm.$on(operate.selectObject,obj=>{
+          this.showDistrict = false;
           if(!obj.id) {
             this.currentObject = {};
             this.showLeft = false;
@@ -74,12 +90,13 @@
           this.componentId = obj.name;
           this.showLeft = true;
         });
-        window.onbeforeunload = function() {
+        window.onbeforeunload = ()=> {
             mapposition.saveMapPosition({
               lng: map.getCenter().lng,
               lat: map.getCenter().lat,
               zoom: map.getZoom() 
             });
+            mapposition.saveArea(this.areaObj)
         };
         
       },
@@ -90,9 +107,15 @@
       },
       close(){
         this.showLeft = false;
+      },
+      getPosiObj(obj){
+        this.areaObj = obj;
+      },
+      posiCenter(){
+
       }
     },
-    destroyed(){
+    beforeDestroy(){
       vm.$off([operate.selectObject]);
       
       mapposition.saveMapPosition({
@@ -100,12 +123,16 @@
         lat: map.getCenter().lat,
         zoom: map.getZoom() 
       });
-    }
+      console.log(this.areaObj)
+      mapposition.saveArea(this.areaObj)
+    },
+    
   }
 </script>
 <style lang='scss' scoped>
   .view{
     // background-color: red;
+    $width:120px;
     .search{
       position: absolute;
       left:20px;
@@ -132,5 +159,40 @@
       position: relative;
       height: calc(100% - 41px);
     }
+    .position{
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      width: 400px;
+      height: 50%;
+      z-index: 10;
+      min-height: 400px;
+    }
+    .district-bar{
+      height: 40px;
+      position: absolute;
+      background: #fff;
+      width:$width;
+      right: 20px;
+      top: 10px;
+      z-index: 5;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      
+    }
+  }
+  .right-enter-active, .right-leave-active {
+    transition: all .2s;
+  }
+  .right-enter, .right-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    width: 120px !important;
+    min-height: 0 !important;
+    height: 0 !important;
+  }
+  .height-enter-active, .height-leave-active {
+    transition: all .2s;
+  }
+  .height-enter, .height-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    height: 0 !important;
   }
 </style>

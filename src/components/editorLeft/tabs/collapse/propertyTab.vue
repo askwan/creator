@@ -19,7 +19,7 @@
 
 							<input class="pd-left-mini" v-if="getIntypeVal(item.fid)=='Text' || getIntypeVal(item.fid)=='Textarea'" type="text" v-model="item.value"  @blur="lastValue(item,index)" placeholder="请输入内容" />
 							<input class="pd-left-mini" v-else-if="getIntypeVal(item.fid)=='Number'" type="number" :placeholder="'范围：'+getMinVal(item.fid)+' ~ '+getMaxVal(item.fid)" :min="getMinVal(item.fid)" :max="getMaxVal(item.fid)" v-model="item.value" @blur="lastValue(item,index)" />
-							<el-date-picker v-else-if="getIntypeVal(item.fid)=='Date'" v-model="item.value" @change="lastValue(item,index)" type="datetime" placeholder="选择日期时间" default-time="00:00:00">
+							<el-date-picker size="mini" v-else-if="getIntypeVal(item.fid)=='Date'" v-model="item.value" @change="lastValue(item,index)" type="datetime" placeholder="选择日期时间" default-time="00:00:00">
 							</el-date-picker>
 
 							<el-select size="mini" v-else-if="getIntypeVal(item.fid)=='Radio' || getIntypeVal(item.fid)=='Select'" v-model="item.value" @change="lastValue(item,index)" filterable allow-create default-first-option placeholder="请选择,单选,可输入">

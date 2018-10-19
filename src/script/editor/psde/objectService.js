@@ -10,7 +10,7 @@ class QueryProxy {
   }
   query (filter) {
     let T = this.classType
-    let url = `${this.url}query?token=${getToken()}`
+    let url = `${this.url}query`
 
     let defaultFilter = this.defaultFilter
 
@@ -74,6 +74,10 @@ objectQuery.getBoxSObject = function (minx, maxx, miny, maxy) {
 }
 
 objectQuery.getVersion = function(filter){
+  return this.query(filter);
+}
+
+objectQuery.loadObject = function(filter){
   return this.query(filter);
 }
 

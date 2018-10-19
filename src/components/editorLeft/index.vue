@@ -1,7 +1,7 @@
 <template>
   <div class='left-box fill'>
     <div class="object-title pd-left-small pd-right-small">
-      <span class="font-16 text-ellipsis">{{title}}</span>
+      <span class="font-16 text-ellipsis" v-show="componentId=='objectDetail'">{{title}}({{otypeName}})</span>
     </div>
     <div class="object-detail">
       <keep-alive>
@@ -16,7 +16,8 @@
     data(){
       return {
         componentId:'searchList',
-        title:''
+        title:'',
+        otypeName:''
       }
     },
     props:['sobject','entity'],
@@ -37,9 +38,21 @@
       componentId(val){
         if(val!='objectDetail'){
           this.title = '';
+          this.otypeName = '';
         }else{
-          this.title = this.sobject.name||'default'
+          this.title = this.sobject.name||'default';
+          this.otypeName = this.sobject.otype.name;
         }
+      },
+      'sobject.id'(id){
+        // console.log(this.sobject.id,999999999)
+        // if(id){
+        //   this.title = this.sobject.name||'default';
+        //   this.otypeName = this.sobject.otype.name;
+        // }else{
+        //   this.title = '';
+        //   this.otypeName = '';
+        // }
       }
     },
     methods:{

@@ -128,17 +128,18 @@ export default class SObject extends DObject {
     return this
   }
   deleteForm (form) {
-    let addAction = this.getAction(form.refid, Action.ADDING | Action.FORM)
+
+    let addAction = this.getAction(form.id, Action.ADDING | Action.FORM)
     if (addAction) {
       this.deleteAction(addAction.id, addAction.operation)
       return
     }
-    let modifyAction = this.getAction(form.refid, Action.MODIFY | Action.FORM)
+    let modifyAction = this.getAction(form.id, Action.MODIFY | Action.FORM)
     if (modifyAction) {
       return this.deleteAction(modifyAction.id, modifyAction.operation)
     }
-    this.addAction(form.refid, Action.DELETE | Action.FORM)
-    let index = this.forms.findIndex(el => el.refid == form.refid)
+    this.addAction(form.id, Action.DELETE | Action.FORM)
+    let index = this.forms.findIndex(el => el.id == form.id)
     if (index !== -1) this.forms.splice(index, 1)
     return this
   }
@@ -233,7 +234,8 @@ export default class SObject extends DObject {
     if (addAction) return this.deleteAction(addAction.id, addAction.operation)
     let modifyAction = this.getAction(rnode.id, Action.MODIFY | Action.RELEATION)
     if (modifyAction) this.deleteAction(modifyAction.id, modifyAction.operation)
-    // this.actions = []
+    // this.actions = [];
+    this.network.nodes = this.network.nodes.filter(el=>el.id!=rnode.id);
     // this.network.nodes = this.network.nodes.filter(node=>node.id!=rnode.id)
     this.addAction(rnode.id, Action.DELETE | Action.RELEATION)
     return this

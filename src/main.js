@@ -27,7 +27,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
 import '@/assets/askwan/index.scss'
-// import '@/assets/public.css'
+import '@/assets/public.scss'
 
 Vue.config.productionTip = false
 
