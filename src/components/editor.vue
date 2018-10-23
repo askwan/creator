@@ -9,7 +9,7 @@
 <script>
   import Editor from '@/script/editor';
   import {vm,operate,getEditor} from '@/script/operate'
-  import {State,findOtypeById} from '@/script/editor/utils/store'
+  import {State} from '@/script/editor/utils/store'
   import mapposition from '@/script/mapposition'
   let editor
   export default {

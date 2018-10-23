@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import { State, findOtypeById } from "@/script/editor/utils/store";
+import { State } from "@/script/editor/utils/store";
 export default {
   data() {
     return {
@@ -69,7 +69,7 @@ export default {
   computed: {},
   activated() {
     this.sobject = this.currentObject;
-    console.log(this.sobject);
+    // console.log(this.sobject);
   },
   methods: {}
 };

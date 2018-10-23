@@ -111,7 +111,7 @@
 							<el-input type="number" placeholder="Z轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].z"></el-input>
 						</el-form-item>
 						
-						<el-form-item label="关联：" :label-width="classNameWidth">
+						<el-form-item label="关联：" :label-width="classNameWidth" v-if="item.geotype==24">
 							<div>
 								<div class="add">
 									<span class="operate-btn" @click="addRelation(item)">添加</span>
@@ -132,7 +132,7 @@
 	import psde from "@/script/editor/psde";
 	import ImageManage from "@/script/editor/psde/ImageManage";
   import { vm, operate,getEditor } from "@/script/operate";
-  import {State,getDiagram} from '@/script/editor/utils/store'
+  import {State} from '@/script/editor/utils/store'
 
 	import { downloadFile } from "@/script/editor/psde/config";
 
@@ -319,7 +319,6 @@
 				return "请选择位置";
 			},
 			modelUploadFn(){
-				// vm.$emit(operate.modelUploadEvent , {value: true , sign: "upload"});
 				this.showDiag = true;
 			},
 			modelDownloadFn(a, b) {
@@ -421,10 +420,6 @@
 					this.formList = res;
 				});
 				
-				//当前点击form
-				vm.$on(operate.currentForm , data => {
-					this.currentFormId = Number(data);
-				})
 				
 				
 			},
@@ -622,8 +617,10 @@
 						let obj = {
 							relation:member.id,
 							role:member.role,
-							parent:item.geom
+							parent:item.geom,
+							'_relation':member.id
 						}
+						if(!State.ways[member.id]) obj.relation = '未下载';
 					arr.push(obj);
 					})
 				}else{
@@ -639,8 +636,10 @@
 				return arr;
 			},
 			deleteRelation(obj){
+				console.log(obj,8888)
 				this.formateList.forEach(el=>{
-					let index = el.relationArr.findIndex(ev=>ev.parent==obj.relation);
+					console.log(el.relationArr,'ffffffff')
+					let index = el.relationArr.findIndex(ev=>ev._relation==obj.member);
 					if(index>-1) el.relationArr.splice(index,1);
 				})
 			}

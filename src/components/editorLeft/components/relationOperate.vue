@@ -8,7 +8,7 @@
             <el-option v-for="(item,i) in mapRelation" :key="i" :label="item.name||item.id" :value="item.id">
             </el-option>
           </el-select>
-          <div v-show="item.relation" class="position-btn" @click="position">定位</div>
+          <div v-show="item.relation && item.relation!='未下载'" class="position-btn" @click="position">定位</div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -17,7 +17,7 @@
             <el-option label="inner" value="inner"></el-option>
             <el-option laber="outer" value="outer"></el-option>
           </el-select>
-          <div v-show="item.relation"  class="delete-btn" @click="deleteRelation">删除</div>
+          <div v-show="item.relation && item.relation!='未下载'" class="delete-btn" @click="deleteRelation(item)">删除</div>
         </div>
       </el-form-item>
       
@@ -28,7 +28,6 @@
 
   // import {createRelation,choose,setRole,deleteRole,positionEntity} from './relations'
   import {vm,operate,getEditor} from '@/script/operate';
-  // import { allOtype, getOtypeById,relationArr } from '@/script/allOtype'
   import {State} from '@/script/editor/utils/store'
   // import IdEdit from '@/script/id_edit/IdEdit'
   let IdEdit,context;
@@ -172,7 +171,9 @@
           }
       },
       deleteRelation(obj){
-        let id = context.selectedIDs()[0];
+        // let id = context.selectedIDs()[0];
+        // console.log(obj,'obj');
+        let id = obj._relation;
         let relation,index;
         if(!id) {
           return this.$notify.error({
@@ -184,18 +185,19 @@
         
         if(this.item.parent){
           relation = context.entity(this.item.parent);
-          index = relation.members.findIndex(el=>el.id==this.item.relation);
+          index = relation.members.findIndex(el=>el.id==this.item._relation);
           this.selectRelation = this.item.parent;
           id = this.item.relation;
         }else{
           relation = context.entity(this.selectRelation);
           index = relation.members.findIndex(el=>el.id==id);
         }
-        IdEdit.relationOperate.deleteRole(this.selectRelation,index,(obj)=>{
+        IdEdit.relationOperate.deleteRole(this.selectRelation,index,()=>{
           this.$emit('delete',{
             relation:this.selectRelation,
-            member:id
+            member:obj._relation
           });
+          IdEdit.deleteOperate.deleteEntity(IdEdit.idContext,obj._relation)
         })
       }
     }

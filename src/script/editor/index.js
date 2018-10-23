@@ -19,7 +19,7 @@ import { select as d3_select } from 'd3-selection';
 import {utilRebind}  from './id-editor/modules/util/rebind'
 import {actionChangeTags} from './id-editor/modules/actions/change_tags'
 
-import { State,findOtypeById } from './utils/store'
+import { State } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
 import editsave from './utils/EditSave'
 
@@ -60,11 +60,12 @@ export default class Editor {
     this.idContext.on('selectEle',ele=>{
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
-        
         let relation = State.findRelationByMember(ele);
         if(relation){
-          ele = relation.id;
-          this.relationOperate.highLightEntity([ele])
+          if(this.idContext.entity(relation.id).members.find(el=>el.id==ele)){
+            ele = relation.id;
+            this.relationOperate.highLightEntity([ele])
+          }
         } 
           
       }
@@ -79,7 +80,7 @@ export default class Editor {
       let sobject, form;
       for(let id in State.sobjects){
         sobject = State.sobjects[id];
-        sobject.otype = findOtypeById(sobject.otype.id);
+        sobject.otype = State.findOtypeById(sobject.otype.id);
         if(sobject.forms && sobject.forms instanceof Array){
           form = sobject.forms.find(el=>el.geom==ele);
           if(form) break;

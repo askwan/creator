@@ -40,11 +40,8 @@
 <script>
 	import psde from "@/script/editor/psde";
 	import { vm, operate, getContext } from "@/script/operate";
-	// import EditManage from "@/script/mapbox/EditManage";
 	import ImageManage from "@/script/editor/psde/ImageManage";
-	// import { getOtypeById } from "@/script/allOtype";
 	import * as btMap from "@/script/mapbox";
-  // import * as btMap from '../../../static/images/errorOtype'
 	export default {
 		data() {
 			return {

@@ -46,7 +46,6 @@
 	import psde from "@/script/editor/psde";
 	import { vm, operate } from "@/script/operate";
 	import ImageManage from "@/script/editor/psde/ImageManage";
-	// import { getOtypeById } from "@/script/allOtype";
 	import common from "@/script/common.js";
 	// import '../../../static/images/errorDiagram'
 	import * as btMap from "@/script/mapbox";

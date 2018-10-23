@@ -8,7 +8,7 @@ import _isEmpty from 'lodash-es/isEmpty'
 import _map from 'lodash-es/map'
 import _uniq from 'lodash-es/uniq'
 
-import parseObjectToOsm from '../../../utils/parseToOsm/parseObjectToOsm'
+import {parseObjectToOsm} from '../../../utils/parseToOsm'
 
 import { dispatch as d3_dispatch } from 'd3-dispatch'
 import { xml as d3_xml, json as d3_json } from 'd3-request'

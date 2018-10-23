@@ -57,17 +57,19 @@ class EditSave {
         if(context.geometry(el.id)==='vertex'){
           if(!el.orgData) return
           let ways = context.getParents(el.id);
-
+          console.log(ways,'ways');
           ways.forEach(w=>{
             let way = this.createWay(context,context.entity(w),2);
             addObj(result,way);
+            console.log(result,778877)
             let res = context.getRelations(w);
             res.forEach(r=>{
               let relation = this.createRelation(context,context.entity(r),2);
               addObj(result,relation)
             })
 
-          })
+          });
+          console.log(result)
 
 
           el.orgData.forms.forEach(ev=>{
@@ -103,6 +105,7 @@ class EditSave {
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
     let _osmChange = [];
+    console.log(changes,'changes')
     //created
     let created = this.formateOsm(context,changes.created,flagType.created);
     //modified
@@ -110,7 +113,6 @@ class EditSave {
     //deleted
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
     _osmChange = _osmChange.concat(created,modified,deleted);
-
     let ways = _osmChange.filter(el=>el.type == 'way');
 
     ways.forEach(way=>{
@@ -134,7 +136,7 @@ class EditSave {
             entity.nodes.push(el);
           }else if(entity['@type']=='Relation'){
             
-            let wayIds = getWayFromRelation(el.id,entity);
+            let wayIds = this.getWayFromRelation(el.id,entity);
             wayIds.forEach(id=>{
               let way = entity.members.find(el=>el.refEntity.id.replace(/[^0-9]/ig,"")==id);
               if(way){
@@ -186,12 +188,13 @@ class EditSave {
     let resultSobjectList = [];
     //osmchange
     let osmCollection = this.getOsmChanges1(context,idedit);
-    console.log(osmCollection,'com')
+    console.log(osmCollection,'com');
+
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
     }
-    
+
     resultSobjectList.forEach(obj=>{
       obj.forms.forEach(form=>{
         if(typeof form.geom=='string'){
@@ -239,10 +242,6 @@ class EditSave {
     })
 
     return resultSobjectList
-
-
-
-
   }
   addSObjectList(sobjectlist, sobject){
     let _sobject = this.clone(sobject);
@@ -255,7 +254,6 @@ class EditSave {
     return sobjectlist
   }
   clone(s){
-    console.log(s,999999999999)
     let str = JSON.parse(JSON.stringify(s));
     let obj = new SObject();
     obj.copyObject(str);
@@ -281,9 +279,6 @@ class EditSave {
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
-    // return
-    // form.formref.geometry = entity;
-
     if (form.type < 30) {
       form.formref.refid = this.toNum(entityId)
       form.geomref = this.toNum(entityId);
@@ -308,6 +303,28 @@ class EditSave {
     };
     
     return sobject
+  }
+  getWayFromRelation(nodeId,relation){
+    console.log(nodeId,relation,'3333333333');
+    if(!relation.refOb) return;
+      let aimIds = [];
+    //   let forms = relation.refOb.forms;
+    //   console.log(forms,'forms')
+    //   let form = forms.find(el=>el.formref.geometry.id==relation.id.replace(/[^0-9]/ig,""));
+    //   if(form){
+    //     let _relation = form.formref.geometry;
+    //     _relation.members.forEach(member=>{
+
+    //       if(member.id==nodeId.replace(/[^0-9]/ig,"")){
+    //         aimId = [_relation.id];
+    //       }else if(member.refEntity){
+    //         let way = member.refEntity;
+    //         let node = way.nodes.find(el=>el.id==nodeId.replace(/[^0-9]/ig,""));
+    //         if(node) aimIds.push(way.id);
+    //       }
+    //   })
+    // }
+    return aimIds
   }
 }
 

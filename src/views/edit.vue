@@ -5,7 +5,7 @@
 </template>
 <script>
   import psde from '@/script/editor/psde';
-  import {State,getDiagram} from '@/script/editor/utils/store'
+  import {State} from '@/script/editor/utils/store'
   import axios from 'axios'
   import { queryModelFile, downloadFile } from "@/script/editor/psde/config";
   import {vm,operate,getEditor} from '@/script/operate'
@@ -56,7 +56,7 @@
           loadConnector: true
         })
         .then(res => {
-          getDiagram(res.list);
+          State.getDiagram(res.list);
         }).catch(err=>{
           vm.$emit(operate.notice,{
             type:'error',

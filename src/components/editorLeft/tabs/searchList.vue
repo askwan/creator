@@ -46,7 +46,6 @@ import { vm, operate,getEditor } from "@/script/operate";
 // import EditManage from "@/script/mapbox/EditManage";
 import ImageManage from "@/script/editor/psde/ImageManage";
 import {State} from '@/script/editor/utils/store'
-// import { getOtypeById } from "@/script/allOtype";
 
 export default {
   data() {

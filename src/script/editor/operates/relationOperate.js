@@ -26,6 +26,7 @@ import { uiRawTagEditor } from '@/script/editor/id-editor/modules/ui/raw_tag_edi
 import { uiTagReference } from '@/script/editor/id-editor/modules/ui/tag_reference';
 import { uiPresetEditor } from '@/script/editor/id-editor/modules/ui/preset_editor';
 import { utilRebind } from '@/script/editor/id-editor/modules/util';
+import {operationDelete} from '@/script/editor/id-editor/modules/operations/delete';
 
 
 import { osmEntity, osmRelation } from '@/script/editor/id-editor/modules/osm';
@@ -195,10 +196,11 @@ export class RelationOperate {
     )
   }
   deleteRole(id,index,callback){
-    context.perform(
+    this.context.perform(
       actionDeleteMember(id, index),
       t('operations.delete_member.annotation')
     );
+    
     if(callback){
       callback()
     }

@@ -607,7 +607,7 @@
         },
         "save": {
             "title": "保存",
-            "help": "复审更改，然后上传至 OpenStreetMap 供其他用户查看。",
+            "help": "复审更改，然后上传至 OneGis.org 供其他用户查看。",
             "no_changes": "没有待保存变更。",
             "error": "尝试保存时发生错误。",
             "status_code": "服务器返回的状态代码{code}",

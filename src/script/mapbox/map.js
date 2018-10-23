@@ -51,7 +51,7 @@ function createMap (container) {
           'tiles': [
             psdeHost + '/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile'
           ],
-          'minzoom': 8,
+          'minzoom': 4,
           'maxzoom': 20
         }
       },

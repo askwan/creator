@@ -1,4 +1,3 @@
-let collection = []
 
 class OsmEntity {
   constructor () {
@@ -27,8 +26,7 @@ class OsmEntity {
   }
   clearId(){
     delete this.refOb;
-    this.id = this.id.replace(/[^0-9]/ig,"")
-    // if(this.flag==1) this.id = 0;
+    this.id = this.id.replace(/[^0-9]/ig,"");
   }
   copy(form){
     Object.assign(this,form);
@@ -62,17 +60,7 @@ class OsmNode extends OsmEntity {
     this.x = node.loc[0]
     this.y = node.loc[1]
   }
-
-
   // 转换为btwkt
-
-  // toJSON () {
-  //   return this;
-
-  //   let nid = this.id.replace('n-', '')
-  //   nid = nid.replace('n', '')
-  //   return `NODE(ID(${nid}),POINT(${this.x} ${this.y} 0.000000),FLAG(${this.flag}))`
-  // }
 }
 
 class OsmWay extends OsmEntity {
@@ -90,7 +78,6 @@ class OsmWay extends OsmEntity {
   }
 
   setOsmWay (context, way) {
-    // console.log(context,way,'sdfsf')
     this.id = way.id;
     this.uuid = way.uuid;
     this.vid = way.vid;
@@ -110,29 +97,16 @@ class OsmWay extends OsmEntity {
     if(this.id.includes('-')) this.updateFlag(1);
     if(!this.id.includes('-')) this.updateFlag(2);
   }
-  // toJSON () {
-  //   return this;
-
-  //   // 获取way对应的所有节点
-  //   let nodeWkt = ''
-  //   for (let i = 0; i < this.nodes.length; i++) {
-  //     let node = this.nodes[i]
-  //     nodeWkt += ',' + node.toJSON()
-  //   }
-
-
-  //   let nid = this.id.replace('w-', '')
-
-  //   nid = nid.replace('w', '')
-  //   return `WAY(ID(${nid})${nodeWkt},FLAG(${this.flag}))`
-  // }
 
   clearId(){
     delete this.refOb;
+    let change = false;
     this.id = this.id.replace(/[^0-9]/ig,"")
     this.nodes.forEach(node=>{
+      if(node.flag!==0) change = true;
       node.clearId();
-    })
+    });
+    if(!change) this.flag = 0;
   }
 
 
@@ -160,25 +134,30 @@ class OsmRelation extends OsmEntity {
     this.uuid = relation.uuid;
     this.vid = relation.vid;
     this.members = [];
-    // console.log(relation,'relation');
     if(relation.id.includes('-')) this.updateFlag(1);
     if(!relation.id.includes('-')) this.updateFlag(2);
     relation.members.forEach(member => {
-      let entity = context.entity(member.id);
-      let obj = {};
-      if(entity.type=='relation'){
-        obj.refEntity = new OsmRelation();
-        obj.refEntity.setOsmRelation(context,entity);
-      }else if(entity.type=='way'){
-        obj.refEntity = new OsmWay();
-        obj.refEntity.setOsmWay(context,entity);
-      }else if(entity.type=="node"){
-        obj.refEntity = new OsmNode(entity);
-        node.role = member.role;
+      let entity;
+      try {
+        entity = context.entity(member.id);
+        let obj = {};
+        if(entity.type=='relation'){
+          obj.refEntity = new OsmRelation();
+          obj.refEntity.setOsmRelation(context,entity);
+        }else if(entity.type=='way'){
+          obj.refEntity = new OsmWay();
+          obj.refEntity.setOsmWay(context,entity);
+        }else if(entity.type=="node"){
+          obj.refEntity = new OsmNode(entity);
+          node.role = member.role;
+        }
+        obj.role = member.role;
+        obj.type = entity.type;
+        this.members.push(obj);
+      } catch (error) {
+        this.members.push(member.clone());
       }
-      obj.role = member.role;
-      obj.type = entity.type;
-      this.members.push(obj);
+      
     });
     
     this.refOb = relation.orgData||{};
@@ -194,30 +173,17 @@ class OsmRelation extends OsmEntity {
   clearId(){
     delete this.refOb;
     this.id = this.id.replace(/[^0-9]/ig,"");
-    console.log(this.members)
     this.members.forEach(el=>{
-      el.refEntity.clearId();
+      if(typeof el.refEntity =='object'){
+        el.refEntity.clearId();
+      }else{
+        el.id = el.id.replace(/[^0-9]/ig,"");
+      }
     })
   }
-  // toJSON () {
-  //   return this;
-  //   let id = this.id.replace('r-', '').replace('r', '')
-  //   let str = `RELATION(ID(${id}),`
-
-  //   this.members.forEach(member => {
-  //     str += member.toJSON() + ','
-  //   })
-  //   str = str.slice(0, -1)
-  //   str += `,FLAG(${this.flag}))`
-  //   // console.log(str)
-  //   return str
-  // }
 }
 
-const clearCollection = ()=>{
-  collection = [];
-  console.log('clear')
-}
+
 
 export default {
   SORTINDEX_EXT_NODE: 21,
@@ -231,6 +197,5 @@ export default {
   OsmNode: OsmNode,
   OsmWay: OsmWay,
   OsmRelation: OsmRelation,
-  OsmEntity:OsmEntity,
-  clearCollection
+  OsmEntity:OsmEntity
 }

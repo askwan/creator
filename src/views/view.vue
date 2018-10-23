@@ -112,7 +112,15 @@
         this.areaObj = obj;
       },
       posiCenter(){
-
+      let center = this.getCenter(this.areaObj.geoBox);
+      mapbox.flyTo(center.x, center.y, center.z,10);
+      },
+      getCenter(bbox){
+        let center = {};
+        center.x = (bbox.minx + bbox.maxx) / 2;
+        center.y = (bbox.miny + bbox.maxy) / 2;
+        center.z = (bbox.minz + bbox.maxz) / 2;
+        return center;
       }
     },
     beforeDestroy(){
