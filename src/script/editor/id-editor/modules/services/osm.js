@@ -21,7 +21,8 @@ import { osmEntity, osmNode, osmRelation, osmWay} from '../osm'
 
 import { utilRebind, utilIdleWorker } from '../util'
 
-import { psdeUrl } from '../../../psde/config'
+// import { psdeUrl } from '../../../psde/config'
+import {psdeUrl} from '@/script/server'
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded')
 var urlroot = psdeUrl

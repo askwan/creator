@@ -4,11 +4,11 @@ import {psdeUrl} from '../config'
 class ObjectServer extends Base {
   constructor(){
     super();
-    this.url = psdeUrl+'object/'
+    this.url = psdeUrl+'object'
   }
-  getObjects(option){
+  query(option){
     return new Promise((resolve,reject)=>{
-      this.query(option).then(res=>{
+      this.get(option).then(res=>{
         resolve(res);
       })
       .catch(err=>{
@@ -16,9 +16,9 @@ class ObjectServer extends Base {
       })
     })
   }
-  saveObject(option){
+  save(option){
     return new Promise((resolve,reject)=>{
-      this.save(option).then(res=>{
+      this.post('/saveObject',option).then(res=>{
         resolve(res)
       })
       .catch(err=>{

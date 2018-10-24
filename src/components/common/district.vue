@@ -1,8 +1,8 @@
 <template>
-  <div class='district fill'>
+  <div class='district fill no-select'>
     <div class="district-nav close-bar flex-between pd-right-mini pd-left-small" >
       <span class="font-16 pointer text-ellipsis" @click="posi()">{{currentObj.name||'定位'}}</span>
-      <i class="el-icon-close font-20 pointer-default" @click="closeIt"></i>
+      <i class="el-icon-close font-20 pointer-default " @click="closeIt"></i>
     </div>
     <div class="district-list pd-left-mini pd-right-mini">
       <div class="district-el flex" v-for="(province,i) in provinces" :key="i">

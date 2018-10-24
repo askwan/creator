@@ -13,6 +13,7 @@ import * as iD from './id-editor/modules';
 // import "./id-editor/css/70_fills.css";
 // import "./id-editor/css/80_app.css";
 import psde from './psde';
+import {objectServer} from '@/script/server'
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
@@ -179,9 +180,9 @@ export default class Editor {
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
       isAjax = false;
-      psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+      objectServer.save(json).then(res=>{
         isAjax = true
-        if (result.data.status == 200) {
+        if (res.status == 200) {
           context.flush();
           this.clearGraph();
           dispatch.call('notice',this,{
@@ -190,19 +191,44 @@ export default class Editor {
             message:'保存成功'
           });
         }else {
-          dispatch.call('notice',{
+          dispatch.call('notice',this,{
             type:'error',
             title:'错误',
             message:'保存失败'
           })
         };
-      },()=>{
-        dispatch.call('notice',{
+      })
+      .catch(err=>{
+        dispatch.call('notice',this,{
           type:'error',
           title:'错误',
-          message:'保存失败'
+          message:err
         })
       })
+      // psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+      //   isAjax = true
+      //   if (result.data.status == 200) {
+      //     context.flush();
+      //     this.clearGraph();
+      //     dispatch.call('notice',this,{
+      //       type:'success',
+      //       title:'成功',
+      //       message:'保存成功'
+      //     });
+      //   }else {
+      //     dispatch.call('notice',{
+      //       type:'error',
+      //       title:'错误',
+      //       message:'保存失败'
+      //     })
+      //   };
+      // },()=>{
+      //   dispatch.call('notice',{
+      //     type:'error',
+      //     title:'错误',
+      //     message:'保存失败'
+      //   })
+      // })
     }
   }
   clearGraph () {

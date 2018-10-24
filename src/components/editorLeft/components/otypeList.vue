@@ -9,7 +9,7 @@
 			<div class="otype-content margin" v-if="hotFilterDiagram.length>0">
 				<div class="otype-list" v-for="(it,ix) in hotFilterDiagram" :key="ix" @click="openOtype(it,ix)">
 					<div class="otype-image">
-						<img v-if="it.icon" :src="ImageManage.getImgUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
+						<img v-if="it.icon" :src="imageServer.getImageUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 						<span v-else>{{it.name|initialName}}</span>
 					</div>
 					<div class="otype-title">
@@ -54,7 +54,7 @@
 				<span class="diagram-top-line"></span>
 				<div class="diagram-detail" @click="openDiagram(item,index)">
 					<div class="diagram-image">
-						<img v-if="item.icon" :src="ImageManage.getImgUrl(item.icon)" :onerror="errorDiagramImg" alt="加载失败" />
+						<img v-if="item.icon" :src="imageServer.getImageUrl(item.icon)" :onerror="errorDiagramImg" alt="加载失败" />
 						<span v-else>{{item.name|initialName}}</span>
 					</div>
 					<div class="diagram-title">
@@ -68,7 +68,7 @@
 							<i class="iconfont icon-shouqi-copy"></i>
 							<div class="otype-list" v-for="(it,ix) in item.otypes" :key="ix" @click="openOtype(it,ix)">
 								<div class="otype-image">
-									<img v-if="it.icon" :src="ImageManage.getImgUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
+									<img v-if="it.icon" :src="imageServer.getImageUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 									<span v-else>{{it.name|initialName}}</span>
 								</div>
 								<div class="otype-title">
@@ -99,7 +99,7 @@
 			<div class="otype-content" v-if="searchOtypeList.length>0 && !showDiagramList">
 				<div class="otype-list" v-for="(it,ix) in searchOtypeList" :key="ix" @click="openOtype(it,ix)">
 					<div class="otype-image">
-						<img v-if="it.icon" :src="ImageManage.getImgUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
+						<img v-if="it.icon" :src="imageServer.getImageUrl(it.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 						<span v-else>{{it.name|initialName}}</span>
 					</div>
 					<div class="otype-title">
@@ -133,6 +133,7 @@
   import { vm, operate,getEditor } from "@/script/operate";
 	import {State} from '@/script/editor/utils/store'
 	import common from '@/script/common'
+	import {imageServer} from '@/script/server'
 	var IdEdit;
 	var Type = {
 		node:21,
@@ -145,7 +146,8 @@
 			return {
 				ImageManage: ImageManage,
 				// errorDiagramImg: 'this.src="' + require("../../../../../static/images/errorDiagram.jpg") + '"',
-        // errorOtypeImg: 'this.src="' + require("../../../../../static/images/errorOtype.jpg") + '"',
+				// errorOtypeImg: 'this.src="' + require("../../../../../static/images/errorOtype.jpg") + '"',
+				imageServer:imageServer,
         errorDiagramImg:'',
         errorOtypeImg:'',
 				lists: [],

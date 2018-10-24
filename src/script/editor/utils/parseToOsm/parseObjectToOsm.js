@@ -40,7 +40,6 @@ function parseObjectToOsm (jsonObjects, callback) {
   entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type]);
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
-  console.log(State.ways);
   callback(null, entities)
 }
 

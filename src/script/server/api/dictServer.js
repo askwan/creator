@@ -1,15 +1,15 @@
 import Base from './Base'
 import {psdeUrl} from '../config'
 
-class OtypeServer extends Base {
+class DictServer extends Base {
   constructor(){
     super();
-    this.url = psdeUrl +'otype/';
+    this.url = psdeUrl +'/dict'
   }
-  query(option){
+  getDict(name="",option={}){
     return new Promise((resolve,reject)=>{
-      this.get(option).then(res=>{
-        resolve(res);
+      this.get('/getDict/'+name,option).then(res=>{
+        resolve(res)
       })
       .catch(err=>{
         reject(err)
@@ -19,4 +19,4 @@ class OtypeServer extends Base {
 
 }
 
-export default new OtypeServer()
+export default new DictServer();

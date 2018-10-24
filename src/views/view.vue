@@ -4,8 +4,8 @@
       <search-bar @startSearch="search" :searchValue="viewSearchValue"></search-bar>
     </div>
     <div class="district-bar font-16 flex-between pd-left-small pd-right-mini shadow" >
-      <span class="pd-right-small pointer text-ellipsis" @click="showDistrict=true" :title="areaObj.name">{{areaObj.name||'定位'}}</span>
-      <i class="el-icon-location pointer-default font-18" @click="posiCenter"></i>
+      <span class="pd-right-small pointer text-ellipsis no-select" @click="showDistrict=true" :title="areaObj.name">{{areaObj.name||'定位'}}</span>
+      <i class="el-icon-location pointer-default font-18 no-select" @click="posiCenter"></i>
     </div>
     <transition name="right">
       <div class="position shadow" v-show="showDistrict">
@@ -112,6 +112,7 @@
         this.areaObj = obj;
       },
       posiCenter(){
+        if(!this.areaObj.geoBox) return this.showDistrict=true;
       let center = this.getCenter(this.areaObj.geoBox);
       mapbox.flyTo(center.x, center.y, center.z,10);
       },
@@ -131,7 +132,6 @@
         lat: map.getCenter().lat,
         zoom: map.getZoom() 
       });
-      console.log(this.areaObj)
       mapposition.saveArea(this.areaObj)
     },
     
@@ -195,7 +195,7 @@
   .right-enter, .right-leave-to /* .fade-leave-active below version 2.1.8 */ {
     width: 120px !important;
     min-height: 0 !important;
-    height: 0 !important;
+    height: 0px !important;
   }
   .height-enter-active, .height-leave-active {
     transition: all .2s;
