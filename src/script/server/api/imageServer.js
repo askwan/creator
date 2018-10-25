@@ -10,7 +10,7 @@ class ImageServer extends Base {
     return psdeUrl + "image/show?token=" + token + "&imageUrl=" + src
   }
   getUserImage(src){
-    return UcServerUrl+id;
+    return UcServerUrl+src;
   }
 }
 

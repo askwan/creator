@@ -1,7 +1,7 @@
 <template>
   <div class='view fill'>
     <div class="search shadow">
-      <search-bar @startSearch="search" :searchValue="viewSearchValue"></search-bar>
+      <search-bar @startSearch="search" :searchValue="viewSearchValue" :loading="loading"></search-bar>
     </div>
     <div class="district-bar font-16 flex-between pd-left-small pd-right-mini shadow" >
       <span class="pd-right-small pointer text-ellipsis no-select" @click="showDistrict=true" :title="areaObj.name">{{areaObj.name||'定位'}}</span>
@@ -20,7 +20,7 @@
         <i class="el-icon-close font-20 pointer-default" @click="close"></i>
       </div>
       <div class="left-box fill">
-        <component :isShow="showLeft" :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject"></component>
+        <component :isShow="showLeft" :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject" @closeLoading='loading=false'></component>
       </div>
     </div>
     </transition>
@@ -41,7 +41,8 @@
         viewSearchValue:"",
         bbox:'',
         showDistrict:false,
-        areaObj:{}
+        areaObj:{},
+        loading:false
       }
     },
     props:{},
@@ -104,6 +105,7 @@
         this.viewSearchValue = val;
         this.componentId = 'searchResult'
         this.showLeft = true;
+        this.loading = true;
       },
       close(){
         this.showLeft = false;

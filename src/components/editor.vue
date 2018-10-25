@@ -1,6 +1,6 @@
 <template>
   <div class='editor-box fill flex' >
-    <div class="left" ref="left" >
+    <div class="left shadow" ref="left" >
       <left-content ref="leftContent" :sobject="currentObj" :entity='entity'></left-content>
     </div>
     <div @click="appClick" class="fill" id="container"></div>

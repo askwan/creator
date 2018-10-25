@@ -19,7 +19,10 @@
 					</li>
 				</ul>
 			</div>
-			<div class="earth-null-list" v-if="nullListShow">
+			<div v-show="loading" class="align-center pd-large" style="width:100%;">
+				<i class="el-icon-loading font-20 font-gray"></i>
+			</div>
+			<div class="earth-null-list" v-show="nullListShow&&!loading">
 				<ul>
 					<li>
 						<i class="iconfont icon-weixian"></i>
@@ -54,6 +57,7 @@
 				earthListShow: false,
 				nullTitle: "在可见地图区域没有结果",
 				addBgColor: "",
+				loading:false
 			};
 		},
 		props: ["viewSearchValue"],
@@ -107,13 +111,16 @@
 					this.nullListShow = false;
 					this.earthListShow = false;
 				}
+				this.$emit('closeLoading');
 			},
 			searchObject() {
 				//this.objectList = [];
 				var obj = {
 					names: this.searchNameVal
 				};
+				this.loading = true;
 				psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
+					this.objectList = [];
 					response.list.forEach((item, index) => {
 						var findIndex = this.objectList.findIndex(it => it.id == item.id);
 						if(findIndex == -1) {
@@ -131,6 +138,7 @@
 						this.earthListShow = false;
 						this.nullTitle = "全库也没有含有--" + this.searchNameVal + "--的对象";
 					}
+					this.loading = false;
 				});
 			},
 			openObject(item, index) {

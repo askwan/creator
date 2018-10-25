@@ -1,6 +1,10 @@
 <template>
 	<div class="search-one cle" :class="{'active':checkedInput}">
-		<a href="javascript:;" class="search-a" @click="searchInputFn"></a>
+		<!-- <a href="javascript:;" class="search-a" @click="searchInputFn"></a> -->
+		<span class="search-a flex-center">
+			<i class="font-18 font-gray" :class="{'el-icon-search':!loading,'el-icon-loading':loading}"></i>
+			<!-- <i class="el-icon-loading font-18 font-gray"></i> -->
+		</span>
 		<div class="search-m">
 			<input type="text" v-model="textVal" @blur="checkedInput=false" @focus="checkedInput=true" @input="searchInputFn">
 		</div>
@@ -14,7 +18,7 @@
 				checkedInput: false
 			};
 		},
-		props: ["searchValue"],
+		props: ["searchValue",'loading'],
 		watch: {
 			searchValue(val) {
 				this.textVal = val;
@@ -47,6 +51,9 @@
 		&.active {
 			.search-a {
 				background: #176de6;
+				i{
+					color: #fff;
+				}
 			}
 		}
 		.search-a {
@@ -56,28 +63,6 @@
 			right: -1px;
 			width: 38px;
 			height: 38px;
-			&:after,
-			&:before {
-				content: "";
-				display: block;
-				position: absolute;
-			}
-			&:after {
-				top: 9px;
-				right: 13px;
-				width: 10px;
-				height: 10px;
-				border-radius: 50%;
-				border: 2px solid #e3e4e6;
-			}
-			&:before {
-				top: 22px;
-				right: 11px;
-				width: 5px;
-				height: 2px;
-				background: #e3e4e6;
-				transform: rotate(45deg)
-			}
 		}
 		.search-m {
 			margin: 0 30px 0 10px;

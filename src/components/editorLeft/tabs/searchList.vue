@@ -23,13 +23,16 @@
 				</ul>
 			</div>
 			<div class="earth-null-list" v-if="nullListShow">
-				<ul>
+				<ul v-show="!loading">
 					<li>
 						<i class="iconfont icon-weixian"></i>
 						<span class="null-span">&nbsp;&nbsp;{{nullTitle}}</span>
 					</li>
 				</ul>
 			</div>
+      <div v-show="loading" class="pd-large align-center" style="width:100%;">
+        <i class="el-icon-loading font-24 font-gray"></i>
+      </div>
 			<div class="earth-null-list" v-if="earthListShow">
 				<ul>
 					<li>
@@ -60,7 +63,8 @@ export default {
       objectListShow: false,
       nullListShow: false,
       earthListShow: false,
-      nullTitle: "在可见地图区域没有结果"
+      nullTitle: "在可见地图区域没有结果",
+      loading:false
     };
   },
   props: [],
@@ -129,6 +133,8 @@ export default {
         names: this.searchNameVal,
         geoEdit:true
       };
+      this.loading = true;
+      this.objectList = [];
       psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
         response.list.forEach((item, index) => {
           var findIndex = this.objectList.findIndex(it => it.id == item.id);
@@ -147,6 +153,7 @@ export default {
           this.earthListShow = false;
           this.nullTitle = "全库也没有含有--" + this.searchNameVal + "--的对象";
         }
+        this.loading = false;
       });
     },
     openObject(item, index) {

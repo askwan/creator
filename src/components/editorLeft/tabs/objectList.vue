@@ -4,7 +4,7 @@
       <common-head title="对象列表" @back="back"></common-head>
     </div>
     <div class="mg-left-small mg-right-small object-search flex-center">
-      <common-search @startSearch="startSearch" :searchValue="searchValue"></common-search>
+      <common-search @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></common-search>
     </div>
   
     <div ref="list" class='object-list pd-big'>
@@ -48,7 +48,8 @@
         total:0,
         pageNum:1,
         searchValue:'',
-        pageSize:20
+        pageSize:20,
+        loading:false
       }
     },
     props:['currentObject'],
@@ -97,6 +98,7 @@
     methods:{
       queryObject(){
         this.$refs.list.scrollTop = 0;
+        this.loading = true;
         if(!this.searchValue) {
           this.pageNum = 1;
           this.objectList = [];
@@ -104,6 +106,7 @@
             this.objectList.push(State.sobjects[id]);
             this.total = this.objectList;
           }
+          this.loading = false;
             // console.log(this.objectList,789789)
             return
         }
@@ -112,14 +115,15 @@
 					otNames: '',
 					pageNum: this.pageNum,
 					pageSize: this.pageSize
-				};
+        };
+        this.objectList = [];
         psde.objectQuery.ByNameAndOTName.query(obj).then(res => {
-          console.log(res,456);
+          
           this.total = res.total;
           this.pageNum = res.pageNum;
 
           this.objectList = res.list;
-          
+          this.loading = false;
 				});
       },
       getObjectByRelation(){

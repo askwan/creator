@@ -47,82 +47,82 @@
     },
     methods:{
       getDiagram(){
-        // new psde.Diagram()
-        // .query({
-        //   loadField: true,
-        //   loadModel: true,
-        //   loadForm: true,
-        //   loadParentField: true,
-        //   loadParents: true,
-        //   loadConnector: true
-        // })
-        // .then(res => {
-        //   State.getDiagram(res.list);
-        // }).catch(err=>{
-        //   vm.$emit(operate.notice,{
-        //     type:'error',
-        //     title:'网络错误',
-        //     message:err.message
-        //   })
-        // })
-
-        diagramServer.query({
+        new psde.Diagram()
+        .query({
           loadField: true,
           loadModel: true,
           loadForm: true,
           loadParentField: true,
           loadParents: true,
           loadConnector: true
-        }).then(res=>{
-          State.getDiagram(res.data.list);
         })
+        .then(res => {
+          State.getDiagram(res.list);
+        }).catch(err=>{
+          vm.$emit(operate.notice,{
+            type:'error',
+            title:'网络错误',
+            message:err.message
+          })
+        })
+
+        // diagramServer.query({
+        //   loadField: true,
+        //   loadModel: true,
+        //   loadForm: true,
+        //   loadParentField: true,
+        //   loadParents: true,
+        //   loadConnector: true
+        // }).then(res=>{
+        //   State.getDiagram(res.data.list);
+        // })
 
       },
       getModels(){
         
-        // axios.get(queryModelFile.baseURL, {})
-        //   .then(response => {
-        //     State.ModelList = response.data.data.list;
-        //   })
-        //   .catch(function(error) {
-        //     vm.$emit(operate.notice,{
-        //       type:'error',
-        //       title:'网络错误',
-        //       message:error.message
-        //     })
-        //   });
-        modelServer.getModel().then(res=>{
-          State.ModelList = res.data.list
-        })
-        .catch(error=>{
-          vm.$emit(operate.notice,{
-            type:'error',
-            title:'网络错误',
-            message:error.message
+        axios.get(queryModelFile.baseURL, {})
+          .then(response => {
+            State.ModelList = response.data.data.list;
           })
-        })
-      },
-      getRelationType(){
-        // new psde.GetDict().query(null,'relation').then(res=>{
-        //   State.relationType = res;
-        // }).catch(err=>{
+          .catch(function(error) {
+            vm.$emit(operate.notice,{
+              type:'error',
+              title:'网络错误',
+              message:error.message
+            })
+          });
+        // modelServer.getModel().then(res=>{
+        //   State.ModelList = res.data.list
+        // })
+        // .catch(error=>{
         //   vm.$emit(operate.notice,{
         //     type:'error',
         //     title:'网络错误',
         //     message:error.message
         //   })
-        // });
-
-        dictServer.getDict('relation').then(res=>{
-          State.relationType = res.data;
-        })
-        .catch(error=>{
+        // })
+      },
+      getRelationType(){
+        new psde.GetDict().query(null,'relation').then(res=>{
+          State.relationType = res;
+        }).catch(err=>{
           vm.$emit(operate.notice,{
             type:'error',
             title:'网络错误',
             message:error.message
           })
-        })
+        });
+
+        // dictServer.getDict('relation').then(res=>{
+        //   State.relationType = res.data;
+        // })
+        // .catch(error=>{
+        //   vm.$emit(operate.notice,{
+        //     type:'error',
+        //     title:'网络错误',
+        //     message:error.message
+        //   })
+        // })
 
       }
     }
