@@ -58,6 +58,7 @@
         })
         .then(res => {
           State.getDiagram(res.list);
+          vm.$emit(operate.DiagramReady);
         }).catch(err=>{
           vm.$emit(operate.notice,{
             type:'error',

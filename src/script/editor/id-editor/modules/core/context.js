@@ -131,7 +131,6 @@ export function coreContext() {
     context.loadTiles = utilCallWhenIdle(function(projection, dimensions, callback) {
         var cid;
         function done(err, result) {
-            
             if (connection.getConnectionId() !== cid) {
                 if (callback) callback({ message: 'Connection Switched', status: -1 });
                 return;
@@ -520,10 +519,6 @@ export function coreContext() {
     presets.init();
     areaKeys = presets.areaKeys();
 
-    context.self = function(){
-        return context;
-    }
-
     context.getParents = function(nodeId){
         let ways = context.graph()._childNodes;
         let aim = [];
@@ -549,6 +544,11 @@ export function coreContext() {
             }
         }
         return aim;
+    }
+    let otypes = [];
+    context.otypes = function(_){
+        if(!_) return otypes;
+        otypes = _;
     }
 
     

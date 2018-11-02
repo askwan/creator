@@ -6,6 +6,7 @@ var State = {
   relationType:[],
   otypes:{},
   ways:{},
+  otypeIds:[],
   dimension,
   styleServerType,
   formstyleType,
@@ -37,9 +38,14 @@ State.userDiagram = function(userId){
 }
 
 State.getDiagram = function(list){
+  this.otypeIds = [];
   list.forEach(el=>{
+    this.otypeIds.push(el.id)
     el.otypes.forEach(ev=>{
       this.otypes[ev.id] = ev;
+      // let index = this.otypeIds.findIndex(n=>n==ev.id);
+      // if(index==-1) this.otypeIds.push(ev.id);
+      this.otypeIds.push(ev.id);
     })
   })
   this.diagrams = list;
@@ -49,8 +55,11 @@ State.findOtypeById = function(id){
   return this.otypes[id];
 }
 
+
 State.clear = function(){
   this.relations = [];
+  this.sobjects = {};
+  // this.otypeIds = [];
 }
 
 export {

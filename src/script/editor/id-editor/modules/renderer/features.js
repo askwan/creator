@@ -71,13 +71,13 @@ export function rendererFeatures(context) {
         if (!window.mocha) {
             var q = utilStringQs(window.location.hash.substring(1));
             var disabled = features.disabled();
-            if (disabled.length) {
-                q.disable_features = disabled.join(',');
-            } else {
-                delete q.disable_features;
-            }
-            window.location.replace('#' + utilQsString(q, true));
-            context.storage('disabled-features', disabled.join(','));
+            // if (disabled.length) {
+            //     q.disable_features = disabled.join(',');
+            // } else {
+            //     delete q.disable_features;
+            // }
+            // window.location.replace('#' + utilQsString(q, true));
+            // context.storage('disabled-features', disabled.join(','));
         }
         _hidden = features.hidden();
         dispatch.call('change');
@@ -110,6 +110,10 @@ export function rendererFeatures(context) {
     defineFeature('traffic_roads', function isTrafficRoad(entity) {
         return traffic_roads[entity.tags.highway];
     });
+
+    // defineFeature('otype',function isOtype(entity){
+    //     return entity.orgData.otype.id==3456
+    // })
 
     defineFeature('service_roads', function isServiceRoad(entity) {
         return service_roads[entity.tags.highway];
@@ -484,11 +488,11 @@ export function rendererFeatures(context) {
             storageDisabled.forEach(features.disable);
         }
         
-        var q = utilStringQs(window.location.hash.substring(1));
-        if (q.disable_features) {
-            var hashDisabled = q.disable_features.replace(/;/g, ',').split(',');
-            hashDisabled.forEach(features.disable);
-        }
+        // var q = utilStringQs(window.location.hash.substring(1));
+        // if (q.disable_features) {
+        //     var hashDisabled = q.disable_features.replace(/;/g, ',').split(',');
+        //     hashDisabled.forEach(features.disable);
+        // }
     };
 
     return utilRebind(features, dispatch, 'on');

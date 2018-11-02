@@ -593,9 +593,11 @@ export default {
       let maxy = tile.extent[1][1]
       var extbbox = `BBOX(${minx} ${maxx} ${miny} ${maxy})`
       // console.log(context.parents(),"bbb")
-      let tokne = localStorage.getItem('token');
+      let user = JSON.parse(sessionStorage.getItem('user'));
+      let token = localStorage.getItem('token');
+      let _id = user.id+'';
       _tiles.inflight[id] = that.loadFromAPI(
-        '/object/query?token=' + tokne + '&loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox,
+        '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
         function (err, parsed) {
           delete _tiles.inflight[id]
           if (!err) {

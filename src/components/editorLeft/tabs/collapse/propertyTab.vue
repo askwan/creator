@@ -215,7 +215,7 @@
 					//根据otype中的字段定义顺序，显示获取排列字段
 					for(let i = 0; i < fields.length; i++) {
 						let field = fields[i];
-
+						console.log(field,'ffff')
 						let attr = {
 							fid: field.id,
 							name: field.name,

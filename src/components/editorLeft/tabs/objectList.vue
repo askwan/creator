@@ -110,11 +110,14 @@
             // console.log(this.objectList,789789)
             return
         }
+        let user = JSON.parse(sessionStorage.getItem('user'));
+        let id = `'${user.id}'`;
         var obj = {
 					names: this.searchValue,
 					otNames: '',
 					pageNum: this.pageNum,
-					pageSize: this.pageSize
+          pageSize: this.pageSize,
+          uids:id
         };
         this.objectList = [];
         psde.objectQuery.ByNameAndOTName.query(obj).then(res => {

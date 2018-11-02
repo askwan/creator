@@ -139,10 +139,10 @@ export function uiInit(context) {
             .append('div')
             .attr('class', 'map-controls');
 
-           	controls
-               .append('div')
-               .attr('class', 'map-control zoombuttons')
-               .call(uiZoom(context));
+           	// controls
+            //    .append('div')
+            //    .attr('class', 'map-control zoombuttons')
+            //    .call(uiZoom(context));
 
            	/*controls
                .append('div')

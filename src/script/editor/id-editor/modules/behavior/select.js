@@ -142,6 +142,7 @@ export function behaviorSelect(context) {
                     context.enter(modeSelect(context, [datum.id]).suppressMenu(suppressMenu));
                     //获取选中对象id
                     context.selectEle(datum.id);
+                    console.log(datum.id);
                 }
 
             } else {

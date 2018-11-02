@@ -17,6 +17,7 @@ import {objectServer} from '@/script/server'
 
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
+import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
 import {actionChangeTags} from './id-editor/modules/actions/change_tags'
 
@@ -25,6 +26,7 @@ import SObjectGraph from './utils/SObjectGraph'
 import editsave from './utils/EditSave'
 
 import {RelationOperate,Delete} from './operates'
+import SObject from './psde/psdm/SObject';
 
 
 const dispatch = d3_dispatch('currentObject','notice')
@@ -61,13 +63,20 @@ export default class Editor {
     this.idContext.on('selectEle',ele=>{
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
+        console.log(this.idContext.entity(ele))
         let relation = State.findRelationByMember(ele);
         if(relation){
-          if(this.idContext.entity(relation.id).members.find(el=>el.id==ele)){
-            ele = relation.id;
-            this.relationOperate.highLightEntity([ele])
-          }
+          // if(this.idContext.entity(relation.id).members.find(el=>el.id==ele)){
+          //   ele = relation.id;
+          //   this.relationOperate.highLightEntity([ele])
+          // }
+
         } 
+        // this.idContext.features().toggle("otype");
+        // setTimeout(() => {
+        //   console.log('toggle');
+        //   this.idContext.features().toggle("otype");
+        // }, 3000);
           
       }
       if(this.currentSobject&&this.currentForm) {
@@ -102,6 +111,14 @@ export default class Editor {
     })
   }
 
+  setSObject(sobject){
+    let _sobject = new SObject();
+    _sobject.copyObject(sobject);
+    this.currentSobject = _sobject;
+    this.sobjectlist[_sobject.list] = _sobject;
+    dispatch.call('currentObject',this,{object:_sobject,entityId:null})
+  }
+
 
 
   setTool (style, otype, modeOptions) {
@@ -128,15 +145,19 @@ export default class Editor {
     // console.log('更新', this.currentGraph)
   }
   modifyAttr(attr,sobject){
-    let tags = {};
-    let newTag = {};
-    let ele = sobject.forms[0].geom;
-    let bool = sobject.forms.find(el=>el.geotype == 23);
-    if(bool) tags.area = 'yes';
-    attr.forEach(el=>tags[el.name]=el.value);
-    let oldTag = this.idContext.entity(ele).tags;
-    Object.assign(newTag,oldTag,tags)
-    this.idContext.perform(actionChangeTags(ele,newTag), '修改属性');
+    try {
+      let tags = {};
+      let newTag = {};
+      let ele = sobject.forms[0].geom;
+      let bool = sobject.forms.find(el=>el.geotype == 23);
+      if(bool) tags.area = 'yes';
+      attr.forEach(el=>tags[el.name]=el.value);
+      let oldTag = this.idContext.entity(ele).tags;
+      Object.assign(newTag,oldTag,tags)
+      this.idContext.perform(actionChangeTags(ele,newTag), '修改属性');
+    } catch (error) {
+      
+    }
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
   }
@@ -180,34 +201,9 @@ export default class Editor {
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
       isAjax = false;
-      objectServer.save(json).then(res=>{
-        isAjax = true
-        if (res.status == 200) {
-          context.flush();
-          this.clearGraph();
-          dispatch.call('notice',this,{
-            type:'success',
-            title:'成功',
-            message:'保存成功'
-          });
-        }else {
-          dispatch.call('notice',this,{
-            type:'error',
-            title:'错误',
-            message:'保存失败'
-          })
-        };
-      })
-      .catch(err=>{
-        dispatch.call('notice',this,{
-          type:'error',
-          title:'错误',
-          message:err
-        })
-      })
-      // psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+      // objectServer.save(json).then(res=>{
       //   isAjax = true
-      //   if (result.data.status == 200) {
+      //   if (res.status == 200) {
       //     context.flush();
       //     this.clearGraph();
       //     dispatch.call('notice',this,{
@@ -216,25 +212,59 @@ export default class Editor {
       //       message:'保存成功'
       //     });
       //   }else {
-      //     dispatch.call('notice',{
+      //     dispatch.call('notice',this,{
       //       type:'error',
       //       title:'错误',
       //       message:'保存失败'
       //     })
       //   };
-      // },()=>{
-      //   dispatch.call('notice',{
+      // })
+      // .catch(err=>{
+      //   dispatch.call('notice',this,{
       //     type:'error',
       //     title:'错误',
-      //     message:'保存失败'
+      //     message:err
       //   })
       // })
+      psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+        isAjax = true
+        if (result.data.status == 200) {
+          // context.flush();
+          // this.clearGraph();
+          this.flush();
+          dispatch.call('notice',this,{
+            type:'success',
+            title:'成功',
+            message:'保存成功'
+          });
+        }else {
+          dispatch.call('notice',{
+            type:'error',
+            title:'错误',
+            message:'保存失败'
+          })
+        };
+      },()=>{
+        dispatch.call('notice',{
+          type:'error',
+          title:'错误',
+          message:'保存失败'
+        })
+      })
     }
   }
   clearGraph () {
     this.currentGraph.clearSobject();
     this.isChanges = false;
+    State.relations = [];
+    State.sobjects = {};
+    State.ways = {};
     dispatch.call('currentObject',this,{object:null,entityId:null});
+  }
+  flush(){
+    this.clearGraph();
+    State.clear();
+    this.idContext.flush();
   }
   selectSobjects () {
     let ids = this.idContext.selectedIDs()
@@ -321,6 +351,18 @@ export default class Editor {
     let sobject = this.getSobjectById(object.id);
     sobject.modifyObject(object);
     this.updateAndHistory(object)
+  }
+  filterObjectByOtype(arr){
+    this.idContext.otypes(arr);
+    State.otypeIds = arr;
+    this.flush();
+    // _debounce(this.flush,350);
+  }
+  zoomOut(){
+    this.idContext.zoomOut();
+  }
+  zoomIn(){
+    this.idContext.zoomIn();
   }
 
 

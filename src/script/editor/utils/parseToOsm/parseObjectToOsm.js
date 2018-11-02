@@ -40,6 +40,7 @@ function parseObjectToOsm (jsonObjects, callback) {
   entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type]);
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
+  // console.log(entities)
   callback(null, entities)
 }
 
@@ -47,6 +48,11 @@ function parseObject (entities, sobject) {
   let tags = getAttributeTag(sobject)
   // 循环形态列表
   if (!sobject.forms) return [];
+
+  let otypeIds = State.otypeIds;
+  let otype = otypeIds.find(el=>el==sobject.otype.id);
+  if(!otype) return [];
+  
   for (let i = 0; i < sobject.forms.length; i++) {
     let form = sobject.forms[i];
     let geom = form.geom;

@@ -1,7 +1,7 @@
 <template>
   <div class='constitute-tab pd-big'>
     <div class="add-content pointer-default flex-center mg-bottom-big" @click="chooseParent">
-      <span class="font-14 no-select">+选择关系对象</span>
+      <span class="font-14 no-select">+选择父对象</span>
     </div>
     <div class="">
       <el-tag v-for="parent in parents" class="mg-right-small mg-bottom-small" :key="parent.id" @close="deleteParent(parent)" closable disable-transitions>{{parent.name||parent.id}}</el-tag>

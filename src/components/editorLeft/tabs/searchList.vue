@@ -129,15 +129,22 @@ export default {
     },
     searchObject() {
       //this.objectList = [];
+      let user = JSON.parse(sessionStorage.getItem('user'));
+      let id = `'${user.id}'`;
       var obj = {
         names: this.searchNameVal,
-        geoEdit:true
+        geoEdit:true,
+        // uids:id
       };
       this.loading = true;
       this.objectList = [];
       psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
         response.list.forEach((item, index) => {
           var findIndex = this.objectList.findIndex(it => it.id == item.id);
+          // console.log(item.otype.id,State.otypes[item.otype.id]);
+          if(State.otypes[item.otype.id]){
+            item.otype = State.otypes[item.otype.id];
+          }
           if (findIndex == -1) {
             this.objectList.push(item);
           }
@@ -157,31 +164,34 @@ export default {
       });
     },
     openObject(item, index) {
+      
       let bbox = item.geoBox;
-      let x = (bbox.maxx + bbox.minx) / 2;
-      let y = (bbox.maxy + bbox.miny) / 2;
-      let context = getEditor().idContext;
-      context.map().centerZoom([x, y], 17);
-      console.log(item,'select')
+      if(bbox.minx!=0&&bbox.miny!=0){
+        let x = (bbox.maxx + bbox.minx) / 2;
+        let y = (bbox.maxy + bbox.miny) / 2;
+        let context = getEditor().idContext;
+        context.map().centerZoom([x, y], 17);
+      }
       // return
       //选中对象高亮
       if (item.forms && item.forms.length>0) {
         item.forms.forEach(form=>{
           if(typeof form.geom!='string'){
-            if(form.geotype==21){
+            if(form.geotype==21 &&form.geom){
               form.geom= 'n'+form.geom.id;
             }else if(form.geotype==22||form.geotype==23){
-              form.geom='w'+form.geom.id;
+              if(form.geom) form.geom='w'+form.geom.id;
             }else if(form.geotype==24){
-              form.geom = 'r'+form.geom.id;
+              if(form.geom) form.geom = 'r'+form.geom.id;
             }
           }
-        })
+        });
+        getEditor().setSObject(item);
 	      try{
 			  setTimeout(()=>{
           if(item.forms[0].geom){
             getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
-            context.selectEle(item.forms[0].geom)
+            // context.selectEle(item.forms[0].geom);
           }
 			  },1000)
 
