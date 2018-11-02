@@ -134,7 +134,7 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        // uids:id
+        uids:id
       };
       this.loading = true;
       this.objectList = [];
@@ -164,12 +164,12 @@ export default {
       });
     },
     openObject(item, index) {
+      let context = getEditor().idContext;
       
       let bbox = item.geoBox;
       if(bbox.minx!=0&&bbox.miny!=0){
         let x = (bbox.maxx + bbox.minx) / 2;
         let y = (bbox.maxy + bbox.miny) / 2;
-        let context = getEditor().idContext;
         context.map().centerZoom([x, y], 17);
       }
       // return
@@ -177,20 +177,25 @@ export default {
       if (item.forms && item.forms.length>0) {
         item.forms.forEach(form=>{
           if(typeof form.geom!='string'){
-            if(form.geotype==21 &&form.geom){
-              form.geom= 'n'+form.geom.id;
-            }else if(form.geotype==22||form.geotype==23){
-              if(form.geom) form.geom='w'+form.geom.id;
-            }else if(form.geotype==24){
-              if(form.geom) form.geom = 'r'+form.geom.id;
+            
+            if(form.geom){
+              if(form.geotype==21){
+                form.geom= 'n'+form.geom.id;
+              }else if(form.geotype==22||form.geotype==23){
+                form.geom='w'+form.geom.id;
+              }else if(form.geotype==24){
+                form.geom = 'r'+form.geom.id;
+              }
+            }else{
+              this.$set(form,'geom',undefined)
             }
           }
         });
-        getEditor().setSObject(item);
 	      try{
-			  setTimeout(()=>{
-          if(item.forms[0].geom){
-            getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
+          setTimeout(()=>{
+            getEditor().setSObject(item);
+            if(item.forms[0].geom){
+            // getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
             // context.selectEle(item.forms[0].geom);
           }
 			  },1000)

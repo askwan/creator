@@ -57,11 +57,9 @@ class EditSave {
         if(context.geometry(el.id)==='vertex'){
           if(!el.orgData) return
           let ways = context.getParents(el.id);
-          console.log(ways,'ways');
           ways.forEach(w=>{
             let way = this.createWay(context,context.entity(w),2);
             addObj(result,way);
-            console.log(result,778877)
             let res = context.getRelations(w);
             res.forEach(r=>{
               let relation = this.createRelation(context,context.entity(r),2);
@@ -69,7 +67,6 @@ class EditSave {
             })
 
           });
-          console.log(result)
 
 
           el.orgData.forms.forEach(ev=>{
@@ -105,7 +102,6 @@ class EditSave {
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
     let _osmChange = [];
-    console.log(changes,'changes')
     //created
     let created = this.formateOsm(context,changes.created,flagType.created);
     //modified
@@ -189,22 +185,23 @@ class EditSave {
     //osmchange
     let osmCollection = this.getOsmChanges1(context,idedit);
     console.log(osmCollection,'com');
-
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
     }
 
-    resultSobjectList.forEach(obj=>{
-      obj.forms.forEach(form=>{
-        if(typeof form.geom=='string'){
-          form.geom = this[TYPE[form.geotype]];
-        }
-      })
-    });
+    // resultSobjectList.forEach(obj=>{
+    //   obj.forms.forEach(form=>{
+    //     if(typeof form.geom=='string'){
+    //       console.log(TYPE[form.geotype],'geotyp')
+    //       form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+    //     }
+    //   })
+    // });
 
     for(let i in osmCollection){
       let entity = osmCollection[i];
+      
       let sobject = this.getSobjectByEntityId(resultSobjectList,entity.id);
       if(!sobject) {
         sobject = this.getSobjectByEntityId(State.sobjects,entity.id);
@@ -275,6 +272,7 @@ class EditSave {
     return sobject;
   }
   updateSObjectForm (collection,sobjectId, entity) {
+    console.log(collection,sobjectId,entity,888888)
     let sobject = collection.find(el=>el.id==sobjectId);
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)

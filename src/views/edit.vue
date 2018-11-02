@@ -80,7 +80,6 @@
 
       },
       getModels(){
-        
         axios.get(queryModelFile.baseURL, {})
           .then(response => {
             State.ModelList = response.data.data.list;

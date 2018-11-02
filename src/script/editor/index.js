@@ -83,7 +83,8 @@ export default class Editor {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
         if(_form){
           _form.geom = ele;
-        }
+          this.updateAndHistory(this.currentSobject)
+        };
         dispatch.call('currentObject',this,{object:this.currentSobject,entity:ele});
         return
       }

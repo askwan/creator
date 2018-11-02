@@ -22,15 +22,15 @@ let apiConfig = {
 }
 
 //const psdeBaseUrl = "http://10.17.18.27:8080";
-const psdeBaseUrl = "http://192.168.1.177:8001";
+// const psdeBaseUrl = "http://192.168.1.177:8001";
 // const psdeBaseUrl = "http://47.104.96.210:8080";
-// const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api/dae';
+const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api/dae';
 
 // const psdeBaseUrl = "http://192.168.1.133:8001";
 //const psdeBaseUrl = "http://localhost:8001";
 // const psdeBaseUrl = "http://192.168.1.188:8080";
-const psdeHost = psdeBaseUrl;
-// const psdeHost = psdeBaseUrl + '/datastore';
+// const psdeHost = psdeBaseUrl;
+const psdeHost = psdeBaseUrl + '/datastore';
 
 const psdeUrl = psdeHost + "/rest/v0.1.0/datastore/";
 
@@ -64,19 +64,19 @@ let fileUpload = {
 };
 //上传模型文件地址
 let modelFileUpload = {
-	baseURL: modelUrl + "/bim-service/api/onegis/file/upload?"
+	baseURL: modelUrl + "/model-service/model/rest/v0.1.0/datastore/slave/model/file/upload?"
 //baseURL: modelUrl + "/block/api/onegis/file/upload?token=" + common.getItem("token")
 };
 //模型列表
 let queryModelFile = {
-	baseURL: modelUrl + "/bim-service/bim/rest/v0.1.0/datastore/slave/bim/query?token=" + common.getItem("token")
+	baseURL: modelUrl + "/model-service/model/rest/v0.1.0/datastore/slave/model/file/query?token=" + common.getItem("token")
 	// baseURL: modelUrl + "/bim-service/api/onegis/file/query?token=" + common.getItem("token")
 //baseURL: modelUrl + "/block/api/onegis/file/query?token=" + common.getItem("token")
 };
 
 //模型下载
 let downloadFile = {
-	baseURL: modelUrl + "/bim-service/api/onegis/file/download"
+	baseURL: modelUrl + "/model-service/model/rest/v0.1.0/datastore/slave/model/file/download"
 //baseURL: modelUrl + "/block/api/onegis/file/download"
 };
 

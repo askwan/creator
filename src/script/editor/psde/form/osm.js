@@ -48,7 +48,8 @@ class OsmNode extends OsmEntity {
     this.id = node.id || 0
     this.refOb = node.orgData||{};
     this.tags = {}
-    this['@type'] = 'Node'
+    this['@type'] = 'Node';
+    if(node.id.includes('-')) this.updateFlag(1);
   }
 
   setOsmNode (node, flag) {
