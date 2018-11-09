@@ -45,14 +45,7 @@
         }
       },
       'sobject.id'(id){
-        // console.log(this.sobject.id,999999999)
-        // if(id){
-        //   this.title = this.sobject.name||'default';
-        //   this.otypeName = this.sobject.otype.name;
-        // }else{
-        //   this.title = '';
-        //   this.otypeName = '';
-        // }
+        this.otypeName = this.sobject.otype.name;
       }
     },
     methods:{

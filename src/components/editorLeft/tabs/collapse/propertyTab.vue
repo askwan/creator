@@ -40,6 +40,11 @@
 						</div>
 
 					</div>
+					<el-form size="mini">
+						<el-form-item label-width='70px' label="真实时间">
+							<el-date-picker style="width:180px;" v-model="time" type="datetime" placeholder="日期时间" @change="changeTime"></el-date-picker>
+						</el-form-item>
+					</el-form>
 				</div>
 			</div>
 	</div>
@@ -53,7 +58,8 @@
 		data() {
 			return {
 				objectAttrLists: [], //添加属性列表
-				showproperty: false //是否显示属性列表
+				showproperty: false, //是否显示属性列表
+				time:''
 			};
 		},
 		props: ["objectDetail"],
@@ -63,11 +69,13 @@
     activated() {},
     mounted(){
       idEdit = getEditor();
-      this.transformObj(this.objectDetail);
+			this.transformObj(this.objectDetail);
+			this.time = new Date(this.objectDetail.realTime*1000);
     },
 		watch: {
 			objectDetail(val) {
-        this.transformObj(val);
+				this.transformObj(val);
+				this.time = new Date(val.realTime*1000);
 			}
 		},
 		methods: {
@@ -215,7 +223,6 @@
 					//根据otype中的字段定义顺序，显示获取排列字段
 					for(let i = 0; i < fields.length; i++) {
 						let field = fields[i];
-						console.log(field,'ffff')
 						let attr = {
 							fid: field.id,
 							name: field.name,
@@ -267,7 +274,6 @@
 					});
 				}
 				this.objectDetail.modifyAttr(attr);
-				console.log(attr,123123)
 				idEdit.modifySobject(this.objectDetail);
 			},
 			lastValue(item, index) {
@@ -309,6 +315,11 @@
 					value: "",
 					noEdit: true
 				});
+			},
+			changeTime(time){
+				let realtime = Date.parse(time)/1000;
+				idEdit.modifyRealTime(this.objectDetail,realtime);
+				// console.log(realtime,'time')
 			}
 		}
 	};

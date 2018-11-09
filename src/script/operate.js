@@ -7,7 +7,8 @@ export const operate = {
   selectObject:'selectObject',
   openTab:'openTab',
   mapBoxZoom:'mapBoxZoom',
-  DiagramReady:'DiagramReady'
+  DiagramReady:'DiagramReady',
+  mapStatus:'mapStatus'
 }
 
 let vm = new Vue();

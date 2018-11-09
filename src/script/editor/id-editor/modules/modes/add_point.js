@@ -26,28 +26,16 @@ export function modeAddPoint(context) {
     function add(loc) {
         var node = osmNode({ loc: loc });
         
-        // context.perform(
-        //     actionAddEntity(node),
-        //     t('operations.add.annotation.point')
-        // );
-
-        var currentPreset=context.presets().item(context.currentId());
 
         context.perform(
             actionAddEntity(node),
             t('operations.add.annotation.point')
         );
 
-        // context.perform(
-        //     actionChangePreset(node.id, null,currentPreset),
-        //     'operations.change_tags.annotation'
-        // );
-       
-
         context.enter(
             modeSelect(context, [node.id]).newFeature(true)
         );
-        context.selectEle(node.id);
+        // context.selectEle(node.id);
         console.log('complate-point')
     }
 

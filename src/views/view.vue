@@ -52,21 +52,30 @@
       'historyList':()=>import('@/components/viewLeft/historyList'),
       'viewExport':()=>import('@/components/viewLeft/viewExport'),
       'searchResult':()=>import('@/components/viewLeft/searchResult'),
-      'commonDistrict':()=>import('@/components/common/district')
+      'commonDistrict':()=>import('@/components/common/district'),
+      'modelList':()=>import('@/components/viewLeft/modelList')
     },
     computed:{},
     watch:{
       'currentObject.id'(val){
         // this.showLeft = Boolean(val);
-      }
+      },
     },
     mounted(){
       map = mapbox.createMapboxMap('mapbox',()=>{
         //定位
-        let position = mapposition.getMapPosition();
-        map.setCenter([position.lng, position.lat], position.zoom );
-        map.setZoom(position.zoom);
-        this.areaObj = mapposition.getArea();
+        if(this.$route.query.map){
+          let str = this.$route.query.map;
+          let posi = str.split(',');
+          map.setCenter([posi[2],posi[1]],posi[0]);
+          map.setZoom(posi[0]);
+        }else{
+          let position = mapposition.getMapPosition();
+          map.setCenter([position.lng, position.lat], position.zoom );
+          map.setZoom(position.zoom);
+          this.areaObj = mapposition.getArea();
+        }
+        
       });
       getMap(map);
       this.listenEvent();
@@ -91,6 +100,15 @@
           this.componentId = obj.name;
           this.showLeft = true;
         });
+        vm.$on(operate.mapStatus,obj=>{
+          let str = `${obj.zoom},${obj.posi.lat},${obj.posi.lng}`;
+          this.$router.push({
+            path:'/view',
+            query:{
+              map:str
+            }
+          })
+        })
         window.onbeforeunload = ()=> {
             mapposition.saveMapPosition({
               lng: map.getCenter().lng,
@@ -115,8 +133,8 @@
       },
       posiCenter(){
         if(!this.areaObj.geoBox) return this.showDistrict=true;
-      let center = this.getCenter(this.areaObj.geoBox);
-      mapbox.flyTo(center.x, center.y, center.z,10);
+        let center = this.getCenter(this.areaObj.geoBox);
+        mapbox.flyTo(center.x, center.y, center.z,10);
       },
       getCenter(bbox){
         let center = {};

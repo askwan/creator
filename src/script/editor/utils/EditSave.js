@@ -180,6 +180,7 @@ class EditSave {
   }
   getSaveSObject(context,idedit){
     //sobjectchange
+    let nowDate = Math.floor(Date.parse(new Date())/1000);
     let sobjects = idedit.currentGraph.sobjectList;
     let resultSobjectList = [];
     //osmchange
@@ -189,15 +190,6 @@ class EditSave {
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
     }
-
-    // resultSobjectList.forEach(obj=>{
-    //   obj.forms.forEach(form=>{
-    //     if(typeof form.geom=='string'){
-    //       console.log(TYPE[form.geotype],'geotyp')
-    //       form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
-    //     }
-    //   })
-    // });
 
     for(let i in osmCollection){
       let entity = osmCollection[i];
@@ -234,8 +226,15 @@ class EditSave {
         
         if(form.geom instanceof osm.OsmEntity){
           form.geom.clearId();
+        }else{
+          form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+          form.geom.clearId();
         }
-      })
+      });
+      let creatAction = obj.actions.find(el=>el.operation==33);
+      if(creatAction&&!obj.realTime){
+        obj.realTime = nowDate;
+      }
     })
 
     return resultSobjectList

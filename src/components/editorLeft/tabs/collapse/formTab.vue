@@ -247,6 +247,7 @@
 			this.requestList();
 		},
 		deactivated() {
+			if(!this.$refs.selectStyle) return;
 			this.$refs.selectStyle.forEach(el=>{
 				el.blur();
 			})
@@ -573,7 +574,8 @@
 				this.curCollapse = activeNames;
 			},
 			placeTypeChange(value) {
-
+				console.log(this.objectDetail,'obj');
+				
 				let style = formCtrl.geOtypeFromStyle(this.objectDetail.otype, value);
 				if(style != null) {
 
@@ -583,6 +585,7 @@
 					//添加形态
 					IdEdit.addObjectForm(this.objectDetail, form);
 				}
+				this.getData();
 			},
 			deleteOT(item, index) {
 				this.$confirm('此操作将永久删除此形态, 是否继续?', '提示', {
@@ -715,9 +718,9 @@
 				border: 1px solid #b3d8ff;
 				border-radius: 5px;
 				overflow: hidden;
-				font-size: 12px;
+				font-size: 10px;
 				i {
-					font-size: 14px;
+					font-size: 12px;
 				}
 			}
 			span:hover {

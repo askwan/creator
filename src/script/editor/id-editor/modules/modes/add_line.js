@@ -70,7 +70,7 @@ export function modeAddLine(context) {
             actionAddVertex(way.id, node.id),
             actionChangePreset(way.id, null,currentPreset)
         );
-        context.selectEle(way.id);
+        // context.selectEle(way.id);
 
         context.enter(modeDrawLine(context, way.id, startGraph));
     }
@@ -93,7 +93,7 @@ export function modeAddLine(context) {
             actionAddVertex(way.id, node.id),
             actionChangePreset(way.id, null,currentPreset)
         );
-        context.selectEle(way.id);
+        // context.selectEle(way.id);
 
         context.enter(modeDrawLine(context, way.id, startGraph));
     }

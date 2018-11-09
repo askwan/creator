@@ -68,11 +68,10 @@
     },
     mounted(){
       this.parents = this.objectDetail.parents;
-      // this.nodes = this.objectDetail.network.nodes;
+      this.nodes = this.objectDetail.network.nodes;
     },
     activated(){
       this.parents = this.objectDetail.parents;
-      console.log(this.objectDetail,7777777777)
       this.nodes = this.objectDetail.network.nodes;
     },
     methods:{

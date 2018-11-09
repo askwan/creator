@@ -24,7 +24,7 @@ export function modeDrawLine(context, wayId, startGraph, affix) {
             if (node.id === headId) {
                 behavior.finish();
                 console.log('complate-line');
-                context.selectEle(wayId);
+                // context.selectEle(wayId);
             } else {
                 addNode(node, d);
             }

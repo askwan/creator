@@ -47,6 +47,10 @@
     },
     methods:{
       getDiagram(){
+        let user={};
+        if(sessionStorage.getItem('user')){
+          user = JSON.parse(sessionStorage.getItem('user'));
+        }
         new psde.Diagram()
         .query({
           loadField: true,
@@ -54,7 +58,8 @@
           loadForm: true,
           loadParentField: true,
           loadParents: true,
-          loadConnector: true
+          loadConnector: true,
+          uids:user.id
         })
         .then(res => {
           State.getDiagram(res.list);

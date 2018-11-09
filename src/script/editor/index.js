@@ -353,6 +353,12 @@ export default class Editor {
     sobject.modifyObject(object);
     this.updateAndHistory(object)
   }
+  modifyRealTime(object,time){
+    let sobject = this.getSobjectById(object.id);
+    sobject.realTime = time;
+    sobject.modifyObject(sobject);
+    this.updateAndHistory(sobject)
+  }
   filterObjectByOtype(arr){
     this.idContext.otypes(arr);
     State.otypeIds = arr;

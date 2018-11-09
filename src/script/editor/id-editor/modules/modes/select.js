@@ -53,7 +53,9 @@ export function modeSelect(context, selectedIDs) {
         id: 'select',
         button: 'browse'
     };
-
+    if(selectedIDs.length==1){
+        context.selectEle(selectedIDs[0]);
+    }
     var keybinding = d3_keybinding('select');
     var timeout = null;
     var behaviors = [

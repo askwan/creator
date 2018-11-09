@@ -74,8 +74,12 @@ function createMap (container) {
   }))
 
   let moveEvent = function (e) {
-    console.log(e);
+    // console.log(e);
     // console.log(map.getBounds())
+    vm.$emit(operate.mapStatus,{
+      posi:map.getCenter(),
+      zoom:map.getZoom()
+    })
     vm.$emit(operate.mapBoxZoom, map.getBounds().toArray())
   }
   let _moveEvent = _debounce(moveEvent, 200)

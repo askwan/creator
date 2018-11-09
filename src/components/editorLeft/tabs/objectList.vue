@@ -49,7 +49,8 @@
         pageNum:1,
         searchValue:'',
         pageSize:20,
-        loading:false
+        loading:false,
+        otName:''
       }
     },
     props:['currentObject'],
@@ -93,28 +94,28 @@
       }else{
         this.searchValue = ''
         this.queryObject();
+        this.otName = '';
       }
     },
     methods:{
       queryObject(){
         this.$refs.list.scrollTop = 0;
         this.loading = true;
-        if(!this.searchValue) {
-          this.pageNum = 1;
-          this.objectList = [];
-          for(let id in State.sobjects){
-            this.objectList.push(State.sobjects[id]);
-            this.total = this.objectList;
-          }
-          this.loading = false;
-            // console.log(this.objectList,789789)
-            return
-        }
+        // if(!this.searchValue) {
+        //   this.pageNum = 1;
+        //   this.objectList = [];
+        //   for(let id in State.sobjects){
+        //     this.objectList.push(State.sobjects[id]);
+        //     this.total = this.objectList;
+        //   }
+        //   this.loading = false;
+        //     return
+        // }
         let user = JSON.parse(sessionStorage.getItem('user'));
         let id = `'${user.id}'`;
         var obj = {
 					names: this.searchValue,
-					otNames: '',
+					otNames: this.otName,
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
           uids:id
@@ -130,7 +131,15 @@
 				});
       },
       getObjectByRelation(){
-        let connector = this.otype.connectors.connectors.find(el=>el.relation.id==this.currentRelation.id);
+        let connector = this.otype.connectors.connectors.find(el=>{
+          if(typeof el.relation == 'object'){
+            el.relation.id==this.currentRelation.id;
+            return true;
+          }else{
+            return false;
+          }
+        });
+        this.otName = connector.dType.name;
         let obj = {
           otNames:connector.dType.name
         };
@@ -150,6 +159,7 @@
         }else{
           IdEdit.updateParent(obj);
           vm.$emit(operate.changeTab,{name:'objectDetail'});
+          this.otName = '';
         }
         
         

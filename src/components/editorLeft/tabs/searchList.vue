@@ -6,9 +6,9 @@
 		<div class="object-content-1">
 			<div class="search-list" v-if="objectListShow">
 				<ul>
-					<li v-for="(item,index) in objectList" :key="index" v-if="item.forms && item.forms.length>0 && item.name">
+					<li v-for="(item,index) in objectList" :key="index" >
 						<img v-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" />
-						<i v-else-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
+						<!-- <i v-else-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
 						<i v-else-if="item.forms[0].type==22" class="iconfont icon-xian1"></i>
 						<i v-else-if="item.forms[0].type==23" class="iconfont icon-mian1"></i>
 						<i v-else-if="item.forms[0].type==31" class="iconfont icon-yuedengyu"></i>
@@ -17,7 +17,7 @@
 						<i v-else-if="item.forms[0].type==40" class="iconfont icon-bim"></i>
 						<i v-else-if="item.forms[0].type==50" class="iconfont icon-ic_d_rotation"></i>
 						<i v-else-if="item.forms[0].type==61" class="iconfont icon-ganlanqiu"></i>
-						<i v-else class="iconfont icon-meiyougengduo"></i>
+						<i v-else class="iconfont icon-meiyougengduo"></i> -->
 						<span @click="openObject(item,index)">{{item.name}} (<span>{{getOtypeName(item)}}</span>)</span>
 					</li>
 				</ul>
@@ -164,7 +164,13 @@ export default {
       });
     },
     openObject(item, index) {
+
       let context = getEditor().idContext;
+
+      if(item.forms.length==0){
+        getEditor().setSObject(item);
+        return
+      }
       
       let bbox = item.geoBox;
       if(bbox.minx!=0&&bbox.miny!=0){
@@ -194,8 +200,8 @@ export default {
 	      try{
           setTimeout(()=>{
             getEditor().setSObject(item);
-            if(item.forms[0].geom){
-            // getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
+            if(item.forms.length>0&&item.forms[0].geom){
+            getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
             // context.selectEle(item.forms[0].geom);
           }
 			  },1000)

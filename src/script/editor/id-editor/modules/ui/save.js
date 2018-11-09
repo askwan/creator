@@ -34,7 +34,7 @@ export function uiSave(context) {
 
 
     function save() {
-        // d3_event.preventDefault();
+        d3_event.preventDefault();
         // if (!context.inIntro() && !saving() && history.hasChanges()) {
         //     context.enter(modeSave(context));
         // };

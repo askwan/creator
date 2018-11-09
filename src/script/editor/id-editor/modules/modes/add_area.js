@@ -83,7 +83,7 @@ export function modeAddArea(context) {
             actionAddMidpoint({ loc: loc, edge: edge }, node)
         );
         
-        context.selectEle(way.id);
+        // context.selectEle(way.id);
         context.enter(modeDrawArea(context, way.id, startGraph));
     }
 
@@ -108,7 +108,7 @@ export function modeAddArea(context) {
         //     actionChangePreset(way.id, null,currentPreset)
         // );
 
-        context.selectEle(way.id);
+        // context.selectEle(way.id);
 
         context.enter(modeDrawArea(context, way.id, startGraph));
     }

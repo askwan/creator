@@ -3,12 +3,15 @@
     <div class="header-left flex">
       <div class="header-logo flex-center mg-right-big">
         <img class="mg-right-small" src="../../../static/images/nav-img.png" alt="">
-        <span class="font-18">Creator</span>
+        <span class="font-18">数据采编工具</span>
       </div>
       <el-button-group>
         <el-button class="btn" size="small" :type="path!=='/view'?'primary':'success'" @click="change">{{chooseItem}}</el-button>
         <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('historyList')">历史</el-button>
         <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('viewExport')">导出</el-button>
+        
+         <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('modelList')">模型</el-button>
+          <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('viewExport')">影像</el-button>
       </el-button-group>
     </div>
     <div class="header-right flex-align">

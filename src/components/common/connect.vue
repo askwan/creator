@@ -2,7 +2,7 @@
   <div class="relation-box">
     <ul class="relation-list mg-bottom-mini">
       <li class="relation-el flex-center">
-        <span class="r-obj font-12 text-ellipsis">{{left}}</span>
+        <span class="r-obj font-12 text-ellipsis" :title="left">{{left}}</span>
         <div class="r-connector flex-column">
           <span class="r-name text-ellipsis">{{center}}</span>
           <div class="r-center flex-center">
@@ -10,7 +10,7 @@
             <i class="iconfont icon-zuojiantou"></i>
           </div>
         </div>
-        <span class="r-obj font-12 text-ellipsis">{{right}}</span>
+        <span class="r-obj font-12 text-ellipsis" :title="right">{{right}}</span>
         <i class="el-icon-delete pointer-danger" @click.stop="deleteIt"></i>
       </li>
     </ul>

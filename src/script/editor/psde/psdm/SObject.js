@@ -27,7 +27,10 @@ export default class SObject extends DObject {
 
     this.defineProperty('network', new Network(), Network)
 
-    this.defineProperty('compose', {})
+    this.defineProperty('compose', {});
+
+    this.defineProperty('realTime','');
+    // this.realTime = '';
   }
 
   createObject (obj) {
