@@ -134,7 +134,7 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        uids:id
+        // uids:id
       };
       this.loading = true;
       this.objectList = [];

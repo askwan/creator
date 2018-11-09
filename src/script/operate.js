@@ -8,7 +8,8 @@ export const operate = {
   openTab:'openTab',
   mapBoxZoom:'mapBoxZoom',
   DiagramReady:'DiagramReady',
-  mapStatus:'mapStatus'
+  mapStatus:'mapStatus',
+  showClickdel:'showClickdel'
 }
 
 let vm = new Vue();

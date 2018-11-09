@@ -118,7 +118,7 @@
 					otNames: this.otName,
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
-          uids:id
+          // uids:id
         };
         this.objectList = [];
         psde.objectQuery.ByNameAndOTName.query(obj).then(res => {

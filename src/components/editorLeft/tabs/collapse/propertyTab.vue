@@ -41,8 +41,8 @@
 
 					</div>
 					<el-form size="mini">
-						<el-form-item label-width='70px' label="真实时间">
-							<el-date-picker style="width:180px;" v-model="time" type="datetime" placeholder="日期时间" @change="changeTime"></el-date-picker>
+						<el-form-item label-width='70px' label="对象时间">
+							<el-date-picker ref='selectStyle' style="width:180px;" v-model="time" type="datetime" placeholder="日期时间" @blur="blurTime" @change="changeTime" default-time="00:00:00"></el-date-picker>
 						</el-form-item>
 					</el-form>
 				</div>
@@ -70,12 +70,24 @@
     mounted(){
       idEdit = getEditor();
 			this.transformObj(this.objectDetail);
-			this.time = new Date(this.objectDetail.realTime*1000);
-    },
+			if(this.objectDetail.realTime){
+				this.time = new Date(this.objectDetail.realTime*1000);
+			}
+			// setTimeout(() => {
+			// 	this.$refs.selectStyle.focus();
+			// 	console.log(123)
+			// }, 1000);
+		},
+		deactivated(){
+			// console.log(this.$refs.selectStyle,'dffffff')
+			// this.$refs.selectStyle.change();
+		},
 		watch: {
 			objectDetail(val) {
 				this.transformObj(val);
-				this.time = new Date(val.realTime*1000);
+				if(val.realTime){
+					this.time = new Date(val.realTime*1000);
+				}
 			}
 		},
 		methods: {
@@ -86,7 +98,8 @@
 				} else {
 					this.showproperty = false;
 				}
-      },
+			},
+			blurTime(){},
 			//删除私有属性
 			deleteAttr(item,index){
 				if (this.objectDetail.attributes && this.objectDetail.attributes.length>0) {

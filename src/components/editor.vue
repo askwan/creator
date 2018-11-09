@@ -21,7 +21,7 @@
         </div>
       </div>
     </transition>
-    <div @click="appClick" class="fill" id="container" ref="container"></div>
+    <div class="fill" id="container" ref="container"></div>
   </div>
 </template>
 <script>
@@ -113,9 +113,6 @@
           return editor.idContext.save();
         }
         getEditor(editor);
-      },
-      appClick(){
-        document.body.click();
       },
       menuTool(item){
         if(item.id==1){

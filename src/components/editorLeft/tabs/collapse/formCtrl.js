@@ -24,15 +24,15 @@ const fromlist = [{
   value: 23,
   sign: 'add'
 }, {
-  label: '地形 / Isohypse',
+  label: 'Isohypse',
   value: 31,
   sign: 'add'
 }, {
-  label: '地形 / Dem',
+  label: 'Dem',
   value: 32,
   sign: 'add'
 }, {
-  label: '地形 / Tin',
+  label: 'Tin',
   value: 33,
   sign: 'add'
 }, {
@@ -44,7 +44,7 @@ const fromlist = [{
   value: 50,
   sign: 'add'
 }, {
-  label: 'ShapeBlock / 椭球',
+  label: 'ShapeBlock',
   value: 61,
   sign: 'add'
 }

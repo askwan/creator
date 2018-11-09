@@ -13,8 +13,8 @@ class VectorSelect {
       this.feature = null;
       let obj = {
         point: {
-          x: 0,
-          y: 0
+          x: -10000000,
+          y: -10000000
         }
       }
       this.onclick(obj);

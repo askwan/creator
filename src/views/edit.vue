@@ -1,5 +1,5 @@
 <template>
-  <div class='map fill'>
+  <div class='map fill' @click="appClick">
     <map-content></map-content>
   </div>
 </template>
@@ -31,6 +31,8 @@
       let idEdit = getEditor();
       let osmChange = idEdit.idContext.history().hasChanges();
       let objectChange = idEdit.isChanges;
+      // console.log(document.getElementById('container'),'dom');
+      // document.getElementById('container').innerHTML = '';
       if(osmChange||objectChange){
         this.$confirm('是否忽略此次编辑','信息提示',{
           confirmButtonText: '确定',
@@ -129,6 +131,14 @@
         //   })
         // })
 
+      },
+      appClick(){
+        // setTimeout(() => {
+        //   let dom = document.querySelector('.el-date-picker');
+        //   if (dom&&dom.style.display!=='none'){
+        //     dom.style.display = 'none';
+        //   }
+        // }, 500);
       }
     }
   }

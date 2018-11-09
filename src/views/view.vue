@@ -17,7 +17,7 @@
     <div class="view-left shadow" v-show="showLeft">
       <div class="close-bar flex-between pd-right-mini">
         <i></i>
-        <i class="el-icon-close font-20 pointer-default" @click="close"></i>
+        <i class="el-icon-close font-20 pointer-default" @click.stop="close"></i>
       </div>
       <div class="left-box fill">
         <component :isShow="showLeft" :is="componentId" :viewSearchValue="viewSearchValue" :sobject="currentObject" @closeLoading='loading=false'></component>
@@ -102,12 +102,12 @@
         });
         vm.$on(operate.mapStatus,obj=>{
           let str = `${obj.zoom},${obj.posi.lat},${obj.posi.lng}`;
-          this.$router.push({
+          this.$router.replace({
             path:'/view',
             query:{
               map:str
             }
-          })
+          });
         })
         window.onbeforeunload = ()=> {
             mapposition.saveMapPosition({
@@ -125,8 +125,12 @@
         this.showLeft = true;
         this.loading = true;
       },
-      close(){
+      close(e){
+        e.preventDefault();
+        e.stopPropagation();
         this.showLeft = false;
+        // map.onclick({point:{x:0,y:0}});
+        vm.$emit(operate.showClickdel);
       },
       getPosiObj(obj){
         this.areaObj = obj;
