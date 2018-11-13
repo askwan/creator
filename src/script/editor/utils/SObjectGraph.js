@@ -54,7 +54,7 @@ class SObjectGraph {
     form.geom = entityId
     form.type = formType
     form.geotype = geoType
-
+    form.geomref = entityId
     form.maxGrain = form.maxGrain || 0
     form.minGrain = form.minGrain || 0
     let sobject = new psde.SObject();

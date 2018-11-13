@@ -2,3 +2,46 @@ body{
   min-width: 1080px;
   overflow: auto;
 }
+
+.earth-null-list {
+  width: 100%;
+  ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    li {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: center;
+      // border-bottom: 1px solid #ccc;
+      background: #ffffff;
+      cursor: pointer;
+      i {
+        font-size: 16px;
+        color: #999999;
+      }
+      .null-span {
+        font-size: 12px;
+        color: #999999;
+      }
+      .earth-span {
+        font-size: 12px;
+        cursor: pointer;
+          border: 0;
+          display: inline-block;
+          line-height: 30px;
+        margin-top: 5px;
+          width: 120px;
+          height: 30px;
+          color: white;
+          background: #7092FF;
+          text-align: center;
+          border-radius: 2px;
+      }
+    }
+  }
+}

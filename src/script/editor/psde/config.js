@@ -80,6 +80,16 @@ let downloadFile = {
 //baseURL: modelUrl + "/block/api/onegis/file/download"
 };
 
+let downloadImage = {
+  // http://bt1.geosts.ac.cn/api/dae/hdfs-service/hdfs/rest/v0.1.0/datastore/slave/hdfs/download?srcPath=/usrData/yq_2m_16.tif
+  baseURL: psdeBaseUrl + "/hdfs-service/hdfs/rest/v0.1.0/datastore/slave/hdfs/download?srcPath="
+};
+
+//影像列表
+let imageList = {
+  baseURL: modelUrl + "/datastore/rest/v0.1.0/datastore/dobject/query"
+}
+
 //对象建模，业务建模跳转地址
 let modelJump = {
   loc: window.location.href,
@@ -115,5 +125,7 @@ export {
   behaviorQuery,
   behaviorDelete,
   behaviorUpdate,
-  modelUrl
+  modelUrl,
+  downloadImage,
+  imageList
 };

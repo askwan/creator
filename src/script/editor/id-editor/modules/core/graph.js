@@ -273,6 +273,7 @@ coreGraph.prototype = {
 
 
     remove: function(entity) {
+        console.log(entity);
         return this.update(function() {
             this._updateCalculated(entity, undefined);
             this.entities[entity.id] = undefined;

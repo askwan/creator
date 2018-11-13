@@ -82,7 +82,9 @@
       }
     },
     mounted(){
-
+      vm.$on(operate.constituteOtype,otype=>{
+        console.log(otype,'otype')
+      })
     },
     activated(){
       IdEdit = getEditor();
@@ -92,9 +94,12 @@
         this.otype = this.currentObject.otype;
         this.getObjectByRelation();
       }else{
+        let net = this.currentObject.otype.connectors.connectors;
+        let parentNet = net.filter(el=>el.dType);
+        let netNames = parentNet.map(el=>el.dType.name);
         this.searchValue = ''
-        this.queryObject();
         this.otName = '';
+        this.queryObject();
       }
     },
     methods:{

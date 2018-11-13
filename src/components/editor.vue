@@ -13,7 +13,7 @@
     <transition name="slider">
       <div v-show="showRight" class="right shadow">
         <div class="right-header flex-between pd-right-mini">
-          <span class="font-16 pd-left-mini">过滤</span>
+          <span class="font-16 pd-left-mini">{{title}}</span>
           <i class="el-icon-close font-18 pointer" @click="showRight=false"></i>
         </div>
         <div class="right-content">
@@ -38,25 +38,35 @@
         isShow:true,
         componentId:'rightOtypes',
         showRight:false,
+        title:'',
         menuList:[{
           icon:'el-icon-plus',
           id:1,
-          desc:'放大'
+          desc:'放大',
+          title:'放大'
         },{
           icon:'el-icon-minus',
           id:2,
-          desc:'缩小'
+          desc:'缩小',
+          title:'缩小'
+        },{
+          icon:'el-icon-view',
+          id:3,
+          desc:'过滤',
+          title:'过滤'
         },{
           icon:'el-icon-sort',
-          id:3,
-          desc:'过滤'
+          id:4,
+          desc:'内部结构',
+          title:'结构管理'
         }]
       }
     },
     props:{},
     components:{
       'left-content':()=>import('./editorLeft'),
-      'rightOtypes':()=>import('./eidtorRight/otypes.vue')
+      'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
+      'floorManage':()=>import('./eidtorRight/floorMange.vue')
     },
     computed:{},
     mounted(){
@@ -83,6 +93,7 @@
 
           editor.on('currentObject',data=>{
             if(data.object) {
+              console.log(data.object);
               this.currentObj = data.object;
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){
@@ -120,8 +131,13 @@
         }else if(item.id==2){
           editor.zoomIn();
         }else if(item.id==3){
+          this.componentId = 'rightOtypes';
+          this.showRight = !this.showRight;
+        }else if(item.id==4){
+          this.componentId = 'floorManage'
           this.showRight = !this.showRight;
         }
+        this.title = item.title || item.desc;
       }
     },
     destroyed(){

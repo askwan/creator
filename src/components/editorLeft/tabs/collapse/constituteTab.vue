@@ -44,6 +44,7 @@
       },
       chooseParent(){
         vm.$emit(operate.changeTab,{name:'objectList'});
+        // console.log(this.objectDetail.otype,999999)
       },
       getName(parents){
         let str = parents.map(el=>el.id).join(',');

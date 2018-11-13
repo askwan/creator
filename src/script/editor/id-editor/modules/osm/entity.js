@@ -55,6 +55,9 @@ osmEntity.key = function(entity) {
     return entity.id + 'v' + (entity.v || 0);
 };
 
+osmEntity.toggle = function(entity,bool) {
+    return entity.visible = bool;
+};
 
 osmEntity.prototype = {
 
@@ -118,6 +121,10 @@ osmEntity.prototype = {
 
     update: function(attrs) {
         return osmEntity(this, attrs, {v: 1 + (this.v || 0)});
+    },
+
+    toggle: function(bool){
+        return osmEntity.toggle(this, bool)
     },
 
 

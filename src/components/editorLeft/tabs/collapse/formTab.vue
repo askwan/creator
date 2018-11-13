@@ -75,8 +75,8 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="位置 :" :label-width="classNameWidth">					
-							<el-select class="width" ref="selectStyle" v-model="item.geom" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
-								<el-option v-for="(da, ix) in positionRefList(item,index)" :key="ix" :label="da.id" :value="da.id">
+							<el-select class="width" ref="selectStyle" v-model="item.geomref" placeholder="选择引用位置" @change="changePosi(item,index)" :class="{'objtype-input-case':!item.geom}">
+								<el-option v-for="(da, ix) in positionRefList(formateList,item)" :key="ix" :label="da.geomref" :value="da.geomref">
 								</el-option>
 							</el-select>
 							
@@ -109,6 +109,9 @@
 						</el-form-item>
 						<el-form-item label="z轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
 							<el-input type="number" placeholder="Z轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].z"></el-input>
+						</el-form-item>
+						<el-form-item label="海拔：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
+							<el-input type="number" placeholder="地面高度（m）" @change="modifyFormFn(item,index)" v-model="item.style[0].h"></el-input>
 						</el-form-item>
 						
 						<el-form-item label="关联：" :label-width="classNameWidth" v-if="item.geotype==24">
@@ -216,7 +219,8 @@
 								smallPX: "",
 								x: "",
 								y: "",
-								z: ""
+								z: "",
+								h:""
 							};
 						}
 					} else {
@@ -256,56 +260,10 @@
 			this.requestList();
 		},
 		methods: {
-			positionRefList(item,index){
-				let context = getEditor().idContext;
-				if(typeof item.geom !='string') return [];
-				let entity = context.entity(item.geom);
-				let arr = [];
-					arr.push({id:entity.id})
-				if(entity.type=='relation'){
-					arr = arr.concat(entity.members);
-				}else{
-					
-				}
-				return arr;
-				var addPosition = {
-					geomref: "重新编辑位置",
-					type: 100,
-					geom: ""
-				}
-				var strStyleList = JSON.stringify(this.formateList);
-				var list = JSON.parse(strStyleList);
-				//被引用过的位置才能重新编辑，没引用过的位置只能修改
-				var ix = 1;
-				list.forEach(el => {
-					if (el.geomref == item.geomref) {
-						ix++;
-					}
-				})
-				if (ix > 2) {
-					list.push(addPosition);
-				}
-				var copyStyleList = [];
-				list.forEach(obj => {
-					var i = copyStyleList.findIndex((el=>el.geomref==obj.geomref));
-					if(i==-1) copyStyleList.push(obj);
-				})
-				if (item.type == 11 || item.type == 21 || item.type == 40 || item.type == 50 || item.type == 61) {
-					return copyStyleList.filter(obj => {
-						return( (obj.type == 11 || obj.type == 21 || obj.type == 40 || obj.type == 50 || obj.type == 61 || obj.type == 100) && obj.geomref!=0 );
-					})
-				}
-				if (item.type == 13 || item.type == 23 || item.type == 31 || item.type == 32 || item.type == 33) {
-					return copyStyleList.filter(obj => {
-						return( (obj.type == 13 || obj.type == 23 || obj.type == 31 || obj.type == 32 || obj.type == 33 || obj.type == 100)  && obj.geomref!=0 );
-					})
-				}
-				if (item.type == 12 || item.type == 22) {
-					return copyStyleList.filter(obj => {
-						return( (obj.type == 12 || obj.type == 22 || obj.type == 100)  && obj.geomref!=0 );
-					})
-				}
-				return copyStyleList;
+			positionRefList(forms,item){
+				let aim = [];
+				aim = forms.filter(el=>(el.geotype==item.geotype)&&el.geom);
+				return aim;
 			},
 			getPositionName(geotype){
 				if (geotype == 21) {
@@ -556,13 +514,6 @@
 				this.modifyForm(this.objectDetail, str);
 			},
 			modifyFormFn(item, index) {
-				console.log(item,555555555555)
-				// if (item.geomref && item.geomref!="" && item.geomref!="重新编辑位置") {
-				// 	item.geom = "n" + item.geomref;
-				// }
-				// if (item.geomref=="重新编辑位置") {
-				// 	item.geom = "";
-				// }
 				item.minGrain = Number(item.minGrain);
 				item.maxGrain = Number(item.maxGrain);
 				this.modifyForm(this.objectDetail, item);
@@ -574,8 +525,6 @@
 				this.curCollapse = activeNames;
 			},
 			placeTypeChange(value) {
-				console.log(this.objectDetail,'obj');
-				
 				let style = formCtrl.geOtypeFromStyle(this.objectDetail.otype, value);
 				if(style != null) {
 
@@ -606,8 +555,9 @@
 
 			},
 			changePosi(item,index){
-				// console.log(item,index,'changePosi');
-				// console.log(this.objectDetail,item)
+				console.log(item,index,'changePosi');
+				// console.log(this.objectDetail,item);
+				
 				this.modifyForm(this.objectDetail, item);
 			},
 			relationArr(item){

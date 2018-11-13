@@ -12,17 +12,25 @@ import {createOsmNode,
 
 import { State } from '../store'
 
-var jsonObjectsList
-const TYPE = {
-  node:1,
-  way:2,
-  relation:3
+const TAG = {
+  21:{
+    tag:'n'
+  },
+  22:{
+    tag:'w'
+  },
+  23:{
+    tag:'w'
+  },
+  24:{
+    tag:'r'
+  }
 }
 
 function parseObjectToOsm (jsonObjects, callback) {
   if (jsonObjects.status !== 200) return
 
-  jsonObjectsList = jsonObjects.data.list
+  let jsonObjectsList = jsonObjects.data.list
   let entities = []
 
   for (let i = 0; i < jsonObjectsList.length; i++) {
@@ -37,10 +45,8 @@ function parseObjectToOsm (jsonObjects, callback) {
       }
     })
   }
-  entities.sort((a,b)=>TYPE[a.type]>TYPE[b.type]);
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
-  // console.log(entities)
   callback(null, entities)
 }
 
@@ -57,6 +63,9 @@ function parseObject (entities, sobject) {
     let form = sobject.forms[i];
     let geom = form.geom;
     if (!geom) {
+      if(form.geomref) {
+        form.geomref = TAG[form.geotype].tag+form.geomref;
+      }
       continue
     }
     if (form.geotype == osm.SORTINDEX_EXT_NODE) {
@@ -65,6 +74,7 @@ function parseObject (entities, sobject) {
         let oNode = createOsmNode(geom, tags, sobject,'point');
         entities.push(oNode);
         form.geom = oNode.id;
+        form.geomref = 'n'+form.geomref;
       }
     } else if ((form.geotype == osm.SORTINDEX_EXT_WAY)) {
       let nodeids = []
@@ -79,7 +89,8 @@ function parseObject (entities, sobject) {
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
-      form.geom = way.id
+      form.geom = way.id;
+      form.geomref = 'w'+form.geomref;
     }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)) {
       let nodeids = []
       if(geom.nodes.length==0) continue;
@@ -88,19 +99,22 @@ function parseObject (entities, sobject) {
         let oNode = createOsmNode(node, {}, sobject)
         nodeids.push(oNode.id)
         entities.push(oNode)
-        form.geom = oNode.id
+        form.geom = oNode.id;
+        // form.geomref = "n"+form.geomref
       }
       let way = createWay(nodeids, geom.id, Object.assign({area: 'yes'},tags), sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
-      form.geom = way.id
+      form.geom = way.id;
+      form.geomref = "w"+form.geomref
     }else if (form.geotype == osm.SORTINDEX_EXT_RELATION) {
       let obj = createOsmRelation(form.geom,tags,sobject,entities);
       entities = obj.lists;
 
       entities.push(obj.entity)
       form.geom = obj.entity.id;
+      form.geomref = 'r'+form.geomref;
       State.cacheRelation(obj.entity);
     }
   }

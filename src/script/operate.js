@@ -9,7 +9,8 @@ export const operate = {
   mapBoxZoom:'mapBoxZoom',
   DiagramReady:'DiagramReady',
   mapStatus:'mapStatus',
-  showClickdel:'showClickdel'
+  showClickdel:'showClickdel',
+  constituteOtype:'constituteOtype'
 }
 
 let vm = new Vue();

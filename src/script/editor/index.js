@@ -20,6 +20,7 @@ import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
 import {actionChangeTags} from './id-editor/modules/actions/change_tags'
+import {actionVisible} from '@/script/editor/id-editor/modules/actions'
 
 import { State } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
@@ -63,7 +64,17 @@ export default class Editor {
     this.idContext.on('selectEle',ele=>{
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
-        console.log(this.idContext.entity(ele))
+        let entity = this.idContext.entity(ele);
+        console.log(entity)
+        let features = this.idContext.features();
+        // console.log(features.features());
+        setTimeout(() => {
+          // entity.toggle(false);
+          console.log('zhixing');
+          this.idContext.perform(actionVisible(ele,false),'hidden')
+          // features.reset();
+        }, 2000);
+        // features.clearEntity(ele);
         let relation = State.findRelationByMember(ele);
         if(relation){
           // if(this.idContext.entity(relation.id).members.find(el=>el.id==ele)){
@@ -83,6 +94,7 @@ export default class Editor {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
         if(_form){
           _form.geom = ele;
+          _form.geomref = ele;
           this.updateAndHistory(this.currentSobject)
         };
         dispatch.call('currentObject',this,{object:this.currentSobject,entity:ele});

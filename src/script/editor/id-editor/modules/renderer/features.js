@@ -76,8 +76,8 @@ export function rendererFeatures(context) {
             // } else {
             //     delete q.disable_features;
             // }
-            // window.location.replace('#' + utilQsString(q, true));
-            // context.storage('disabled-features', disabled.join(','));
+            window.location.replace('#' + utilQsString(q, true));
+            context.storage('disabled-features', disabled.join(','));
         }
         _hidden = features.hidden();
         dispatch.call('change');

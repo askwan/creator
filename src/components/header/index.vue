@@ -11,7 +11,7 @@
         <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('viewExport')">导出</el-button>
         
          <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('modelList')">模型</el-button>
-          <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('viewExport')">影像</el-button>
+          <el-button class="btn" :disabled="!ifEdit" size="small" @click="select('imageList')">影像</el-button>
       </el-button-group>
     </div>
     <div class="header-right flex-align">
@@ -74,7 +74,7 @@
       }
 			var _token = this.$route.query.token;
 			var _url = this.$route.query.url;
-			// console.log(_token)
+			console.log(_url)
 			if(_token) { //判断地址栏是否有token
 				common.setItem("token", _token);
 				common.getNewUser("get", "/account/authorize", {}, res => {
@@ -86,7 +86,9 @@
           this.icon = common.getAvatar(common.getInfo('avatar'));
 				})
 			} else { //地址栏没有token 退出重新登陆
-				common.exitUser.exitAddress();
+				if(!sessionStorage.getItem('user')){
+          common.exitUser.exitAddress();
+        }
 			}
 		},
     methods:{

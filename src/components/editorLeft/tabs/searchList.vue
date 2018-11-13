@@ -200,12 +200,10 @@ export default {
 	      try{
           setTimeout(()=>{
             getEditor().setSObject(item);
-            if(item.forms.length>0&&item.forms[0].geom){
-            getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
-            // context.selectEle(item.forms[0].geom);
-          }
-			  },1000)
-
+              if(item.forms.length>0&&item.forms[0].geom){
+              getEditor().relationOperate.positionEntity(context,[item.forms[0].geom])
+            }
+			    },1000)
 	      }catch(e){
 	      	//TODO handle the exception
 	      }

@@ -53,7 +53,8 @@
       'viewExport':()=>import('@/components/viewLeft/viewExport'),
       'searchResult':()=>import('@/components/viewLeft/searchResult'),
       'commonDistrict':()=>import('@/components/common/district'),
-      'modelList':()=>import('@/components/viewLeft/modelList')
+      'modelList':()=>import('@/components/viewLeft/modelList'),
+      'imageList':()=>import('@/components/viewLeft/imageList')
     },
     computed:{},
     watch:{
@@ -179,7 +180,7 @@
       top: 60px;
       height: 80%;
       width: 300px;
-      overflow-y: auto;
+      // overflow-y: auto;
       overflow-x: hidden;
 
     }

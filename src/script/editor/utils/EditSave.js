@@ -223,11 +223,16 @@ class EditSave {
       	} else{
       		form.style = "";
         }
+        form.geomref = this.toNum(form.geomref);
         
         if(form.geom instanceof osm.OsmEntity){
           form.geom.clearId();
-        }else{
+        }else if(form.geom && typeof form.geom=='string'){
           form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+          form.geom.clearId();
+        }else if(form.geom&&typeof form.geom=='object'){
+          console.log(form.geom)
+          form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom.id));
           form.geom.clearId();
         }
       });
@@ -256,7 +261,11 @@ class EditSave {
     return obj;
   }
   toNum(str){
-    return str.replace(/[^0-9]/ig,"")
+    if(typeof str === 'string'){
+      return str.replace(/[^0-9]/ig,"")
+    }else if(typeof str === 'number'){
+      return str;
+    }
   }
   getSobjectByEntityId(list,id){
     let sobject;
@@ -277,8 +286,8 @@ class EditSave {
     let form = sobject.forms.find(el => el.geom == entity.id)
     form.geom = entity;
     if (form.type < 30) {
+      // form.geomref = this.toNum(entityId);
       form.formref.refid = this.toNum(entityId)
-      form.geomref = this.toNum(entityId);
 
     }else {
       form.geomref = entityId;
