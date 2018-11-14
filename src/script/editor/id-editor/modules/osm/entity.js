@@ -124,7 +124,10 @@ osmEntity.prototype = {
     },
 
     toggle: function(bool){
-        return osmEntity.toggle(this, bool)
+        this.visible = bool;
+
+        return osmEntity(this,this.tags,{v:1 + (this.v || 0)});
+        // return osmEntity.toggle(this, bool)
     },
 
 

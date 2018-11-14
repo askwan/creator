@@ -17,7 +17,7 @@
           <i class="el-icon-close font-18 pointer" @click="showRight=false"></i>
         </div>
         <div class="right-content">
-          <component :is="componentId" :show="showRight"></component>
+          <component :is="componentId" :show="showRight" :sobject="currentObj"></component>
         </div>
       </div>
     </transition>
@@ -93,7 +93,7 @@
 
           editor.on('currentObject',data=>{
             if(data.object) {
-              console.log(data.object);
+              // console.log(data.object);
               this.currentObj = data.object;
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){

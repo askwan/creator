@@ -65,15 +65,10 @@ export default class Editor {
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
         let entity = this.idContext.entity(ele);
-        console.log(entity)
+        // console.log(entity)
         let features = this.idContext.features();
-        // console.log(features.features());
-        setTimeout(() => {
-          // entity.toggle(false);
-          console.log('zhixing');
-          this.idContext.perform(actionVisible(ele,false),'hidden')
-          // features.reset();
-        }, 2000);
+        // console.log(features)
+        // features.setFeature(entity);
         // features.clearEntity(ele);
         let relation = State.findRelationByMember(ele);
         if(relation){

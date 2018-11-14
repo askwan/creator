@@ -1,11 +1,21 @@
 export function actionVisible(entityId,bool) {
   return function(graph) {
+    let changes = [];
     var entity = graph.entity(entityId);
-    // entity.visible = bool;
+    // console.log(entity.copy(entity,graph));
+    // if(entity.type=='way'){
+    //   entity.nodes.forEach(node=>{
+    //     let n = graph.entity(node).toggle(bool);
+    //     changes.push(n)
+    //   })
+    // }
     // entity.toggle(bool);
-    // entity.update({name:888})
+    // changes.push(entity);
+    // console.log(entity,7777)
+    // console.log(graph);
+    // console.log(changes);
+    // graph.rebase(changes,[graph],false);
     console.log(graph);
-    graph.remove(entity);
-    return graph.update();
+    return graph
   };
 }

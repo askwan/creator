@@ -136,7 +136,6 @@ coreGraph.prototype = {
     rebase: function(entities, stack, force) {
         var base = this.base(),
             i, j, k, id;
-
         for (i = 0; i < entities.length; i++) {
             var entity = entities[i];
 
@@ -262,9 +261,9 @@ coreGraph.prototype = {
 
 
     replace: function(entity) {
-        if (this.entities[entity.id] === entity)
-            return this;
-
+        console.log(this.entities[entity.id]===entity,'bool')
+        // if (this.entities[entity.id] === entity)
+        //     return this;
         return this.update(function() {
             this._updateCalculated(this.entities[entity.id], entity);
             this.entities[entity.id] = entity;

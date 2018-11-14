@@ -10,6 +10,7 @@ var State = {
   dimension,
   styleServerType,
   formstyleType,
+  entitys:[]
 }
 
 State.cacheRelation = function(relation){
@@ -60,6 +61,25 @@ State.clear = function(){
   this.relations = [];
   this.sobjects = {};
   // this.otypeIds = [];
+}
+
+let hidden = [];
+State.hiddenObjects = function(list){
+  if(!list) return hidden;
+  // list.forEach(el=>{
+  //   let index = hidden.findIndex(ev=>ev==el);
+  //   if(index)
+  // });
+  hidden = list;
+}
+
+State.toggleObject = function(obj){
+  let index = hidden.findIndex(el=>el==obj.id);
+  if(index==-1){
+    hidden.push(obj.id);
+  }else{
+    hidden.splice(index,1,1);
+  }
 }
 
 export {

@@ -146,7 +146,6 @@ export function coreContext() {
 
     context.loadEntity = function(entityId, callback) {
         var cid;
-
         function done(err, result) {
             if (connection.getConnectionId() !== cid) {
                 if (callback) callback({ message: 'Connection Switched', status: -1 });

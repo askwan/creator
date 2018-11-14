@@ -61,7 +61,5 @@
   }
 </script>
 <style lang='scss' scoped>
-  .otypes{
-
-  }
+  
 </style>

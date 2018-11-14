@@ -28,7 +28,7 @@ const TAG = {
 }
 
 function parseObjectToOsm (jsonObjects, callback) {
-  if (jsonObjects.status !== 200) return
+  if (jsonObjects.status !== 200) return callback('error',[])
 
   let jsonObjectsList = jsonObjects.data.list
   let entities = []
@@ -54,6 +54,11 @@ function parseObject (entities, sobject) {
   let tags = getAttributeTag(sobject)
   // 循环形态列表
   if (!sobject.forms) return [];
+
+  let hidden = State.hiddenObjects();
+  let hideObj = hidden.find(el=>el==sobject.id);
+  if(hideObj) return [];
+
 
   let otypeIds = State.otypeIds;
   let otype = otypeIds.find(el=>el==sobject.otype.id);

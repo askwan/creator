@@ -316,7 +316,7 @@ export function uiMapData(context) {
 
         label
             .append('span')
-            .text(function(d) { return t(name + '.' + d + '.description'); });
+            // .text(function(d) { return t(name + '.' + d + '.description'); });
 
         // Update
         items = items

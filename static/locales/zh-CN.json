@@ -539,6 +539,10 @@
             "others": {
                 "description": "其他",
                 "tooltip": "其他东西"
+            },
+            "otype": {
+                "description":"otype",
+                "tooltip":"something"
             }
         },
         "area_fill": {

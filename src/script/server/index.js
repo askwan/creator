@@ -6,6 +6,7 @@ import objectServer from './api/objectServer'
 import diagramServer from './api/diagramServer'
 import styleServer from './api/styleServer'
 import behaviorServer from './api/behaviorServer'
+import connectorServer from './api/connectorServer'
 
 import {
   psdeBaseUrl,
@@ -28,7 +29,8 @@ export {
   psdeUrl,
   imageServer,
   styleServer,
-  behaviorServer
+  behaviorServer,
+  connectorServer
 }
 
 // const myEvent = new CustomEvent('hello',{
