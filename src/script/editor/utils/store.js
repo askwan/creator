@@ -78,8 +78,18 @@ State.toggleObject = function(obj){
   if(index==-1){
     hidden.push(obj.id);
   }else{
-    hidden.splice(index,1,1);
+    hidden.splice(index,1);
   }
+}
+
+State.showObject = function(obj){
+  let index = hidden.findIndex(el=>el==obj.id);
+  hidden.splice(index,1);
+}
+
+State.hiddenObject = function(obj){
+  let index = hidden.findIndex(el=>el==obj.id);
+  if(index==-1) hidden.push(obj.id);
 }
 
 export {

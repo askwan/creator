@@ -1,9 +1,19 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
-    <el-checkbox-group class="flex check-floor-box" v-model="checkedObjects" >
+    <!-- <el-checkbox-group class="flex check-floor-box" v-model="checkedObjects" >
       <el-checkbox v-for="item in list" border v-model="floor" class="mg-bottom-small mg-left-small" :label="item.name||item.id" :key="item.id" @change="handleChanged(item)"></el-checkbox>
       
-    </el-checkbox-group>
+    </el-checkbox-group> -->
+    <el-tree :data="objectTree" default-expand-all :props="prop" :expand-on-click-node="false">
+      <span class="flex-between" slot-scope="{node,data}">
+        <i class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
+        <span>{{node.label}}</span>
+        <span class="mg-left-big">
+          <!-- <span class="font-10 pointer font-blue" @click="showObject(node)">显示</span>
+          <span class="font-10 pointer font-danger" @click="hiddenObject(node)">隐藏</span> -->
+        </span>
+      </span>
+    </el-tree>
   </div>
 </template>
 <script>
@@ -17,7 +27,18 @@
         floor:0,
         checkedObjects:[],
         list:[],
-        loading:false
+        loading:false,
+        objectTree:[],
+        hiddens:[],
+        prop:{
+          children:'children',
+          label:'name'
+        },
+        rootObj:{
+          id:'',
+          name:'',
+          children:[]
+        }
       }
     },
     props:['show','sobject'],
@@ -27,11 +48,6 @@
       this.getObjects();
     },
     watch:{
-      floor(val){
-        // if(typeof val =='number'){
-        //   console.log(val);
-        // }
-      },
       show(bool){
         if(bool){
           this.getObjects();
@@ -42,64 +58,84 @@
       }
     },
     methods:{
-      handleChanged(val,b,c){
+      handleChanged(val,bool){
         let disableds = [];
         this.list.forEach(el=>{
           let obj = this.checkedObjects.find(ev=>ev==el.name||ev==el.id);
           if(obj){
-
           }else{
             disableds.push(el);
           }
         });
-        State.toggleObject(val);
+        
         idEditor = getEditor();
-        let history = idEditor.idContext.graph();
-        console.log(history);
-        let entitys =history.entities.__proto__;
-        for(let id in entitys){
-          State.entitys.push(entitys);
+        if( !State.sobjects[val.id]) return;
+        let forms = State.sobjects[val.id].forms;
+        let hiddenObjects = State.hiddenObjects();
+        let isHidden = hiddenObjects.find(el=>el==val.id);
+        if(!bool){
+          forms.forEach(form=>idEditor.enableEntity(form.geom));
+          // State.toggleObject(val);
+          State.showObject(val);
+        }else{
+          forms.forEach(form=>idEditor.disableEntity(form.geom));
+          // State.toggleObject(val);
+          State.hiddenObject(val);
+        };
+
+        
+        // forms.forEach(form=>{
+        //   console.log(form)
+        //   idEditor.disableEntity(form.geom);
+        // })
+        // idEditor.flush();
+      },
+      async getObjects(){
+        // idEditor = getEditor();
+        if(!this.sobject.id) return;
+        this.hiddens = State.hiddenObjects();
+        this.rootObj.name = this.sobject.name;
+        this.rootObj.id = this.sobject.id;
+        this.rootObj.children = [];
+        await this.queryChildren(this.rootObj);
+        console.log(this.rootObj,'root');
+        this.objectTree.push(this.rootObj);
+      },
+      async queryChildren(object){
+        let res = await objectServer.query({parents:object.id,geoEdit:true});
+        try {
+          res.list.forEach(obj=>{
+            object.children.push(obj)
+            this.queryChildren(obj);
+          })
+        } catch (error) {
+          console.log(error,res)  
         }
         
-        idEditor.flush();
       },
-      getObjects(){
+      changeView(node){
         idEditor = getEditor();
-        if(!this.sobject.id) return;
-        this.loading = true;
-        objectServer.query({
-          parents:this.sobject.id,
-          loadForm:true,
-          geoEdit:true,
-          loadNetWork:true
-        }).then(res=>{
-          let arr = res.list.filter(el=>{
-            let otype = State.otypes[el.otype.id];
-            if(otype){
-              el.otype = otype;
-              return true;
-            }else{
-              return false
-            }
-          });
-          this.list = arr;
-          let _arr = [];
-          this.list.forEach(el=>{
-            let aim = State.hiddenObjects().find(ev=>ev==el.id);
-            if(!aim) _arr.push(el);
-          });
-          this.checkedObjects = _arr.map(el=>el.name||el.id);
-          this.loading =false;
+        let hidden = this.hiddens.find(el=>el==node.data.id);
+        let list = this.getChildObjFromTree(node.data);
+        list.forEach(obj=>{
+          this.handleChanged(obj,!Boolean(hidden));
+        });
+        this.hiddens = State.hiddenObjects();
+        // console.log(State.hiddenObjects(),'hiddens');
+      },
+      isView(node){
+        let hidden = this.hiddens.find(el=>node.data.id==el);
+        return !hidden
+      },
+      getChildObjFromTree(root){
+        let list = [];
+        list.push(root);
+        root.children.forEach(child=>{
+          list = list.concat(this.getChildObjFromTree(child))
         })
-        // console.log(idEditor.currentSobject);
+        return list;
       }
-    },
-    destroyed() {
-      console.log('destoryed')
-    },
-    deactivated() {
-      console.log('close')
-    },
+    }
   }
 </script>
 <style lang='scss' scoped>
@@ -110,5 +146,13 @@
       flex-direction: column;
       justify-content: flex-start;
     }
+    
+  }
+  .icon-view{
+    padding-top: 1px;
+    padding-right: 5px;
+  }
+  .show{
+    color: #409EFF;
   }
 </style>

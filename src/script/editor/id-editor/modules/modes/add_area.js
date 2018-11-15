@@ -56,7 +56,7 @@ export function modeAddArea(context) {
             actionAddVertex(way.id, node.id),
             actionClose(way.id)
         );
-
+            console.log(88888888)
         context.enter(modeDrawArea(context, way.id, startGraph));
     }
 

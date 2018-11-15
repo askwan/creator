@@ -9,6 +9,7 @@ import _isString from 'lodash-es/isString';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { json as d3_json } from 'd3-request';
 import { select as d3_select } from 'd3-selection';
+import {State} from '@/script/editor/utils/store'
 
 import {
     t,
@@ -493,7 +494,7 @@ export function coreContext() {
 
     connection = services.osm;
     background = rendererBackground(context);
-    features = rendererFeatures(context);
+    features = rendererFeatures(context,State.otypes);
     presets = presetIndex();
 
     map = rendererMap(context);

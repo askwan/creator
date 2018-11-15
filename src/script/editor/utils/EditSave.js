@@ -100,6 +100,12 @@ class EditSave {
     return result
   }
   getOsmChanges1(context,Idedit){
+    let hidddenObjects = State.hiddenObjects();
+    hidddenObjects.forEach(o=>{
+      State.sobjects[o].forms.forEach(form=>{
+        Idedit.enableEntity(form.geom);
+      })
+    });
     let changes = context.changes();
     let _osmChange = [];
     //created

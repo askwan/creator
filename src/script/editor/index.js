@@ -19,8 +19,10 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
-import {actionChangeTags} from './id-editor/modules/actions/change_tags'
-import {actionVisible} from '@/script/editor/id-editor/modules/actions'
+// import {actionChangeTags} from './id-editor/modules/actions/change_tags'
+import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose} from '@/script/editor/id-editor/modules/actions'
+import { modeSelect } from '@/script/editor/id-editor/modules/modes';
+
 
 import { State } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
@@ -65,25 +67,7 @@ export default class Editor {
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
         let entity = this.idContext.entity(ele);
-        // console.log(entity)
-        let features = this.idContext.features();
-        // console.log(features)
-        // features.setFeature(entity);
-        // features.clearEntity(ele);
-        let relation = State.findRelationByMember(ele);
-        if(relation){
-          // if(this.idContext.entity(relation.id).members.find(el=>el.id==ele)){
-          //   ele = relation.id;
-          //   this.relationOperate.highLightEntity([ele])
-          // }
-
-        } 
-        // this.idContext.features().toggle("otype");
-        // setTimeout(() => {
-        //   console.log('toggle');
-        //   this.idContext.features().toggle("otype");
-        // }, 3000);
-          
+        console.log(entity)
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
@@ -125,6 +109,28 @@ export default class Editor {
     this.currentSobject = _sobject;
     this.sobjectlist[_sobject.list] = _sobject;
     dispatch.call('currentObject',this,{object:_sobject,entityId:null})
+  }
+  enableEntity(entityId){
+    let entity = this.idContext.entity(entityId);
+    // console.log(entity.type);
+    if(entity.type=="way"){
+      entity.nodes.forEach((el,k)=>{
+        let vertex = this.idContext.entity(el);
+        this.idContext.perform(
+          actionAddEntity(vertex),
+          actionAddEntity(entity),
+          actionAddVertex(entity.id, vertex.id),
+          actionClose(entity.id),
+          '显示形态'
+        );
+      })
+    }else if(entity.type=='node'){
+      this.idContext.perform(actionAddEntity(entity),'显示形态')
+    }
+    // this.relationOperate.highLightEntity([entityId]);
+  }
+  disableEntity(entityId){
+    this.deleteOperate.deleteEntity(this.idContext,entityId)
   }
 
 

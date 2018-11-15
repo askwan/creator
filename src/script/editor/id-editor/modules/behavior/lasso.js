@@ -75,7 +75,6 @@ export function behaviorLasso(context) {
 
             var ids = lassoed();
             lasso.close();
-
             if (ids.length) {
                 context.enter(modeSelect(context, ids));
             }

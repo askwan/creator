@@ -1,5 +1,5 @@
 <template>
-  <div class='map fill' @click="appClick">
+  <div class='map fill' v-loading='loading' @click="appClick">
     <map-content></map-content>
   </div>
 </template>
@@ -13,7 +13,7 @@
   export default {
     data(){
       return {
-
+        loading:false
       }
     },
     props:{},
@@ -53,6 +53,7 @@
         if(sessionStorage.getItem('user')){
           user = JSON.parse(sessionStorage.getItem('user'));
         }
+        this.loading = true;
         new psde.Diagram()
         .query({
           loadField: true,
@@ -66,7 +67,9 @@
         .then(res => {
           State.getDiagram(res.list);
           vm.$emit(operate.DiagramReady);
+          this.loading = false;
         }).catch(err=>{
+          this.loading = false;
           vm.$emit(operate.notice,{
             type:'error',
             title:'网络错误',

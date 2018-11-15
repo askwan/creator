@@ -261,9 +261,8 @@ coreGraph.prototype = {
 
 
     replace: function(entity) {
-        console.log(this.entities[entity.id]===entity,'bool')
-        // if (this.entities[entity.id] === entity)
-        //     return this;
+        if (this.entities[entity.id] === entity)
+            return this;
         return this.update(function() {
             this._updateCalculated(this.entities[entity.id], entity);
             this.entities[entity.id] = entity;
@@ -272,7 +271,6 @@ coreGraph.prototype = {
 
 
     remove: function(entity) {
-        console.log(entity);
         return this.update(function() {
             this._updateCalculated(entity, undefined);
             this.entities[entity.id] = undefined;

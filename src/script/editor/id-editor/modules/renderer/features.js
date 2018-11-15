@@ -14,7 +14,7 @@ import {
 } from '../util';
 
 
-export function rendererFeatures(context) {
+export function rendererFeatures(context,otype) {
     var traffic_roads = {
         'motorway': true,
         'motorway_link': true,
@@ -481,13 +481,12 @@ export function rendererFeatures(context) {
     };
 
 
-    features.init = function() {
+    features.init = function(otype) {
         var storage = context.storage('disabled-features');
         if (storage) {
             var storageDisabled = storage.replace(/;/g, ',').split(',');
             storageDisabled.forEach(features.disable);
         }
-        
         // var q = utilStringQs(window.location.hash.substring(1));
         // if (q.disable_features) {
         //     var hashDisabled = q.disable_features.replace(/;/g, ',').split(',');
