@@ -20,8 +20,10 @@ class OsmEntity {
     this.content = content
   }
   updateFlag (flag) {
+    // console.log(flag,this)
     if(this.flag==1) return;
     if(this.flag==3) return;
+    if(this.id.includes('-')) return this.flag = 1;
     this.flag = flag
   }
   clearId(){
@@ -107,7 +109,7 @@ class OsmWay extends OsmEntity {
       if(node.flag!==0) change = true;
       node.clearId();
     });
-    if(!change) this.flag = 0;
+    // if(!change) this.flag = 0;
   }
 
 

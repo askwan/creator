@@ -1,7 +1,8 @@
 <template>
   <div class='left-box fill'>
-    <div class="object-title pd-left-small pd-right-small">
+    <div class="object-title pd-left-small pd-right-small flex-between">
       <span class="font-16 text-ellipsis" v-show="componentId=='objectDetail'">{{title}}({{otypeName}})</span>
+      <el-button class="btn" type="text" v-show="componentId=='objectDetail'" @click="cloneObject">克隆</el-button>
     </div>
     <div class="object-detail">
       <keep-alive>
@@ -11,7 +12,7 @@
   </div>
 </template>
 <script>
-  import {vm,operate} from '@/script/operate'
+  import {vm,operate,getEditor} from '@/script/operate'
   export default {
     data(){
       return {
@@ -53,6 +54,9 @@
         vm.$on(operate.changeTab,obj=>{
           this.componentId = obj.name;
         })
+      },
+      cloneObject(){
+        getEditor().cloneObject();
       }
     }
   }
@@ -67,6 +71,9 @@
       border-bottom: 1px solid #ccc;
       span{
         line-height: $height;
+      }
+      .btn{
+        height: 35px;
       }
     }
     .object-detail{

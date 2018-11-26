@@ -56,13 +56,13 @@ class EditSave {
       if(el.type==='node'){
         if(context.geometry(el.id)==='vertex'){
           if(!el.orgData) return
-          let ways = context.getParents(el.id);
+          let ways = context.graph().parentWays(el)
           ways.forEach(w=>{
-            let way = this.createWay(context,context.entity(w),2);
+            let way = this.createWay(context,w,2);
             addObj(result,way);
-            let res = context.getRelations(w);
+            let res = context.graph().parentRelations(way)
             res.forEach(r=>{
-              let relation = this.createRelation(context,context.entity(r),2);
+              let relation = this.createRelation(context,r,2);
               addObj(result,relation)
             })
 
@@ -70,6 +70,7 @@ class EditSave {
 
 
           el.orgData.forms.forEach(ev=>{
+            if(!ev.geom) return
             if(ev.geotype==21){
               let node = this.createNode(context,context.entity(ev.geom));
               addObj(result,node);
@@ -100,12 +101,7 @@ class EditSave {
     return result
   }
   getOsmChanges1(context,Idedit){
-    let hidddenObjects = State.hiddenObjects();
-    hidddenObjects.forEach(o=>{
-      State.sobjects[o].forms.forEach(form=>{
-        Idedit.enableEntity(form.geom);
-      })
-    });
+
     let changes = context.changes();
     let _osmChange = [];
     //created
@@ -116,7 +112,7 @@ class EditSave {
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
     _osmChange = _osmChange.concat(created,modified,deleted);
     let ways = _osmChange.filter(el=>el.type == 'way');
-
+    
     ways.forEach(way=>{
       way.nodes.forEach((el,k)=>{
         let i = _osmChange.findIndex(ev=>ev.id==el.id);
@@ -137,7 +133,6 @@ class EditSave {
           if(entity['@type']=='Way'){
             entity.nodes.push(el);
           }else if(entity['@type']=='Relation'){
-            
             let wayIds = this.getWayFromRelation(el.id,entity);
             wayIds.forEach(id=>{
               let way = entity.members.find(el=>el.refEntity.id.replace(/[^0-9]/ig,"")==id);
@@ -220,6 +215,7 @@ class EditSave {
 
     resultSobjectList.forEach(obj => {
       obj.otype = {id: obj.otype.id};
+      
       obj.forms.forEach(form => {
         if(typeof form.formref.refid =='string'){
           form.formref.refid = this.toNum(form.formref.refid);
@@ -230,18 +226,27 @@ class EditSave {
       		form.style = "";
         }
         form.geomref = this.toNum(form.geomref);
-        
         if(form.geom instanceof osm.OsmEntity){
           form.geom.clearId();
         }else if(form.geom && typeof form.geom=='string'){
           form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
           form.geom.clearId();
         }else if(form.geom&&typeof form.geom=='object'){
-          console.log(form.geom)
           form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom.id));
           form.geom.clearId();
         }
       });
+      if(obj.actions.find(el=>el.operation==33)) {
+        obj.forms.forEach(el=>{
+          if(el.geom.type=='way'){
+            el.geom.nodes.forEach(node=>{
+              node.updateFlag(1);
+              node.uuid=null;
+            })
+          };
+          el.geom.updateFlag(1);
+        })
+      }
       let creatAction = obj.actions.find(el=>el.operation==33);
       if(creatAction&&!obj.realTime){
         obj.realTime = nowDate;

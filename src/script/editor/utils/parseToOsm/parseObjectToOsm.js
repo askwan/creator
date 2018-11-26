@@ -11,6 +11,7 @@ import {createOsmNode,
   getAttributeTag} from './util'
 
 import { State } from '../store'
+import {getEditor} from '@/script/operate'
 
 const TAG = {
   21:{
@@ -55,9 +56,7 @@ function parseObject (entities, sobject) {
   // 循环形态列表
   if (!sobject.forms) return [];
 
-  let hidden = State.hiddenObjects();
-  let hideObj = hidden.find(el=>el==sobject.id);
-  if(hideObj) return [];
+  
 
 
   let otypeIds = State.otypeIds;
@@ -126,6 +125,16 @@ function parseObject (entities, sobject) {
   let sobj = new psde.SObject()
   sobj.copyObject(sobject);
   State.sobjects[sobj.id] = sobj;
+
+  let context = getEditor().idContext;
+
+  context.features().setFeature(sobject);
+
+  // let hidden = State.hiddenObjects();
+  // let hideObj = hidden.find(el=>el==sobject.id);
+  // if(hideObj) {
+    
+  // }
   return entities;
 }
 

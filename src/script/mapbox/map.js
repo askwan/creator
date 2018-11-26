@@ -9,7 +9,7 @@ import vectorSelect from './VectorSelect'
 // 全局mapbox地图对象
 let mapboxMap = {}
 let marker = null
-
+let user = JSON.parse(sessionStorage.getItem('user'));
 function createMapboxMap (container,callback) {
   let map = createMap(container)
   axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
@@ -49,7 +49,7 @@ function createMap (container) {
         'vector-tiles': {
           'type': 'vector',
           'tiles': [
-            psdeHost + '/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile'
+            psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile&uids='${user.id}'`
           ],
           'minzoom': 4,
           'maxzoom': 20

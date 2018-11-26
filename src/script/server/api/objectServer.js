@@ -6,7 +6,11 @@ class ObjectServer extends Base {
     super();
     this.url = psdeUrl+'object'
   }
-  query(option){
+  query(option={}){
+    let user = sessionStorage.getItem('user');
+    user = JSON.parse(user);
+    Object.assign(option,{uids:`'${user.id}'`});
+    console.log(option,123);
     return new Promise((resolve,reject)=>{
       this.get('/query',option).then(res=>{
         if(res.status==200){

@@ -156,24 +156,24 @@
 				this.loading = false;
 				this.dataList = [];
 				//   let obj
-				axios
-					.get(this.queryModelFile.baseURL, {
-						params: {
-							pageSize: this.page.pageSize,
-							pageNum: this.page.pageNum,
-						}
-					})
-					.then(response => {
-//						console.log(response.data.data, 11111111);
-						this.dataList = response.data.data;
-						this.page.pageNum = response.data.data.pageNum;
-						this.page.pages = response.data.data.pages;
-						this.page.total = response.data.data.total;
-						this.loading = true;
-					})
-					.catch(function(error) {
-						console.log(error, 22222222);
-					});
+				// axios
+				// 	.get(this.queryModelFile.baseURL, {
+				// 		params: {
+				// 			pageSize: this.page.pageSize,
+				// 			pageNum: this.page.pageNum,
+				// 		}
+				// 	})
+				// 	.then(response => {
+				// 		console.log(response.data.data, 11111111);
+				// 		this.dataList = response.data.data;
+				// 		this.page.pageNum = response.data.data.pageNum;
+				// 		this.page.pages = response.data.data.pages;
+				// 		this.page.total = response.data.data.total;
+				// 		this.loading = true;
+				// 	})
+				// 	.catch(function(error) {
+				// 		console.log(error, 22222222);
+				// 	});
       },
       close(){
         this.$emit('close');

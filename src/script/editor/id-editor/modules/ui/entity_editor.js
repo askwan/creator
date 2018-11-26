@@ -270,7 +270,6 @@ export function uiEntityEditor(context) {
 
         if (!_isEqual(entity.tags, tags)) {
             if (coalesceChanges) {
-                console.log(entity,tags)
                 context.overwrite(actionChangeTags(entityId, tags), annotation);
             } else {
                 context.perform(actionChangeTags(entityId, tags), annotation);

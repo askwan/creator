@@ -519,16 +519,6 @@ export function coreContext() {
     presets.init();
     areaKeys = presets.areaKeys();
 
-    context.getParents = function(nodeId){
-        let ways = context.graph()._childNodes;
-        let aim = [];
-        for(let id in ways){
-            let way = ways[id];
-            let index =  way.find(el=>el.id==nodeId);
-            if(index) aim.push(id);
-        }
-        return aim
-    }
     context.getRelations = function(wayId){
         let relations = context.graph().transients;
         let aim = [];

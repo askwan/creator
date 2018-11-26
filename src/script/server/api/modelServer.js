@@ -4,11 +4,12 @@ import {psdeBaseUrl} from '../config'
 class ModelServer extends Base {
   constructor(){
     super();
-    this.url = psdeBaseUrl +'/bim';
+    this.url = psdeBaseUrl +'/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file';
+    
   }
   getModel(option={}){
     return new Promise((resolve,reject)=>{
-      this.get('/bim-service/api/onegis/file/query',option).then(res=>{
+      this.get('/query',option).then(res=>{
         resolve(res);
       })
       .catch(err=>{
@@ -18,7 +19,7 @@ class ModelServer extends Base {
   }
   upload(option){
     return new Promise((resolve,reject)=>{
-      this.upload('/bim-service/api/onegis/file/upload',option).then(res=>{
+      this.upload('/upload',option).then(res=>{
         resolve(res);
       })
       .catch(err=>{
@@ -27,7 +28,7 @@ class ModelServer extends Base {
     })
   }
   getUploadUrl(){
-    return this.url+'/bim-service/api/onegis/file/upload';
+    return this.url+'/upload';
   }
 }
 

@@ -79,7 +79,7 @@
 	import draggable from "vuedraggable";
 	import behaviorService from "@/script/editor/psde/behaviorService";
 	import { vm, operate } from "@/script/operate";
-
+	import {State} from '@/script/editor/utils/store'
 	export default {
 		data() {
 			return {
@@ -95,7 +95,6 @@
 				activeName: "1", //手风琴打开id
 				accordionName: "1", //手风琴打开id
 				modelLanguageType: [], //行为脚本语言类型
-				getDict: new psde.GetDict(),
 				model: new psde.Model(),
         behaviorList: [],
         ifEdit:true
@@ -108,16 +107,17 @@
 		},
 		computed: {},
 		mounted() {
-			this.getDict.query(null, "modelLanguage").then(data => {
-				this.modelLanguageType = data;
-      });
-			this.behaviorLists();
+			// this.getDict.query(null, "modelLanguage").then(data => {
+			// 	this.modelLanguageType = data;
+			// });
+			this.modelLanguageType = State.modelLanguage;
+			// this.behaviorLists();
 			vm.$on(operate.selectBehavior,obj=>{
 				this.dropBehavior(obj);
 			})
 		},
 		activated() {
-			this.behaviorLists();
+			// this.behaviorLists();
 		},
 
 		watch: {
@@ -175,7 +175,7 @@
 					this.accordionData = [];
 					this.topData = [];
 					this.allId = this.objectDetail.id;
-					this.query(this.objectDetail.id);
+					// this.query(this.objectDetail.id);
 					if(this.otypeDetail && this.otypeDetail.models.models.length > 0) {
 						this.topData = this.otypeDetail.models.models;
 
@@ -289,7 +289,7 @@
 				arr.push(this.addObj(one, this.bData[val].pid));
 				behaviorService.delete(arr).then(
 					response => {
-						this.query(this.allId);
+						// this.query(this.allId);
 						vm.$emit(operate.notice,{
 							message: "删除成功！",
 							type: "success",
@@ -311,7 +311,7 @@
 				});
 				behaviorService.update(arr).then(
 					response => {
-						this.query(this.allId);
+						// this.query(this.allId);
 						vm.$emit(operate.notice,{
 							message: "更新成功！",
 							type: "success",
@@ -360,7 +360,7 @@
 			axios(arr) {
 				behaviorService.save(arr).then(
 					response => {
-						this.query(this.allId);
+						// this.query(this.allId);
 						vm.$emit(operate.notice,{
 							message: "新加成功！",
 							type: "success",

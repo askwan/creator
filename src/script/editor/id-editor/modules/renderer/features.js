@@ -76,8 +76,8 @@ export function rendererFeatures(context,otype) {
             // } else {
             //     delete q.disable_features;
             // }
-            window.location.replace('#' + utilQsString(q, true));
-            context.storage('disabled-features', disabled.join(','));
+            // window.location.replace('#' + utilQsString(q, true));
+            // context.storage('disabled-features', disabled.join(','));
         }
         _hidden = features.hidden();
         dispatch.call('change');
@@ -196,6 +196,15 @@ export function rendererFeatures(context,otype) {
     defineFeature('others', function isOther(entity, resolver, geometry) {
         return (geometry === 'line' || geometry === 'area');
     });
+
+    
+    for(let key in otype){
+        defineFeature(key,function (entity){
+            if(entity.orgData){
+                return key == entity.orgData.otype.id
+            }
+        })
+    }
 
 
     function features() {}
@@ -482,17 +491,25 @@ export function rendererFeatures(context,otype) {
 
 
     features.init = function(otype) {
-        var storage = context.storage('disabled-features');
-        if (storage) {
-            var storageDisabled = storage.replace(/;/g, ',').split(',');
-            storageDisabled.forEach(features.disable);
-        }
+        // var storage = context.storage('disabled-features');
+        // if (storage) {
+        //     var storageDisabled = storage.replace(/;/g, ',').split(',');
+        //     storageDisabled.forEach(features.disable);
+        // }
         // var q = utilStringQs(window.location.hash.substring(1));
         // if (q.disable_features) {
         //     var hashDisabled = q.disable_features.replace(/;/g, ',').split(',');
         //     hashDisabled.forEach(features.disable);
         // }
     };
+
+    features.setFeature = function(sobject){
+        defineFeature(sobject.id,function(entity){
+            let forms = sobject.forms;
+            let aim = forms.find(el=>el.geom==entity.id);
+            if(aim) return true;
+        })
+    }
 
     return utilRebind(features, dispatch, 'on');
 }

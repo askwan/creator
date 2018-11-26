@@ -1,16 +1,10 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
-    <!-- <el-checkbox-group class="flex check-floor-box" v-model="checkedObjects" >
-      <el-checkbox v-for="item in list" border v-model="floor" class="mg-bottom-small mg-left-small" :label="item.name||item.id" :key="item.id" @change="handleChanged(item)"></el-checkbox>
-      
-    </el-checkbox-group> -->
     <el-tree :data="objectTree" default-expand-all :props="prop" :expand-on-click-node="false">
       <span class="flex-between" slot-scope="{node,data}">
         <i class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
         <span>{{node.label}}</span>
         <span class="mg-left-big">
-          <!-- <span class="font-10 pointer font-blue" @click="showObject(node)">显示</span>
-          <span class="font-10 pointer font-danger" @click="hiddenObject(node)">隐藏</span> -->
         </span>
       </span>
     </el-tree>
@@ -59,46 +53,24 @@
     },
     methods:{
       handleChanged(val,bool){
-        let disableds = [];
-        this.list.forEach(el=>{
-          let obj = this.checkedObjects.find(ev=>ev==el.name||ev==el.id);
-          if(obj){
-          }else{
-            disableds.push(el);
-          }
-        });
-        
         idEditor = getEditor();
         if( !State.sobjects[val.id]) return;
         let forms = State.sobjects[val.id].forms;
-        let hiddenObjects = State.hiddenObjects();
-        let isHidden = hiddenObjects.find(el=>el==val.id);
         if(!bool){
-          forms.forEach(form=>idEditor.enableEntity(form.geom));
-          // State.toggleObject(val);
+          idEditor.enableSobject(val.id);
           State.showObject(val);
         }else{
-          forms.forEach(form=>idEditor.disableEntity(form.geom));
-          // State.toggleObject(val);
+          idEditor.disableSobject(val.id);
           State.hiddenObject(val);
         };
-
-        
-        // forms.forEach(form=>{
-        //   console.log(form)
-        //   idEditor.disableEntity(form.geom);
-        // })
-        // idEditor.flush();
       },
       async getObjects(){
-        // idEditor = getEditor();
         if(!this.sobject.id) return;
         this.hiddens = State.hiddenObjects();
         this.rootObj.name = this.sobject.name;
         this.rootObj.id = this.sobject.id;
         this.rootObj.children = [];
         await this.queryChildren(this.rootObj);
-        console.log(this.rootObj,'root');
         this.objectTree.push(this.rootObj);
       },
       async queryChildren(object){
@@ -121,11 +93,10 @@
           this.handleChanged(obj,!Boolean(hidden));
         });
         this.hiddens = State.hiddenObjects();
-        // console.log(State.hiddenObjects(),'hiddens');
       },
       isView(node){
         let hidden = this.hiddens.find(el=>node.data.id==el);
-        return !hidden
+        return !hidden;
       },
       getChildObjFromTree(root){
         let list = [];

@@ -102,7 +102,6 @@ export default {
         for (var key in objList) {
           arrList.push(objList[key]);
         }
-        console.log(arrList,999999999999)
         if (arrList.length > 0) {
         	this.objectList = arrList.filter(obj => {
         	  return obj.name.includes(this.searchNameVal);
@@ -134,7 +133,7 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        // uids:id
+        uids:id
       };
       this.loading = true;
       this.objectList = [];

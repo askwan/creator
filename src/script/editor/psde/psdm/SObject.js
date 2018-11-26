@@ -51,13 +51,6 @@ export default class SObject extends DObject {
             el.style = ''
           }
         }
-        // if(el.geom.geotype==21){
-        //   el.geom = new osm.OsmNode().copy(el.geom);
-        // }else if(el.geom.geotype == 22||el.geom.geotype==23){
-        //   el.geom = new osm.OsmWay().copy(el.geom);
-        // }else if(el.geom.geotype==24){
-        //   el.geom = new osm.OsmRelation().copy(el.geom);
-        // }
         return el
       });
     }
@@ -260,7 +253,7 @@ export default class SObject extends DObject {
   }
   addAction (id, operate) {
     if (!id) id = 0
-    let addAction = this.getAction(0, Action.ADDING | Action.BASE)
+    let addAction = this.actions.find(el=>el.operation==33)
     let modifyAction = this.getAction(id, Action.MODIFY | Action.BASE)
     let deleteAction = this.getAction(id, Action.DELETE | Action.BASE)
     if (!addAction && !deleteAction) {

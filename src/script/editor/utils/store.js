@@ -4,13 +4,16 @@ var State = {
   diagrams:[],
   relations:[],
   relationType:[],
+  connectors:[],
   otypes:{},
   ways:{},
   otypeIds:[],
   dimension,
   styleServerType,
   formstyleType,
-  entitys:[]
+  entitys:[],
+  hidden:[],
+  _hiddenEntity:[]
 }
 
 State.cacheRelation = function(relation){
@@ -44,8 +47,6 @@ State.getDiagram = function(list){
     this.otypeIds.push(el.id)
     el.otypes.forEach(ev=>{
       this.otypes[ev.id] = ev;
-      // let index = this.otypeIds.findIndex(n=>n==ev.id);
-      // if(index==-1) this.otypeIds.push(ev.id);
       this.otypeIds.push(ev.id);
     })
   })
@@ -61,36 +62,39 @@ State.clear = function(){
   this.relations = [];
   this.sobjects = {};
   // this.otypeIds = [];
+  this.hidden = [];
 }
 
-let hidden = [];
-State.hiddenObjects = function(list){
-  if(!list) return hidden;
-  // list.forEach(el=>{
-  //   let index = hidden.findIndex(ev=>ev==el);
-  //   if(index)
-  // });
-  hidden = list;
-}
-
-State.toggleObject = function(obj){
-  let index = hidden.findIndex(el=>el==obj.id);
-  if(index==-1){
-    hidden.push(obj.id);
-  }else{
-    hidden.splice(index,1);
+/**
+ * 获取父对象otype
+ * 
+ */
+State.getParentOtypeById = function(id){
+  // console.log(this.connectors)
+  let array = this.connectors.filter(el=>el.dType.id==id&&el.type==8);
+  if(array.length>0){
+    array = array.filter(el=>this.otypes[el.fId]).map(el=>this.otypes[el.fId]);
   }
+  return array;
+}
+
+
+State.hiddenObjects = function(list){
+  if(!list) return this.hidden;
+  this.hidden = list;
 }
 
 State.showObject = function(obj){
-  let index = hidden.findIndex(el=>el==obj.id);
-  hidden.splice(index,1);
+  let index = this.hidden.findIndex(el=>el==obj.id);
+  this.hidden.splice(index,1);
 }
 
 State.hiddenObject = function(obj){
-  let index = hidden.findIndex(el=>el==obj.id);
-  if(index==-1) hidden.push(obj.id);
+  let index = this.hidden.findIndex(el=>el==obj.id);
+  if(index==-1) this.hidden.push(obj.id);
 }
+
+
 
 export {
   State

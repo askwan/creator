@@ -36,6 +36,13 @@
     activated(){
       this.getName(this.objectDetail.parents);
     },
+    watch:{
+      'objectDetail.id'(id){
+        if(id){
+          this.getName(this.objectDetail.parents);
+        }
+      }
+    },
     methods:{
       deleteParent(parent){
         

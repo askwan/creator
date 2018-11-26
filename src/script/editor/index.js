@@ -22,7 +22,7 @@ import {utilRebind}  from './id-editor/modules/util/rebind'
 // import {actionChangeTags} from './id-editor/modules/actions/change_tags'
 import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose} from '@/script/editor/id-editor/modules/actions'
 import { modeSelect } from '@/script/editor/id-editor/modules/modes';
-
+import { osmNode, osmRelation, osmWay } from '@/script/editor/id-editor/modules/osm'
 
 import { State } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
@@ -31,7 +31,7 @@ import editsave from './utils/EditSave'
 import {RelationOperate,Delete} from './operates'
 import SObject from './psde/psdm/SObject';
 
-
+let n = 1000;
 const dispatch = d3_dispatch('currentObject','notice')
 
 var relationRandomId = 1;
@@ -67,7 +67,8 @@ export default class Editor {
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
         let entity = this.idContext.entity(ele);
-        console.log(entity)
+        console.log(entity);
+        
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
@@ -110,27 +111,13 @@ export default class Editor {
     this.sobjectlist[_sobject.list] = _sobject;
     dispatch.call('currentObject',this,{object:_sobject,entityId:null})
   }
-  enableEntity(entityId){
-    let entity = this.idContext.entity(entityId);
-    // console.log(entity.type);
-    if(entity.type=="way"){
-      entity.nodes.forEach((el,k)=>{
-        let vertex = this.idContext.entity(el);
-        this.idContext.perform(
-          actionAddEntity(vertex),
-          actionAddEntity(entity),
-          actionAddVertex(entity.id, vertex.id),
-          actionClose(entity.id),
-          '显示形态'
-        );
-      })
-    }else if(entity.type=='node'){
-      this.idContext.perform(actionAddEntity(entity),'显示形态')
-    }
-    // this.relationOperate.highLightEntity([entityId]);
+  enableSobject(objId){
+    let features = this.idContext.features();
+    features.enable(objId);
   }
-  disableEntity(entityId){
-    this.deleteOperate.deleteEntity(this.idContext,entityId)
+  disableSobject(objId){
+    let features = this.idContext.features();
+    features.disable(objId);
   }
 
 
@@ -152,7 +139,8 @@ export default class Editor {
     this.modifySobject(sobject)
     this.sobjectlist[sobject.id] = sobject;
     State.sobjects[sobject.id] = sobject;
-    dispatch.call('currentObject',this,{object:sobject,entityId:entityId})
+    this.idContext.features().setFeature(sobject);
+    dispatch.call('currentObject',this,{object:sobject,entityId:entityId});
   }
   modifySobject (sobject) {
     this.currentGraph.updateSObject(sobject)    
@@ -373,9 +361,19 @@ export default class Editor {
     this.updateAndHistory(sobject)
   }
   filterObjectByOtype(arr){
-    this.idContext.otypes(arr);
-    State.otypeIds = arr;
-    this.flush();
+    for(let id in State.otypes){
+      let showId = arr.find(el=>el==id);
+      if(showId){
+        this.idContext.features().enable(id);
+      }else{
+        this.idContext.features().disable(id);
+      }
+    }
+
+
+    
+
+    // this.flush();
     // _debounce(this.flush,350);
   }
   zoomOut(){
@@ -383,6 +381,84 @@ export default class Editor {
   }
   zoomIn(){
     this.idContext.zoomIn();
+  }
+
+  cloneObject(){
+    let newSobject = new SObject();
+    let str = JSON.stringify(this.currentSobject);
+    newSobject.copyObject(JSON.parse(str));
+    newSobject.id = n++;
+    newSobject.createObject(newSobject);
+    // console.log(newSobject,'new')
+    this.currentSobject = newSobject;
+
+    newSobject.forms.forEach(form=>{
+      let entity = this.copyEntity(form.geom);
+      form.geom = entity.id;
+      form.geomref = entity.id;
+    })
+    newSobject.uuid = null;
+    newSobject.version = {};
+    this.sobjectlist[newSobject.id] = newSobject;
+    State.sobjects[newSobject.id] = newSobject;
+    this.idContext.features().setFeature(newSobject);
+    this.updateAndHistory(newSobject);
+    this.idContext.selectEle(newSobject.forms[0].geom)
+    // dispatch.call('currentObject',this,{object:newSobject,entityId:newSobject.forms[0].geom});
+    dispatch.call('notice',this,{
+      message:`克隆对象：${newSobject.id}成功`,
+      type:'success'
+    })
+  }
+  copyEntity(ele){
+    let entity = this.idContext.entity(ele);
+    if(entity.type=='way'){
+      return this.createWay(entity);
+    }else if(entity.type=="node"){
+      return this.createNode(entity);
+    }else if(entity.type=='relation'){
+      return this.createRelation(entity);
+    }
+  }
+  createNode(entity){
+    let node = osmNode({loc:entity.loc});
+    this.idContext.perform(actionAddEntity(node),actionChangeTags(node.id,entity.tags));
+    return node;
+  }
+  createWay(entity){
+    let way = osmWay({ tags: entity.tags });
+    this.idContext.perform(actionAddEntity(way));
+    entity.nodes.forEach(nodeId=>{
+      let _node = this.idContext.entity(nodeId);
+      let node = osmNode({loc:_node.loc});
+      this.idContext.perform(actionAddEntity(node));
+
+      this.idContext.perform(
+        actionAddVertex(way.id, node.id),
+        actionClose(way.id)
+      )
+    });
+    return way
+  }
+  createRelation(entity){
+    let newRelation = this.relationOperate.createRelation();
+    entity.members.forEach(member=>{
+      let _member = this.idContext.entity(member.id);
+      let newMember = {},_entity;
+      if(_member.type=='way'){
+        _entity = this.createWay(_member);
+      }else if(_member.type=='node'){
+        _entity = this.createNode(_member);
+      }else if(_member.type=='relation'){
+        _entity = this.createRelation(_member);
+      }
+      if(!_entity) return dispatch.call('notice',{message:'创建失败'})
+      newMember.id = _entity.id;
+      newMember.index = 1;
+      newMember.role = member.role;
+      this.relationOperate.setRole(newMember,newRelation.id)
+    });
+    return newRelation;
   }
 
 

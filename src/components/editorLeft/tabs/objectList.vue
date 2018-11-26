@@ -38,6 +38,7 @@
   import psde from '@/script/editor/psde'
   import {State} from '@/script/editor/utils/store'
   import {vm,operate,getEditor} from '@/script/operate'
+  import {objectServer} from '@/script/server'
   let IdEdit;
   export default {
     data(){
@@ -99,11 +100,13 @@
         let netNames = parentNet.map(el=>el.dType.name);
         this.searchValue = ''
         this.otName = '';
-        this.queryObject();
+        let parentOts = State.getParentOtypeById(this.currentObject.otype.id);
+        let ids = parentOts.map(el=>el.id).join(',')
+        this.queryObject(ids);
       }
     },
     methods:{
-      queryObject(){
+      queryObject(ids){
         this.$refs.list.scrollTop = 0;
         this.loading = true;
         // if(!this.searchValue) {
@@ -123,9 +126,12 @@
 					otNames: this.otName,
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
-          // uids:id
+          otIds:ids,
+          uids:id
         };
         this.objectList = [];
+
+        // objectServer.query().then(res=>{})
         psde.objectQuery.ByNameAndOTName.query(obj).then(res => {
           
           this.total = res.total;

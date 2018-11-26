@@ -133,7 +133,6 @@
 
 <script>
 	import psde from "@/script/editor/psde";
-	import ImageManage from "@/script/editor/psde/ImageManage";
   import { vm, operate,getEditor } from "@/script/operate";
   import {State} from '@/script/editor/utils/store'
 
@@ -157,7 +156,6 @@
 				},
 				otypeDetail: {}, //object的otype详情
 				cloneObjectContent: [], //object原始的内容
-				ImageManage: ImageManage,
 				curCollapse: null, //记录当前点击的形态
 				deleteObjectList: [],
 				objtypeLists: [], //添加形态列表
@@ -165,10 +163,8 @@
 				classNameWidth: "75px",
 				fromlistName: [],
 				ModelList: [], //模型列表
-				formStyle: new psde.FormStyle(),
 				styleList: [],
 				currentFormId: null,//当前点击形态的id
-				getDict: new psde.GetDict(),
         formList: [],
 				ifEdit:true,
 				showDiag:false
@@ -362,23 +358,13 @@
 			requestList() {
 				//样式列表
 				this.styleList = [];
-				let obj = {
-					orderType: "ID",
-					descOrAsc: true,
-				};
-				this.formStyle.query(obj).then(data => {
-					this.styleList = data.list;
-				});
-
+				this.styleList = State.styleList;
 				//模型列表
         this.ModelList = [];
 				this.ModelList = State.ModelList;
 				
 				//形态列表
-				this.getDict.query({}, "form").then(res => {
-					this.formList = res;
-				});
-				
+				this.formList = State.formType
 				
 				
 			},
@@ -424,16 +410,6 @@
 					if(item.style) {
 						if(typeof item.style == "string") {
 							item.style = JSON.parse(item.style);
-							/*var obj = JSON.parse(item.style);
-							if (obj && obj.length>0) {
-								item.style = [];
-								obj.forEach((it,ix) => {
-									console.log("我来了")
-									item.style.push(Number(it.id));
-								})
-							} else {
-								item.style = [];
-							}*/
 						}
 					} else {
 						item.style = [];
@@ -577,14 +553,7 @@
 					arr.push(obj);
 					})
 				}else{
-					// let relation = context.getRelations(item.geom);
-					// relation.forEach(id=>{
-					// 	let obj = {};
-					// 	let re = context.entity(id);
-					// 	obj.relation = id;
-					// 	obj.role = re.members.find(el=>el.id==item.geom).role;
-					// 	arr.push(obj);
-					// });
+
 				};
 				return arr;
 			},
