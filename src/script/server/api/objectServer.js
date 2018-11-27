@@ -35,6 +35,17 @@ class ObjectServer extends Base {
       })
     })
   }
+  ByNameAndOTName(option={}){
+    let defaultOption = {
+      loadAttr: true,
+      loadForm: true,
+      loadObjType: true,
+      orderType: 'ID',
+      descOrAsc: true
+    }
+    let _options = Object.assign(defaultOption,option);
+    return this.query(_options);
+  }
 }
 
 export default new ObjectServer();

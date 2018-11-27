@@ -111,6 +111,7 @@
 </script>
 <style lang='scss' scoped>
   .floor-manage{
+    width: 300px;
     background-color: #fff;
     overflow-y: auto;
     .check-floor-box{

@@ -41,7 +41,7 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item v-show="item.type===50" label="模型内容 :" :label-width="classNameWidth">
-							<el-select 
+							<!-- <el-select 
 								v-if="item.type===50"
 								class="change-select-style width"
 								v-model="item.formref.refid" 
@@ -57,16 +57,18 @@
 							    	:value="it.fid">
 							    	<span style="float: left">{{ it.name }}</span>
 									<span style="float: right; color: #999999; font-size: 14px">
-										<!--<i class="el-icon-delete" @click="modelDeleteFn(it,n)"></i>-->
 										<a :href="modelDownloadFn(downloadFile.baseURL,it.fid)" style="margin-left: 5px;color: #999999;">
 											<i class="el-icon-download"></i>
 										</a>
 									</span>
 								</el-option>
-							</el-select>
-							<el-tooltip effect="dark" content="上传新模型" placement="bottom">
-						    	<el-button type="primary" size="mini" icon="el-icon-upload" circle @click="modelUploadFn"></el-button>
-						    </el-tooltip>
+							</el-select> -->
+							<el-input class="width" readonly v-model="item.formref.refid"></el-input>
+							<el-button type="primary" size="mini" icon="el-icon-plus" circle @click="openModelLists(item)"></el-button>
+							<!-- <el-tooltip effect="dark" content="上传新模型" placement="bottom">
+								<el-button type="primary" size="mini" icon="el-icon-upload" circle @click="modelUploadFn"></el-button>
+							</el-tooltip> -->
+							
 						</el-form-item>
 						<el-form-item label="维度 :" :label-width="classNameWidth">
 							<el-select ref="selectStyle" v-model="item.dim" placeholder="请选择维度" :disabled="true" @change="modifyFormFn(item,index)">
@@ -276,11 +278,16 @@
 			modelUploadFn(){
 				this.showDiag = true;
 			},
+			openModelLists(item){
+				IdEdit.currentForm = item;
+				vm.$emit(operate.changeTab,{name:'modeList'});
+
+			},
 			modelDownloadFn(a, b) {
 		    	return a + "/" + b;
 		    },
 			modelDeleteFn(it,n){
-
+				
 			},
 			filterStyleList(styleList, item){
 				var strStyleList = JSON.stringify(styleList);

@@ -5,7 +5,7 @@
     </div>
     <div class="relation-list">
       <el-collapse>
-        <el-collapse-item v-for='node in nodes' :key="node.id">
+        <el-collapse-item v-for='node in nodes' :key="node.id" v-show="node.show">
           <template slot="title">
             <!-- <div class="relation-el flex-align">
               <span class="font-14">{{objectDetail.name|formateName}}</span>
@@ -24,7 +24,7 @@
           <div>
             <el-form size="mini" label-width="80px" v-if="node.edge.relation" >
               <el-form-item v-for="(field,k) in node.edge.relation.fields.fields" :key="k" :label="field.caption">
-                <el-input v-model="num"></el-input>
+                <el-input v-model="field.value" @change="changeFn(node,field)"></el-input>
               </el-form-item>
             </el-form>
           </div>
@@ -40,8 +40,7 @@
       return {
         activeNames:['1'],
         parents:[],
-        nodes:[],
-        num:''
+        nodes:[]
       }
     },
     props:{
@@ -61,18 +60,14 @@
     },
     watch:{
       'objectDetail.network.nodes'(){
-        this.parents = this.objectDetail.parents;
-        this.nodes = this.objectDetail.network.nodes;
-        
+        this.initNetwork();
       }
     },
     mounted(){
-      this.parents = this.objectDetail.parents;
-      this.nodes = this.objectDetail.network.nodes;
+      this.initNetwork();
     },
     activated(){
-      this.parents = this.objectDetail.parents;
-      this.nodes = this.objectDetail.network.nodes;
+      this.initNetwork();
     },
     methods:{
       chooseParent(){
@@ -83,6 +78,22 @@
       },
       deleteIt(id){
         getEditor().deleteNetwork(this.objectDetail.id,id);
+      },
+      changeFn(node,field){
+        node.properties[field.name] = field.value;
+        getEditor().modifySObjectNetwork(this.objectDetail,node);
+      },
+      initNetwork(field,value){
+        this.parents = this.objectDetail.parents;
+        this.objectDetail.network.nodes.forEach(node=>{
+          // this.$set(node,'show',true);
+          if(node.edge.relation){
+            node.edge.relation.fields.fields.forEach(field=>{
+              field.value = node.properties[field.name];
+            })
+          }
+        })
+        this.nodes = this.objectDetail.network.nodes;
       }
     }
   }

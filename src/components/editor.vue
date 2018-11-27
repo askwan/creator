@@ -59,6 +59,11 @@
           id:4,
           desc:'内部结构',
           title:'结构管理'
+        },{
+          icon:'el-icon-printer',
+          id:5,
+          desc:'模型视图',
+          title:'模型编辑'
         }]
       }
     },
@@ -66,7 +71,8 @@
     components:{
       'left-content':()=>import('./editorLeft'),
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
-      'floorManage':()=>import('./eidtorRight/floorMange.vue')
+      'floorManage':()=>import('./eidtorRight/floorMange.vue'),
+      '3Dmode':()=>import('./eidtorRight/3Dmode.vue')
     },
     computed:{},
     mounted(){
@@ -93,7 +99,7 @@
 
           editor.on('currentObject',data=>{
             if(data.object) {
-              // console.log(data.object);
+              console.log(data.object);
               this.currentObj = data.object;
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){
@@ -136,6 +142,9 @@
         }else if(item.id==4){
           this.componentId = 'floorManage'
           this.showRight = !this.showRight;
+        }else if(item.id==5){
+          this.componentId = '3Dmode';
+          this.showRight = !this.showRight;
         }
         this.title = item.title || item.desc;
       }
@@ -161,7 +170,7 @@
   .right{
     position: absolute;
     right: 0;
-    left: calc(100% - 300px);
+    
     top: 60px;
     bottom: 40px;
     background-color: #fff;

@@ -100,20 +100,8 @@ class EditSave {
     });
     return result
   }
-  /**
-   * 将变更集的sobject的form还原为对象。
-   */
-  formateHistory(context,idedit){
-    let sobjects = idedit.currentGraph.sobjectList;
-    for(let id in sobjects){
-      let sobject = this.clone(sobjects[id]);
-      sobject.forms.forEach(form=>{
-        form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
-      })
-    }
-    return sobjects;
-  }
   getOsmChanges1(context,Idedit){
+
     let changes = context.changes();
     let _osmChange = [];
     //created
@@ -123,8 +111,8 @@ class EditSave {
     //deleted
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
     _osmChange = _osmChange.concat(created,modified,deleted);
-
     let ways = _osmChange.filter(el=>el.type == 'way');
+    
     ways.forEach(way=>{
       way.nodes.forEach((el,k)=>{
         let i = _osmChange.findIndex(ev=>ev.id==el.id);
@@ -134,8 +122,9 @@ class EditSave {
           way.updateFlag(2);
         }; 
       });
+      
     });
-
+    
     deleted.forEach(el=>{
       if(el['@type']==='Node'){
         let entitys = _osmChange.filter(ev=>ev.refOb.id==el.refOb.id);
@@ -164,7 +153,7 @@ class EditSave {
           entity.members.push(obj);
         }
       }
-    });
+    })
 
     let relations = _osmChange.filter(el=>el.type == 'relation');
     relations.forEach(relation=>{
@@ -186,16 +175,18 @@ class EditSave {
           })
         }
       })
-    });
-
+    })
     return _osmChange
+
   }
   getSaveSObject(context,idedit){
+    //sobjectchange
     let nowDate = Math.floor(Date.parse(new Date())/1000);
-    let sobjects = this.formateHistory(context,idedit)
+    let sobjects = idedit.currentGraph.sobjectList;
     let resultSobjectList = [];
+    //osmchange
     let osmCollection = this.getOsmChanges1(context,idedit);
-    console.log(osmCollection,44444444);
+    console.log(osmCollection,'com');
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
@@ -203,10 +194,11 @@ class EditSave {
 
     for(let i in osmCollection){
       let entity = osmCollection[i];
+      
       let sobject = this.getSobjectByEntityId(resultSobjectList,entity.id);
       if(!sobject) {
         sobject = this.getSobjectByEntityId(State.sobjects,entity.id);
-        
+        // console.log(State.sobjects,sobject)
       }
       if(sobject){
         this.addSObjectList(resultSobjectList,sobject);
@@ -214,55 +206,58 @@ class EditSave {
       }
     }
 
-    resultSobjectList.forEach(obj=>{
-      if(obj.forms.length==0){
-        obj.deleteObject();
+    resultSobjectList.forEach(el=>{
+      if(el.forms.length==0){
+        el.deleteObject();
       }
+    })
 
-      obj.otype = {id:obj.otype.id};
-      obj.forms.forEach(form=>{
 
+    resultSobjectList.forEach(obj => {
+      obj.otype = {id: obj.otype.id};
+      
+      obj.forms.forEach(form => {
         if(typeof form.formref.refid =='string'){
           form.formref.refid = this.toNum(form.formref.refid);
         }
-        if ((form.style instanceof Array) && form.style.length>0) {
-          form.style = JSON.stringify(form.style);
-        } else{
-          form.style = "";
+      	if ((form.style instanceof Array) && form.style.length>0) {
+      		form.style = JSON.stringify(form.style);
+      	} else{
+      		form.style = "";
         }
         form.geomref = this.toNum(form.geomref);
-
-        
-        if(obj.actions.find(el=>el.operation==33)) {
-          obj.forms.forEach(el=>{
-            
-            if(el.geom && typeof el.geom=='object'&&el.geom.type=='way'){
-              el.geom.nodes.forEach(node=>{
-                node.updateFlag(1);
-                node.uuid=null;
-              })
-              el.geom.updateFlag(1);
-            };
-          })
+        if(form.geom instanceof osm.OsmEntity){
+          form.geom.clearId();
+        }else if(form.geom && typeof form.geom=='string'){
+          form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+          form.geom.clearId();
+        }else if(form.geom&&typeof form.geom=='object'){
+          form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom.id));
+          form.geom.clearId();
         }
-        if(form.geom && typeof form.geom=='object') form.geom.clearId();
-
-      })
-
+      });
+      if(obj.actions.find(el=>el.operation==33)) {
+        obj.forms.forEach(el=>{
+          console.log(el.geom,'geom')
+          if(el.geom && typeof el.geom=='object'&&el.geom.type=='way'){
+            el.geom.nodes.forEach(node=>{
+              node.updateFlag(1);
+              node.uuid=null;
+            })
+            el.geom.updateFlag(1);
+          };
+        })
+      }
       let creatAction = obj.actions.find(el=>el.operation==33);
       if(creatAction&&!obj.realTime){
         obj.realTime = nowDate;
       }
-    });
-    
-    
-    
-    return resultSobjectList;
+    })
 
+    return resultSobjectList
   }
-
   addSObjectList(sobjectlist, sobject){
-    let _sobject = sobject;
+    let _sobject = this.clone(sobject);
     let idx = sobjectlist.findIndex(el => el.id == _sobject.id)
     if (idx == -1) {
       sobjectlist.push(_sobject)
@@ -296,12 +291,8 @@ class EditSave {
     }
     return sobject;
   }
-  getWayFromRelation(nodeId,relation){
-    if(!relation.refOb) return;
-    let aimIds = [];
-    return aimIds
-  }
   updateSObjectForm (collection,sobjectId, entity) {
+    console.log(collection,sobjectId,entity,888888)
     let sobject = collection.find(el=>el.id==sobjectId);
     let entityId = entity.id.replace(/[^0-9]/ig, '');
     let form = sobject.forms.find(el => el.geom == entity.id)
@@ -331,8 +322,12 @@ class EditSave {
     
     return sobject
   }
+  getWayFromRelation(nodeId,relation){
+    if(!relation.refOb) return;
+    let aimIds = [];
+    return aimIds
+  }
 }
-
 
 const addObj=(arr,obj)=>{
   let index = arr.findIndex(el=>el.id==obj.id);

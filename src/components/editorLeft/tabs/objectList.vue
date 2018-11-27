@@ -143,8 +143,7 @@
       },
       getObjectByRelation(){
         let connector = this.otype.connectors.connectors.find(el=>{
-          if(typeof el.relation == 'object'){
-            el.relation.id==this.currentRelation.id;
+          if(typeof el.relation == 'object' && el.relation.id==this.currentRelation.id){
             return true;
           }else{
             return false;

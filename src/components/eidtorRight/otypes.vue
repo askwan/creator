@@ -61,5 +61,7 @@
   }
 </script>
 <style lang='scss' scoped>
-  
+  .otypes{
+    width: 300px;
+  }
 </style>

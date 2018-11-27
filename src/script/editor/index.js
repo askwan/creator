@@ -19,9 +19,7 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
-// import {actionChangeTags} from './id-editor/modules/actions/change_tags'
 import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose} from '@/script/editor/id-editor/modules/actions'
-import { modeSelect } from '@/script/editor/id-editor/modules/modes';
 import { osmNode, osmRelation, osmWay } from '@/script/editor/id-editor/modules/osm'
 
 import { State } from './utils/store'
@@ -203,36 +201,9 @@ export default class Editor {
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
       isAjax = false;
-      // objectServer.save(json).then(res=>{
-      //   isAjax = true
-      //   if (res.status == 200) {
-      //     context.flush();
-      //     this.clearGraph();
-      //     dispatch.call('notice',this,{
-      //       type:'success',
-      //       title:'成功',
-      //       message:'保存成功'
-      //     });
-      //   }else {
-      //     dispatch.call('notice',this,{
-      //       type:'error',
-      //       title:'错误',
-      //       message:'保存失败'
-      //     })
-      //   };
-      // })
-      // .catch(err=>{
-      //   dispatch.call('notice',this,{
-      //     type:'error',
-      //     title:'错误',
-      //     message:err
-      //   })
-      // })
-      psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+      objectServer.save(json).then(res=>{
         isAjax = true
-        if (result.data.status == 200) {
-          // context.flush();
-          // this.clearGraph();
+        if (res.status == 200) {
           this.flush();
           dispatch.call('notice',this,{
             type:'success',
@@ -240,19 +211,45 @@ export default class Editor {
             message:'保存成功'
           });
         }else {
-          dispatch.call('notice',{
+          dispatch.call('notice',this,{
             type:'error',
             title:'错误',
             message:'保存失败'
           })
         };
-      },()=>{
-        dispatch.call('notice',{
+      })
+      .catch(err=>{
+        dispatch.call('notice',this,{
           type:'error',
           title:'错误',
-          message:'保存失败'
+          message:err
         })
       })
+      // psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
+      //   isAjax = true
+      //   if (result.data.status == 200) {
+      //     // context.flush();
+      //     // this.clearGraph();
+      //     this.flush();
+      //     dispatch.call('notice',this,{
+      //       type:'success',
+      //       title:'成功',
+      //       message:'保存成功'
+      //     });
+      //   }else {
+      //     dispatch.call('notice',{
+      //       type:'error',
+      //       title:'错误',
+      //       message:'保存失败'
+      //     })
+      //   };
+      // },()=>{
+      //   dispatch.call('notice',{
+      //     type:'error',
+      //     title:'错误',
+      //     message:'保存失败'
+      //   })
+      // })
     }
   }
   clearGraph () {
@@ -328,6 +325,7 @@ export default class Editor {
     node.relatedObjectId = tagObject.id
     node.edge = new psde.REdge()
     node.edge.relation = relation
+    node.show = true;
     srcObject.addNetworkNode(node)
     this.updateAndHistory(srcObject)
     return node

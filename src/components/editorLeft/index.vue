@@ -29,7 +29,8 @@
       'relationList':()=>import('./tabs/relationList.vue'),
       'behaviorList':()=>import('./tabs/behaviorList.vue'),
       'searchList':()=>import('./tabs/searchList.vue'),
-      'addRelation':()=>import('./tabs/addRelation.vue')
+      'addRelation':()=>import('./tabs/addRelation.vue'),
+      'modeList':()=>import('./tabs/modeList.vue')
     },
     computed:{},
     mounted(){

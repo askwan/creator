@@ -596,7 +596,7 @@ export default {
       let user = JSON.parse(sessionStorage.getItem('user'));
       let token = localStorage.getItem('token');
       let _id = user.id+'';
-      
+      //'/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\''
       _tiles.inflight[id] = that.loadFromAPI(
         '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
         function (err, parsed) {

@@ -63,6 +63,10 @@ export default class SObject extends DObject {
       }
     }
 
+    sobject.network.nodes.forEach(el=>{
+      el.show = true;
+    })
+
     return sobject
   }
   modifyObject (obj) {
@@ -231,7 +235,8 @@ export default class SObject extends DObject {
     let modifyAction = this.getAction(rnode.id, Action.MODIFY | Action.RELEATION)
     if (modifyAction) this.deleteAction(modifyAction.id, modifyAction.operation)
     // this.actions = [];
-    this.network.nodes = this.network.nodes.filter(el=>el.id!=rnode.id);
+    // this.network.nodes = this.network.nodes.filter(el=>el.id!=rnode.id);
+    this.network.nodes.find(el=>el.id==rnode.id).show = false;
     // this.network.nodes = this.network.nodes.filter(node=>node.id!=rnode.id)
     this.addAction(rnode.id, Action.DELETE | Action.RELEATION)
     return this
