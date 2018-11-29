@@ -52,28 +52,6 @@
           user = JSON.parse(sessionStorage.getItem('user'));
         }
         this.loading = true;
-        // new psde.Diagram()
-        // .query({
-        //   loadField: true,
-        //   loadModel: true,
-        //   loadForm: true,
-        //   loadParentField: true,
-        //   loadParents: true,
-        //   loadConnector: true,
-        //   uids:user.id
-        // })
-        // .then(res => {
-        //   State.getDiagram(res.list);
-        //   vm.$emit(operate.DiagramReady);
-        //   this.loading = false;
-        // }).catch(err=>{
-        //   this.loading = false;
-        //   vm.$emit(operate.notice,{
-        //     type:'error',
-        //     title:'网络错误',
-        //     message:err.message
-        //   })
-        // })
         let options = {};
         options.loadField = true;
         options.loadModel = true;

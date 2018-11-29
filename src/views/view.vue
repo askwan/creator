@@ -92,12 +92,12 @@
             this.viewSearchValue = '';
             return
           }
-          psde.objectQuery.getDetailById.query({ids:obj.id}).then(res=>{
-            console.log(res,'ressss')
-            this.currentObject = res.list[0];
-            this.componentId = 'viewLeft';
-            this.showLeft = true;
-          });
+          // psde.objectQuery.getDetailById.query({ids:obj.id}).then(res=>{
+          //   console.log(res,'ressss')
+          //   this.currentObject = res.list[0];
+          //   this.componentId = 'viewLeft';
+          //   this.showLeft = true;
+          // });
           let option ={
             ids:obj.id,
             loadForm: true,
