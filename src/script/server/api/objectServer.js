@@ -9,8 +9,7 @@ class ObjectServer extends Base {
   query(option={}){
     let user = sessionStorage.getItem('user');
     user = JSON.parse(user);
-    Object.assign(option,{uids:`'${user.id}'`});
-    console.log(option,123);
+    option = Object.assign({uids:`'${user.id}'`},option);
     return new Promise((resolve,reject)=>{
       this.get('/query',option).then(res=>{
         if(res.status==200){

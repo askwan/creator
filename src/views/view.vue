@@ -31,6 +31,7 @@
   import * as mapbox from '@/script/mapbox'
   import psde from '@/script/editor/psde'
   import mapposition from '@/script/mapposition'
+  import {objectServer} from '@/script/server'
   let map;
   export default {
     data(){
@@ -92,10 +93,25 @@
             return
           }
           psde.objectQuery.getDetailById.query({ids:obj.id}).then(res=>{
+            console.log(res,'ressss')
+            this.currentObject = res.list[0];
+            this.componentId = 'viewLeft';
+            this.showLeft = true;
+          });
+          let option ={
+            ids:obj.id,
+            loadForm: true,
+            loadObjType: true,
+            loadAction: true,
+            loadNetwork: true,
+            uids:''
+          }
+          objectServer.query(option).then(res=>{
             this.currentObject = res.list[0];
             this.componentId = 'viewLeft';
             this.showLeft = true;
           })
+
         });
         vm.$on(operate.openTab,obj=>{
           this.componentId = obj.name;

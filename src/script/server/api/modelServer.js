@@ -27,8 +27,24 @@ class ModelServer extends Base {
       })
     })
   }
-  getUploadUrl(){
-    return this.url+'/upload';
+  uploadUrl(){
+    return this.url+'/upload?'
+  }
+  uploadMode(option){
+    let formData= new FormData();
+    formData.append('file',option.file.raw);
+    let url = this.url+'/upload'+`?name=${option.name}&desc=${option.desc}`
+    return new Promise((resove,reject)=>{
+      this.uploadFile(url,formData).then(res=>{
+        if(res.status==200) {
+          resove(res);
+        }else{
+          reject(res)
+        }
+      },(err)=>{
+        reject(err)
+      })
+    })
   }
 }
 

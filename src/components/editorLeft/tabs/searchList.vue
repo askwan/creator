@@ -44,16 +44,14 @@
 	</div>
 </template>
 <script>
-import psde from "@/script/editor/psde";
-import { vm, operate,getEditor } from "@/script/operate";
-// import EditManage from "@/script/mapbox/EditManage";
-import ImageManage from "@/script/editor/psde/ImageManage";
-import {State} from '@/script/editor/utils/store'
 
+import { vm, operate,getEditor } from "@/script/operate";
+import {State} from '@/script/editor/utils/store'
+import {objectServer,imageServer} from '@/script/server'
 export default {
   data() {
     return {
-      ImageManage: ImageManage,
+      ImageManage: imageServer,
       errorOtypeImg:
         'this.src="' +
         require("../../../../static/images/errorOtype.jpg") +
@@ -137,7 +135,8 @@ export default {
       };
       this.loading = true;
       this.objectList = [];
-      psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
+      objectServer.ByNameAndOTName(obj).then(response => {
+        console.log(response,123)
         response.list.forEach((item, index) => {
           var findIndex = this.objectList.findIndex(it => it.id == item.id);
           // console.log(item.otype.id,State.otypes[item.otype.id]);

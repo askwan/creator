@@ -40,6 +40,7 @@
   import {State} from '@/script/editor/utils/store'
   import axios from 'axios'
   import { queryModelFile,downloadFile } from "@/script/editor/psde/config";
+  import {modelServer} from '@/script/server'
   // import { queryModelFile, downloadFile } from "@/script/editor/psde/config";
   export default {
     data(){
@@ -75,30 +76,23 @@
           pageSize:20,
           pageNum:this.pageNum
         }
-        axios.get(queryModelFile.baseURL, {params:params})
-          .then(response => {
-            State.ModelList = response.data.data.list;
-            //模型列表
-            // this.ModelList = [];
-            // this.ModelList = State.ModelList;
-            let arrModel = State.ModelList
-            arrModel.forEach(e=>{
-              this.ModelList.push(e)
-            })
-              this.arrModelList = this.ModelList
-            
-
-            if(arrModel.length == 0){
-              this.showMore = false
-            }
+        modelServer.getModel(params).then(res=>{
+          State.ModelList = res.data.list;
+          //模型列表
+          // this.ModelList = [];
+          // this.ModelList = State.ModelList;
+          let arrModel = State.ModelList
+          arrModel.forEach(e=>{
+            this.ModelList.push(e)
           })
-          .catch(function(error) {
-            vm.$emit(operate.notice,{
-              type:'error',
-              title:'网络错误',
-              message:error.message
-            })
-          });
+            this.arrModelList = this.ModelList
+          
+
+          if(arrModel.length == 0){
+            this.showMore = false
+          }
+        })
+        
       },
       modelUploadFn(){
 				this.showDiag = true;

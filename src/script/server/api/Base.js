@@ -36,11 +36,11 @@ export default class Base {
         })
     })
   }
-  upload(){
+  uploadFile(url,formData){
     let config = {headers:{'Content-Type':'multipart/form-data'}};
-    let url = this.url+name+'?token='+this.getToken();
+    // let url = this.url+'?token='+this.getToken();
     return new Promise((resolve,reject)=>{
-      axios.post(url,options,config)
+      axios.post(url,formData,config)
         .then(res=>{
           if(res.status==200){
             resolve(res.data)

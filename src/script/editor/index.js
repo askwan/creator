@@ -110,10 +110,14 @@ export default class Editor {
     dispatch.call('currentObject',this,{object:_sobject,entityId:null})
   }
   enableSobject(objId){
+    // console.log(objId);
+    // enableObject(objId);
     let features = this.idContext.features();
     features.enable(objId);
   }
   disableSobject(objId){
+    // disableObject(objId);
+    // console.log(objId)
     let features = this.idContext.features();
     features.disable(objId);
   }

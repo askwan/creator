@@ -72,7 +72,7 @@
       'left-content':()=>import('./editorLeft'),
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
       'floorManage':()=>import('./eidtorRight/floorMange.vue'),
-      '3Dmode':()=>import('./eidtorRight/3Dmode.vue')
+      'mapboxmode':()=>import('../modelviews/3dmode.vue')
     },
     computed:{},
     mounted(){
@@ -143,7 +143,7 @@
           this.componentId = 'floorManage'
           this.showRight = !this.showRight;
         }else if(item.id==5){
-          this.componentId = '3Dmode';
+          this.componentId = 'mapboxmode';
           this.showRight = !this.showRight;
         }
         this.title = item.title || item.desc;
@@ -174,7 +174,7 @@
     top: 60px;
     bottom: 40px;
     background-color: #fff;
-    z-index: 1;
+    z-index: 2;
     overflow: hidden;
     .right-header{
       height: 40px;

@@ -17,8 +17,9 @@
   </div>
 </template>
 <script>
-import psde from "@/script/editor/psde";
+
 import { flyTo } from "@/script/mapbox";
+import {objectServer} from '@/script/server'
 export default {
   data() {
     return {
@@ -33,19 +34,14 @@ export default {
   },
   methods: {
     getData() {
-
-      psde.objectQuery
-        .loadObject({
-          otNames: "省界"
-        })
-        .then(res => {
-          psde.objectQuery.loadObject({ otNames: "市界" }).then(re => {
-            res.list.forEach(el => {
+      objectServer.query({otNames:'省界',uids:''}).then(res=>{
+        objectServer.query({otNames:'市界',uids:''}).then(re=>{
+          res.list.forEach(el => {
               el.children = this.getCity(re.list, el.code);
             });
-          });
-          this.provinces = res.list.sort((param1,param2)=>param1.name.localeCompare(param2.name,'zh'));
-        });
+        })
+        this.provinces = res.list.sort((param1,param2)=>param1.name.localeCompare(param2.name,'zh'));
+      })
     },
 
     getCity(citylist, code) {

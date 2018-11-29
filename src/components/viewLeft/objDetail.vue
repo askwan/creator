@@ -32,6 +32,7 @@
 </template>
 <script>
   import psde from '@/script/editor/psde';
+  import {otypeServer} from '@/script/server';
   export default {
     data(){
       return {
@@ -61,12 +62,34 @@
 
     },
     mounted(){
-      this.getAttrs();
+      // this.getAttrs();
     },
     methods:{
       getAttrs(){
         this.attrs = [];
-          new psde.OType().query({ids:this.sobject.otype.id}).then(res=>{
+          // new psde.OType().query({ids:this.sobject.otype.id}).then(res=>{
+          //   console.log(res,7777777777777)
+          //   let arr = res.list[0].fields.fields;  
+          //   arr.forEach(el=>{
+          //     let obj = {};
+          //     obj.name = el.name;
+          //     obj.caption = el.caption;
+          //     obj.value = '';
+
+          //     this.attrs.push(obj);
+          //   })
+          //   this.sobject.attributes.forEach(attr=>{
+          //     let field = this.attrs.find(el=>el.name==attr.name);
+          //     if(field) {
+          //       field.value = attr.value;
+          //     }else{
+          //       attr.caption = attr.name;
+          //       this.attrs.push(attr);
+          //     }
+          //   })
+          // });
+          // if(!this.sobject.otype) return
+          otypeServer.query({ids:this.sobject.otype.id}).then(res=>{
             let arr = res.list[0].fields.fields;  
             arr.forEach(el=>{
               let obj = {};
@@ -86,6 +109,7 @@
               }
             })
           })
+
       }
     }
   }

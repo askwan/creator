@@ -128,12 +128,10 @@
 </template>
 
 <script>
-	import psde from "@/script/editor/psde";
-	import ImageManage from "@/script/editor/psde/ImageManage";
   import { vm, operate,getEditor } from "@/script/operate";
 	import {State} from '@/script/editor/utils/store'
 	import common from '@/script/common'
-	import {imageServer} from '@/script/server'
+	import {imageServer,dictServer} from '@/script/server'
 	var IdEdit;
 	var Type = {
 		node:21,
@@ -144,7 +142,6 @@
 	export default {
 		data() {
 			return {
-				ImageManage: ImageManage,
 				// errorDiagramImg: 'this.src="' + require("../../../../../static/images/errorDiagram.jpg") + '"',
 				// errorOtypeImg: 'this.src="' + require("../../../../../static/images/errorOtype.jpg") + '"',
 				imageServer:imageServer,
@@ -156,7 +153,6 @@
 				currentDiagram: 0,
 				type: 0,
 				entityId: "",
-				getDict: new psde.GetDict(),
 				searchOtypeList: [],
 				showDiagramList: true,
 				formList: [],
@@ -265,9 +261,9 @@
 		},
 		methods: {
 			listenEvent() {
-				this.getDict.query({}, "form").then(res => {
-					this.formList = res;
-				});
+				dictServer.getDict('form').then(res=>{
+					this.formList = res.data;
+				})
 			},
 			getName(data) {
 				var find = this.formList.find(item => item.value == data);

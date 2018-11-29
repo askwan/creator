@@ -21,8 +21,8 @@ import { osmEntity, osmNode, osmRelation, osmWay} from '../osm'
 
 import { utilRebind, utilIdleWorker } from '../util'
 
-import { psdeUrl } from '../../../psde/config'
-// import {psdeUrl} from '@/script/server'
+// import { psdeUrl } from '../../../psde/config'
+import {psdeUrl} from '@/script/server'
 
 var dispatch = d3_dispatch('authLoading', 'authDone', 'change', 'loading', 'loaded')
 var urlroot = psdeUrl
@@ -598,7 +598,8 @@ export default {
       let _id = user.id+'';
       //'/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\''
       _tiles.inflight[id] = that.loadFromAPI(
-        '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
+        // '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
+        '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox,
         function (err, parsed) {
           delete _tiles.inflight[id]
           if (!err) {

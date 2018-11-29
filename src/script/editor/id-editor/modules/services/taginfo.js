@@ -205,6 +205,7 @@ export default {
 
 
     keys: function(params, callback) {
+         return ;
         var doRequest = params.debounce ? debouncedRequest : request;
         params = clean(setSort(params));
         params = _extend({ rp: 10, sortname: 'count_all', sortorder: 'desc', page: 1 }, params);
@@ -224,6 +225,7 @@ export default {
 
 
     multikeys: function(params, callback) {
+        return ;
         var doRequest = params.debounce ? debouncedRequest : request;
         params = clean(setSort(params));
         params = _extend({ rp: 25, sortname: 'count_all', sortorder: 'desc', page: 1 }, params);

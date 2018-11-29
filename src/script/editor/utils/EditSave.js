@@ -108,7 +108,9 @@ class EditSave {
     for(let id in sobjects){
       let sobject = this.clone(sobjects[id]);
       sobject.forms.forEach(form=>{
-        form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+        if(form.geom){
+          form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
+        }
       })
     }
     return sobjects;
@@ -195,7 +197,6 @@ class EditSave {
     let sobjects = this.formateHistory(context,idedit)
     let resultSobjectList = [];
     let osmCollection = this.getOsmChanges1(context,idedit);
-    console.log(osmCollection,44444444);
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
@@ -245,7 +246,11 @@ class EditSave {
             };
           })
         }
-        if(form.geom && typeof form.geom=='object') form.geom.clearId();
+        if(form.geom && typeof form.geom=='object') {
+          form.geom.clearId();
+        }else{
+          form.geom = '';
+        }
 
       })
 
@@ -311,7 +316,7 @@ class EditSave {
       form.formref.refid = this.toNum(entityId)
 
     }else {
-      form.geomref = entityId;
+      // form.geomref = entityId;
       if(entity.flag==1) {
         form.geomref = 0;
         form.formref.geometry = null;

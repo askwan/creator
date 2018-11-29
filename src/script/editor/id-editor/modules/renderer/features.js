@@ -111,10 +111,6 @@ export function rendererFeatures(context,otype) {
         return traffic_roads[entity.tags.highway];
     });
 
-    // defineFeature('otype',function isOtype(entity){
-    //     return entity.orgData.otype.id==3456
-    // })
-
     defineFeature('service_roads', function isServiceRoad(entity) {
         return service_roads[entity.tags.highway];
     });

@@ -129,16 +129,12 @@
 				</el-collapse-item>
 			</el-collapse>
 		</div>
-		<upload-mode v-show="showDiag" @close="showDiag = false" :centerDialogVisible="showDiag" @successFn="changeMode"></upload-mode>
 	</div>
 </template>
 
 <script>
-	import psde from "@/script/editor/psde";
   import { vm, operate,getEditor } from "@/script/operate";
   import {State} from '@/script/editor/utils/store'
-
-	import { downloadFile } from "@/script/editor/psde/config";
 
 	import * as formCtrl from "./formCtrl";
 
@@ -146,7 +142,6 @@
 	export default {
 		data() {
 			return {
-				downloadFile: downloadFile,
 				dimension: [], //维度列表
 				styleServerType: [],//服务类型列表
 				formstyleType: [], //样式类型列表
@@ -174,8 +169,7 @@
 		},
 		props: ["objectDetail"],
 		components: {
-			relationOperate:()=>import('../../components/relationOperate'),
-			uploadMode:()=>import('../../components/uploadMode.vue')
+			relationOperate:()=>import('../../components/relationOperate')
 		},
 		beforeMount(){
 			IdEdit = getEditor();

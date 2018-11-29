@@ -35,7 +35,6 @@
   </div>
 </template>
 <script>
-  import psde from '@/script/editor/psde'
   import {State} from '@/script/editor/utils/store'
   import {vm,operate,getEditor} from '@/script/operate'
   import {objectServer} from '@/script/server'
@@ -75,6 +74,7 @@
         return _arr.join(';')
       },
       toName(id){
+        
         let otype = State.otypes[id];
         return (typeof otype === 'object' && otype.name.length>0) ? otype.name : 'default'
       },
@@ -101,7 +101,8 @@
         this.searchValue = ''
         this.otName = '';
         let parentOts = State.getParentOtypeById(this.currentObject.otype.id);
-        let ids = parentOts.map(el=>el.id).join(',')
+        let ids = parentOts.map(el=>el.id).join(',');
+        console.log(ids,888888888)
         this.queryObject(ids);
       }
     },
@@ -130,16 +131,15 @@
           uids:id
         };
         this.objectList = [];
-
-        // objectServer.query().then(res=>{})
-        psde.objectQuery.ByNameAndOTName.query(obj).then(res => {
-          
+        console.log(obj)
+        objectServer.ByNameAndOTName(obj).then(res=>{
+          res.list = res.list.filter(el=>el.otype);
+          console.log(res.list,'res');
           this.total = res.total;
           this.pageNum = res.pageNum;
-
           this.objectList = res.list;
           this.loading = false;
-				});
+        })
       },
       getObjectByRelation(){
         let connector = this.otype.connectors.connectors.find(el=>{
@@ -153,7 +153,7 @@
         let obj = {
           otNames:connector.dType.name
         };
-        psde.objectQuery.ByNameAndOTName.query(obj).then(res=>{
+        objectServer.ByNameAndOTName(obj).then(res=>{
           this.objectList = res.list;
         })
       },

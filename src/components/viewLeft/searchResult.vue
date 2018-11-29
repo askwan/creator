@@ -41,10 +41,10 @@
 	</div>
 </template>
 <script>
-	import psde from "@/script/editor/psde";
 	import { vm, operate, getContext } from "@/script/operate";
 	import ImageManage from "@/script/editor/psde/ImageManage";
 	import * as btMap from "@/script/mapbox";
+	import {objectServer} from '@/script/server'
 	export default {
 		data() {
 			return {
@@ -122,7 +122,7 @@
 					uids:id
 				};
 				this.loading = true;
-				psde.objectQuery.ByNameAndOTName.query(obj).then(response => {
+				objectServer.ByNameAndOTName(obj).then(response => {
 					this.objectList = [];
 					response.list.forEach((item, index) => {
 						var findIndex = this.objectList.findIndex(it => it.id == item.id);

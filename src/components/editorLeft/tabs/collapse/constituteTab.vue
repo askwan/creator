@@ -11,6 +11,7 @@
 <script>
   import {vm,operate,getEditor} from '@/script/operate';
   import psde from '@/script/editor/psde';
+  import {objectServer} from '@/script/server';
   export default {
     data(){
       return {
@@ -57,7 +58,17 @@
         let str = parents.map(el=>el.id).join(',');
         this.parents = [];
         if(str.length==0) return
-        psde.objectQuery.loadObject({ids:str}).then(res=>{
+        
+        // psde.objectQuery.loadObject({ids:str}).then(res=>{
+        //   res.list.forEach(el=>{
+        //     let obj = {};
+        //     console.log(el)
+        //     obj.id = el.id;
+        //     obj.name = el.name;
+        //     this.parents.push(obj)
+        //   })
+        // });
+        objectServer.query({ids:str}).then(res=>{
           res.list.forEach(el=>{
             let obj = {};
             obj.id = el.id;

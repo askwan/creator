@@ -1,4 +1,5 @@
-import { psdeHost } from '../editor/psde/config'
+// import { psdeHost } from '../editor/psde/config'
+import {psdeHost} from '@/script/server'
 import { vm, operate } from '@/script/operate'
 import _debounce from 'lodash-es/debounce'
 
@@ -35,7 +36,7 @@ function createMap (container) {
     container: container,
     style: {
       version: 8,
-      'sprite': 'http://47.104.96.210/creator/static/mapbox/sprite',
+      'sprite': 'http://116.62.28.103:8000/creator/static/mapbox/sprite',
       sources: {
         'raster-tiles': {
           type: 'raster',
@@ -78,7 +79,7 @@ function createMap (container) {
     // console.log(map.getBounds())
     vm.$emit(operate.mapStatus,{
       posi:map.getCenter(),
-      zoom:map.getZoom()
+      zoom: Math.round(map.getZoom()) 
     })
     vm.$emit(operate.mapBoxZoom, map.getBounds().toArray())
   }

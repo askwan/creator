@@ -25,21 +25,16 @@
 	</div>
 </template>
 <script>
-	import axios from "axios";
 
-	import psde from "@/script/editor/psde";
-	import ImageManage from "@/script/editor/psde/ImageManage";
 	import { vm, operate } from "@/script/operate";
 
-	import { modelFileUpload, queryModelFile, downloadFile } from "@/script/editor/psde/config";
+	import {modelServer} from '@/script/server'
 
 	export default {
 		data() {
 			return {
 				loading: false,
-				modelFileUpload:modelFileUpload.baseURL,
-				queryModelFile,
-				downloadFile,
+				modelFileUpload:modelServer.uploadUrl(),
 				upData: {
 					name: "",
 					desc: ""
@@ -49,9 +44,6 @@
 				// ---上传弹窗---------------------------
 
 				labelPosition: "right",
-
-				// ---保存---------------------------
-				ImageManage,
 
 				dataList: "",
 				// ---分页---------------------------
@@ -89,12 +81,18 @@
 			},
 			updateFn(){
 				// console.log('upload');
-				psde.fileServer.uploadMode(this.upData).then(res=>{
-					console.log(res.data)
+				// psde.fileServer.uploadMode(this.upData).then(res=>{
+				// 	console.log(res.data)
+				// 	this.$emit('successFn' , {data: res.data , sign: "success"});
+				// },()=>{
+				// 	console.log('err')
+				// });
+				modelServer.uploadMode(this.upData).then(res=>{
 					this.$emit('successFn' , {data: res.data , sign: "success"});
-				},()=>{
-					console.log('err')
+				},(err)=>{
+					console.log(err,'err')
 				})
+
 			},
 			// ---------上传--------------------------------------------------
 			submitUpload() {
@@ -155,25 +153,6 @@
 			requestMore() {
 				this.loading = false;
 				this.dataList = [];
-				//   let obj
-				// axios
-				// 	.get(this.queryModelFile.baseURL, {
-				// 		params: {
-				// 			pageSize: this.page.pageSize,
-				// 			pageNum: this.page.pageNum,
-				// 		}
-				// 	})
-				// 	.then(response => {
-				// 		console.log(response.data.data, 11111111);
-				// 		this.dataList = response.data.data;
-				// 		this.page.pageNum = response.data.data.pageNum;
-				// 		this.page.pages = response.data.data.pages;
-				// 		this.page.total = response.data.data.total;
-				// 		this.loading = true;
-				// 	})
-				// 	.catch(function(error) {
-				// 		console.log(error, 22222222);
-				// 	});
       },
       close(){
         this.$emit('close');

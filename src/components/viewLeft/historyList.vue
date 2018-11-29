@@ -5,17 +5,6 @@
 				<ul>
 					<li v-for="(item,index) in objectList" :key="index" :class="{'history-bdcolor': addBgColor==index}" @click="addBgColorFn(item,index)">
 						<img v-if="item.user" :src="common.getAvatar(item.user.userAvatar)" :onerror="errorOtypeImg" alt="加载失败" />
-						<!-- <img v-else-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" /> -->
-						<!-- <i v-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
-						<i v-else-if="item.forms[0].type==22" class="iconfont icon-xian1"></i>
-						<i v-else-if="item.forms[0].type==23" class="iconfont icon-mian1"></i>
-						<i v-else-if="item.forms[0].type==31" class="iconfont icon-yuedengyu"></i>
-						<span v-else-if="item.forms[0].type==32">Dem</span>
-						<span v-else-if="item.forms[0].type==33">Tin</span>
-						<i v-else-if="item.forms[0].type==40" class="iconfont icon-bim"></i>
-						<i v-else-if="item.forms[0].type==50" class="iconfont icon-ic_d_rotation"></i>
-						<i v-else-if="item.forms[0].type==61" class="iconfont icon-ganlanqiu"></i>
-						<i v-else class="iconfont icon-meiyougengduo"></i> -->
 						<div>
 							<span v-if="item.user && item.user.userNickName">
 						    	{{item.user.userNickName}}
@@ -43,18 +32,16 @@
 	</div>
 </template>
 <script>
-	import psde from "@/script/editor/psde";
 	import { vm, operate } from "@/script/operate";
-	import ImageManage from "@/script/editor/psde/ImageManage";
 	import common from "@/script/common.js";
 	// import '../../../static/images/errorDiagram'
 	import * as btMap from "@/script/mapbox";
+	import {versionServer} from '@/script/server'
 	
 	export default {
 		data() {
 			return {
 				common: common,
-				ImageManage: ImageManage,
 				errorOtypeImg: 'this.src="' + require("../../../static/images/errorDiagram.jpg") + '"',
 				searchNameVal: "",
 				objectList: [],
@@ -158,16 +145,10 @@
 					orderType:'VID'
 					}
 					
-				psde.versionServer.query({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
-					console.log(res,7777777)
+				versionServer.getVersions({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
 					if(res.list==0) this.showMore = false
 					this.objectList = this.objectList.concat(res.list);
 				})
-
-				// psde.objectQuery.query(filter).then(res => {
-				// 	if(res.list==0) this.showMore = false
-				// 	this.objectList = this.objectList.concat(res.list);
-				// })
 			},
 			searchObject(){
 				this.pageNum++;
