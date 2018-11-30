@@ -1,6 +1,6 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
-    <el-tree :data="objectTree" default-expand-all :props="prop" :expand-on-click-node="false">
+    <el-tree :data="otypeTree" default-expand-all :props="prop" :expand-on-click-node="false">
       <span class="flex-between" slot-scope="{node,data}">
         <i class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
         <span>{{node.label}}</span>
@@ -22,7 +22,7 @@
         checkedObjects:[],
         list:[],
         loading:false,
-        objectTree:[],
+        otypeTree:[],
         hiddens:[],
         prop:{
           children:'children',
@@ -44,28 +44,49 @@
     watch:{
       show(bool){
         if(bool){
-          this.getObjects();
+          // this.getObjects();
+          if(this.sobject.otype){
+            this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
+          }
         }
       },
       'sobject.id'(id){
-        this.getObjects();
+        // this.getObjects();
+        if(this.sobject.otype){
+          this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
+        }
       }
     },
     methods:{
       handleChanged(val,bool){
         idEditor = getEditor();
         if( !State.sobjects[val.id]) return;
+        
         let forms = State.sobjects[val.id].forms;
         if(!bool){
-          idEditor.enableSobject(val.id);
+          // idEditor.enableSobject(val.id);
           State.showObject(val);
         }else{
-          idEditor.disableSobject(val.id);
+          // idEditor.disableSobject(val.id);
           State.hiddenObject(val);
         };
       },
+      findChildOTypeId(otype){
+        let connectors = State.connectors;
+        let obj = {};
+        Object.assign(obj,otype);
+        let aim = connectors.filter(el=>el.fId==otype.id);
+        obj.children = obj.children||[];
+        obj.children = aim.map(el=>Object.assign({},State.otypes[el.dType.id]));
+        obj.children.forEach(el=>{
+          this.findChildOTypeId(el)
+        });
+        return obj;
+      },
       async getObjects(){
         if(!this.sobject.id) return;
+        let otypes = this.findChildOTypeId(this.sobject.otype);
+        console.log(otypes);
         this.hiddens = State.hiddenObjects();
         this.rootObj.name = this.sobject.name;
         this.rootObj.id = this.sobject.id;
@@ -88,6 +109,7 @@
       changeView(node){
         idEditor = getEditor();
         let hidden = this.hiddens.find(el=>el==node.data.id);
+        console.log(node.data)
         let list = this.getChildObjFromTree(node.data);
         list.forEach(obj=>{
           this.handleChanged(obj,!Boolean(hidden));
@@ -101,9 +123,11 @@
       getChildObjFromTree(root){
         let list = [];
         list.push(root);
-        root.children.forEach(child=>{
-          list = list.concat(this.getChildObjFromTree(child))
-        })
+        if(root.children){
+          root.children.forEach(child=>{
+            list = list.concat(this.getChildObjFromTree(child))
+          })
+        }
         return list;
       }
     }

@@ -71,7 +71,7 @@
     components:{
       'left-content':()=>import('./editorLeft'),
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
-      'floorManage':()=>import('./eidtorRight/floorMange.vue'),
+      'floorManage':()=>import('./eidtorRight/floorManage.vue'),
       'mapboxmode':()=>import('../modelviews/3dmode.vue')
     },
     computed:{},
