@@ -10,7 +10,8 @@ export const operate = {
   DiagramReady:'DiagramReady',
   mapStatus:'mapStatus',
   showClickdel:'showClickdel',
-  constituteOtype:'constituteOtype'
+  constituteOtype:'constituteOtype',
+  currentObject:'currentObject'
 }
 
 let vm = new Vue();

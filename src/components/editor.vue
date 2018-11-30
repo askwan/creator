@@ -101,6 +101,7 @@
             if(data.object) {
               console.log(data.object);
               this.currentObj = data.object;
+              vm.$emit(operate.currentObject,data);
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){
               this.entity = context.entity(data.entityId);
