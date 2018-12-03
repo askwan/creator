@@ -125,6 +125,10 @@
 								<relation-operate v-for="(item,i) in item.relationArr" :key="i" :item="item" @delete="deleteRelation"></relation-operate>
 							</div>
 						</el-form-item>
+
+						<el-form-item>
+							<el-button size="mini" class="pull-right" @click="preview(item)">预览</el-button>
+						</el-form-item>
 					</el-form>
 				</el-collapse-item>
 			</el-collapse>
@@ -202,30 +206,31 @@
 		},
 		computed: {
 			formateList() {
-				return this.objtypeLists.map(el => {
-					if(el.type===50 || el.type===40) {
-						if (el.style == "") {
-							el.style = [];
-							el.style[0] = {
-								scale: "",
-								smallPX: "",
-								x: "",
-								y: "",
-								z: "",
-								h:""
-							};
-						}
-					} else {
-						if (el.style == "") {
-							el.style = [];
-						}
-					}
-					if(typeof el.style == "string" && el.style != "") {
-						el.style = JSON.parse(el.style);
-					}
+				// this.objtypeLists.forEach(el => {
+				// 	if(el.type===50 || el.type===40) {
+				// 		if (el.style == "") {
+				// 			el.style = [];
+				// 			el.style[0] = {
+				// 				scale: "",
+				// 				smallPX: "",
+				// 				x: "",
+				// 				y: "",
+				// 				z: "",
+				// 				h:""
+				// 			};
+				// 		}
+				// 	} else {
+				// 		if (el.style == "") {
+				// 			el.style = [];
+				// 		}
+				// 	}
+				// 	if(typeof el.style == "string" && el.style != "") {
+				// 		el.style = JSON.parse(el.style);
+				// 	}
 					
-					return el;
-				});
+				// 	// return el;
+				// });
+				return this.objtypeLists;
 			}
 		},
 		filters: {
@@ -252,6 +257,12 @@
 			this.requestList();
 		},
 		methods: {
+			preview(item){
+				vm.$emit(operate.preview,{
+					entityId:item.geom,
+					object:this.objectDetail
+				});
+			},
 			positionRefList(forms,item){
 				let aim = [];
 				aim = forms.filter(el=>(el.geotype==item.geotype)&&el.geom);

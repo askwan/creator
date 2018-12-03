@@ -58,14 +58,15 @@ class SObjectGraph {
     form.maxGrain = form.maxGrain || 0
     form.minGrain = form.minGrain || 0
     let sobject = new psde.SObject();
-    sobject.createObject({})
+    console.log('createObject')
+    sobject.createObject({forms:[form]});
     sobject.otype = otype;
     // sobject.attributes = attributes;
     // 创建动作
 
     // 添加form形态
 
-    sobject.addForm(form)
+    // sobject.addForm(form)
     // 创建自动增长id
     let id = idcount++;
     sobject.id = String(id);

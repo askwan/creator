@@ -11,7 +11,8 @@ export const operate = {
   mapStatus:'mapStatus',
   showClickdel:'showClickdel',
   constituteOtype:'constituteOtype',
-  currentObject:'currentObject'
+  currentObject:'currentObject',
+  preview:'preview'
 }
 
 let vm = new Vue();

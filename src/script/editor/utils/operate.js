@@ -7,6 +7,7 @@ const operate = {
   currentComp: 'currentComp',
   showClick: 'showClick',
   showClickdel: 'showClickdel',
+  preview:'preview'
 
 }
 let context;

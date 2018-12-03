@@ -19,7 +19,7 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
-import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose} from '@/script/editor/id-editor/modules/actions'
+import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose,actionVisible} from '@/script/editor/id-editor/modules/actions'
 import { osmNode, osmRelation, osmWay } from '@/script/editor/id-editor/modules/osm'
 
 import { State } from './utils/store'
@@ -65,8 +65,8 @@ export default class Editor {
       if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
       if(ele){
         let entity = this.idContext.entity(ele);
-        console.log(entity);
-        
+        // this.idContext.perform(actionVisible(ele,{}))
+        // console.log(entity);
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);

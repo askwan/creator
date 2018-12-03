@@ -35,21 +35,31 @@ export default class SObject extends DObject {
 
   createObject (obj) {
     let id = obj.id || 0
-    Object.assign(this, obj)
-    this.addAction(id, Action.ADDING | Action.BASE)
+    // Object.assign(this, obj);
+    this.copyObject(obj);
+    this.addAction(id, Action.ADDING | Action.BASE);
     return this
   }
   copyObject (obj) {
     let sobject = Object.assign(this, obj)
     if (sobject.forms instanceof Array) {
       sobject.forms = sobject.forms.map(el => {
-//      let style = _trim(el.style)
-        if (typeof style == 'string' && style.length > 0) {
-          try {
-            el.style = parse(style)
-          } catch (error) {
-            el.style = ''
+        if(el.type===50 || el.type===40) {
+          if (!el.style) {
+            el.style = [];
+            el.style[0] = {
+              scale: "",
+              smallPX: "",
+              x: "",
+              y: "",
+              z: "",
+              h:""
+            };
           }
+        } else {
+        }
+        if(typeof el.style == "string" && el.style != "") {
+          el.style = JSON.parse(el.style);
         }
         return el
       });

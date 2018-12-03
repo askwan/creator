@@ -192,6 +192,7 @@ export function rendererFeatures(context,otype) {
     defineFeature('others', function isOther(entity, resolver, geometry) {
         return (geometry === 'line' || geometry === 'area');
     });
+    
 
     
     for(let key in otype){
@@ -500,10 +501,15 @@ export function rendererFeatures(context,otype) {
     };
 
     features.setFeature = function(sobject){
+        // defineFeature(sobject.id,function(entity){
+        //     let forms = sobject.forms;
+        //     let aim = forms.find(el=>el.geom==entity.id);
+        //     if(aim) return true;
+        // });
         defineFeature(sobject.id,function(entity){
-            let forms = sobject.forms;
-            let aim = forms.find(el=>el.geom==entity.id);
-            if(aim) return true;
+            if(entity.orgData){
+                return entity.orgData.parents.find(el=>el.id==sobject.id)||entity.orgData.id==sobject.id;
+            }
         })
     }
 

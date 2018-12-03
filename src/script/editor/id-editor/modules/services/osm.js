@@ -599,7 +599,7 @@ export default {
       //'/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\''
       _tiles.inflight[id] = that.loadFromAPI(
         // '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
-        '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox,
+        '/object/query?loadForm=true&geoEdit=true&loadNetwork=true&geoWkt=' + extbbox+'&uids=\''+_id+'\'',
         function (err, parsed) {
           delete _tiles.inflight[id]
           if (!err) {

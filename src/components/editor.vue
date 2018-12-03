@@ -10,14 +10,14 @@
           </li>
         </el-tooltip>
     </ul>
-    <transition name="slider">
-      <div v-show="showRight" class="right shadow">
+    <transition name="slider" v-for="(bar,i) in menuList" :key="i" v-if="bar.haveMenu">
+      <div v-if="bar.isShow" class="right shadow" :style="{'z-index':10-i}">
         <div class="right-header flex-between pd-right-mini">
-          <span class="font-16 pd-left-mini">{{title}}</span>
-          <i class="el-icon-close font-18 pointer" @click="showRight=false"></i>
+          <span class="font-16 pd-left-mini">{{bar.title}}</span>
+          <i class="el-icon-close font-18 pointer" @click="bar.isShow=false"></i>
         </div>
         <div class="right-content">
-          <component :is="componentId" :show="showRight" :sobject="currentObj"></component>
+          <component :is="bar.componentId" :show="bar.isShow" :sobject="currentObj"></component>
         </div>
       </div>
     </transition>
@@ -39,31 +39,43 @@
         componentId:'rightOtypes',
         showRight:false,
         title:'',
+        zIndex:1,
         menuList:[{
           icon:'el-icon-plus',
           id:1,
           desc:'放大',
-          title:'放大'
+          title:'放大',
+          haveMenu:false
         },{
           icon:'el-icon-minus',
           id:2,
           desc:'缩小',
-          title:'缩小'
+          title:'缩小',
+          haveMenu:false
         },{
           icon:'el-icon-view',
           id:3,
           desc:'过滤',
-          title:'过滤'
+          title:'过滤',
+          isShow:false,
+          haveMenu:true,
+          componentId:'rightOtypes'
         },{
           icon:'el-icon-sort',
           id:4,
           desc:'内部结构',
-          title:'结构管理'
+          title:'结构管理',
+          isShow:false,
+          haveMenu:true,
+          componentId:'floorManage'
         },{
           icon:'el-icon-printer',
           id:5,
           desc:'模型视图',
-          title:'模型编辑'
+          title:'模型编辑',
+          isShow:false,
+          haveMenu:true,
+          componentId:'mapboxmode'
         }]
       }
     },
@@ -72,7 +84,7 @@
       'left-content':()=>import('./editorLeft'),
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
       'floorManage':()=>import('./eidtorRight/floorManage.vue'),
-      'mapboxmode':()=>import('../modelviews/3dmode.vue')
+      'mapboxmode':()=>import('../modelviews/mapboxShow.vue')
     },
     computed:{},
     mounted(){
@@ -87,6 +99,12 @@
       listenEvent(){
         vm.$on(operate.DiagramReady,()=>{
           this.initIdEditor();
+        });
+        vm.$on(operate.preview,(obj)=>{
+          this.componentId = 'mapboxmode';
+          this.showRight = true;
+          this.currentObj = obj.object;
+          vm.$emit('currentObject',obj);
         })
       },
       initIdEditor(){
@@ -99,7 +117,7 @@
 
           editor.on('currentObject',data=>{
             if(data.object) {
-              console.log(data.object);
+              // console.log(data.object);
               this.currentObj = data.object;
               vm.$emit(operate.currentObject,data);
               vm.$emit(operate.changeTab,{name:'objectDetail'});
@@ -133,20 +151,22 @@
         getEditor(editor);
       },
       menuTool(item){
-        if(item.id==1){
-          editor.zoomOut();
-        }else if(item.id==2){
-          editor.zoomIn();
-        }else if(item.id==3){
-          this.componentId = 'rightOtypes';
-          this.showRight = !this.showRight;
-        }else if(item.id==4){
-          this.componentId = 'floorManage'
-          this.showRight = !this.showRight;
-        }else if(item.id==5){
-          this.componentId = 'mapboxmode';
-          this.showRight = !this.showRight;
-        }
+        // if(item.id==1){
+        //   editor.zoomOut();
+        // }else if(item.id==2){
+        //   editor.zoomIn();
+        // }else if(item.id==3){
+        //   this.componentId = 'rightOtypes';
+        //   this.showRight = !this.showRight;
+        // }else if(item.id==4){
+        //   this.componentId = 'floorManage'
+        //   this.showRight = !this.showRight;
+        // }else if(item.id==5){
+        //   this.componentId = 'mapboxmode';
+        //   this.showRight = !this.showRight;
+        // }
+        item.isShow = !item.isShow;
+        this.zIndex++;
         this.title = item.title || item.desc;
       }
     },
@@ -175,7 +195,7 @@
     top: 60px;
     bottom: 40px;
     background-color: #fff;
-    z-index: 2;
+    z-index: 1;
     overflow: hidden;
     .right-header{
       height: 40px;
@@ -202,6 +222,7 @@
     border-top-left-radius: 5px;
     overflow: hidden;
     border-bottom-left-radius: 5px;
+    z-index: 500;
     .menu-box{
       height: 40px;
       background-color: rgba($color: #000000, $alpha: 0.5);
@@ -209,6 +230,5 @@
         background-color: rgba($color: #000000, $alpha: 0.7)
       }
     }
-    z-index: 2;
   }
 </style>

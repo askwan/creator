@@ -128,7 +128,7 @@ function parseObject (entities, sobject) {
 
   let context = getEditor().idContext;
 
-  // context.features().setFeature(sobject);
+  context.features().setFeature(sobject);
 
   // let hidden = State.hiddenObjects();
   // let hideObj = hidden.find(el=>el==sobject.id);

@@ -1,6 +1,6 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
-    <el-tree :data="otypeTree" default-expand-all :props="prop" :expand-on-click-node="false">
+    <el-tree :data="Trees" :props="prop" :expand-on-click-node="false">
       <span class="flex-between" slot-scope="{node,data}">
         <i class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
         <span>{{node.label}}</span>
@@ -22,7 +22,7 @@
         checkedObjects:[],
         list:[],
         loading:false,
-        otypeTree:[],
+        Trees:[],
         hiddens:[],
         prop:{
           children:'children',
@@ -44,17 +44,19 @@
     watch:{
       show(bool){
         if(bool){
-          // this.getObjects();
-          if(this.sobject.otype){
-            this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
-          }
+          this.getObjects();
+          // if(this.sobject.otype){
+          //   this.otypeTree = [];
+          //   this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
+          // }
         }
       },
       'sobject.id'(id){
-        // this.getObjects();
-        if(this.sobject.otype){
-          this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
-        }
+        this.getObjects();
+        // if(this.sobject.otype){
+        //   this.otypeTree = [];
+        //   this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
+        // }
       }
     },
     methods:{
@@ -92,7 +94,7 @@
         this.rootObj.id = this.sobject.id;
         this.rootObj.children = [];
         await this.queryChildren(this.rootObj);
-        this.objectTree.push(this.rootObj);
+        this.Trees.push(this.rootObj);
       },
       async queryChildren(object){
         let res = await objectServer.query({parents:object.id,geoEdit:true});
@@ -108,8 +110,12 @@
       },
       changeView(node){
         idEditor = getEditor();
+        let features = idEditor.idContext.features();
+        console.log(node.data);
+        features.toggle(node.data.id)
+        // return
         let hidden = this.hiddens.find(el=>el==node.data.id);
-        console.log(node.data)
+        // console.log(node.data)
         let list = this.getChildObjFromTree(node.data);
         list.forEach(obj=>{
           this.handleChanged(obj,!Boolean(hidden));
