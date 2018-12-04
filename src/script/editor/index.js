@@ -1,17 +1,5 @@
 import * as iD from './id-editor/modules';
 
-// import "./id-editor/css/00_reset.css";
-// import "./id-editor/css/20_map.css";
-// import "./id-editor/css/25_areas.css";
-// import "./id-editor/css/30_highways.css";
-// import "./id-editor/css/35_aeroways.css";
-// import "./id-editor/css/40_railways.css";
-// import "./id-editor/css/45_waterways.css";
-// import "./id-editor/css/50_misc.css";
-// import "./id-editor/css/55_cursors.css";
-// import "./id-editor/css/60_photos.css";
-// import "./id-editor/css/70_fills.css";
-// import "./id-editor/css/80_app.css";
 import psde from './psde';
 import {objectServer} from '@/script/server'
 
@@ -31,7 +19,6 @@ import SObject from './psde/psdm/SObject';
 
 let n = 1000;
 const dispatch = d3_dispatch('currentObject','notice')
-
 var relationRandomId = 1;
 let isAjax = true;
 export default class Editor {
@@ -44,6 +31,7 @@ export default class Editor {
     this.currentRelation = null;
     this.currentForm = null;
     this.isChanges = false;
+    this.currentEntity = {};
   }
   config(obj){
     Object.assign(this.options,obj);
@@ -54,7 +42,6 @@ export default class Editor {
       this.idContext.flush();
       utilRebind(this,dispatch,'on');
       this.listen();
-      //operate
       this.relationOperate = new RelationOperate(this.idContext);
       this.deleteOperate = Delete;
       if(callback) callback(this.idContext);
@@ -62,9 +49,14 @@ export default class Editor {
   }
   listen(){
     this.idContext.on('selectEle',ele=>{
-      if(!ele) return dispatch.call('currentObject',this,{object:null,entityId:null});
+      if(!ele) {
+        this.currentEntity = null;
+        dispatch.call('currentObject',this,{object:null,entityId:null});
+        return
+      }
       if(ele){
         let entity = this.idContext.entity(ele);
+        this.currentEntity = entity;
         // this.idContext.perform(actionVisible(ele,{}))
         // console.log(entity);
       }
@@ -110,16 +102,14 @@ export default class Editor {
     dispatch.call('currentObject',this,{object:_sobject,entityId:null})
   }
   enableSobject(objId){
-    // console.log(objId);
-    // enableObject(objId);
     let features = this.idContext.features();
     features.enable(objId);
+    State.showObject({id:objId})
   }
   disableSobject(objId){
-    // disableObject(objId);
-    // console.log(objId)
     let features = this.idContext.features();
     features.disable(objId);
+    State.hiddenObject({id:objId})
   }
 
 
@@ -147,6 +137,11 @@ export default class Editor {
   modifySobject (sobject) {
     this.currentGraph.updateSObject(sobject)    
     // console.log('更新', this.currentGraph)
+  }
+  modifyOtype(sobject,otypeId){
+    sobject.modyifyOtype(State.otypes[otypeId]);
+    this.modifySobject(sobject);
+    dispatch.call('currentObject',this,{object:sobject,entityId:this.currentEntity.id});
   }
   modifyAttr(attr,sobject){
     try {
@@ -229,31 +224,6 @@ export default class Editor {
           message:err
         })
       })
-      // psde.psdeApi.post(`/object/saveObject?token=${token}`, json).then((result) => {
-      //   isAjax = true
-      //   if (result.data.status == 200) {
-      //     // context.flush();
-      //     // this.clearGraph();
-      //     this.flush();
-      //     dispatch.call('notice',this,{
-      //       type:'success',
-      //       title:'成功',
-      //       message:'保存成功'
-      //     });
-      //   }else {
-      //     dispatch.call('notice',{
-      //       type:'error',
-      //       title:'错误',
-      //       message:'保存失败'
-      //     })
-      //   };
-      // },()=>{
-      //   dispatch.call('notice',{
-      //     type:'error',
-      //     title:'错误',
-      //     message:'保存失败'
-      //   })
-      // })
     }
   }
   clearGraph () {
@@ -268,6 +238,10 @@ export default class Editor {
     this.clearGraph();
     State.clear();
     this.idContext.flush();
+  }
+  setLoadOptions(option){
+    this.idContext.loadOptions(option);
+    this.flush();
   }
   selectSobjects () {
     let ids = this.idContext.selectedIDs()
@@ -354,7 +328,7 @@ export default class Editor {
   updateObject(object){
     let sobject = this.getSobjectById(object.id);
     sobject.modifyObject(object);
-    this.updateAndHistory(object)
+    this.updateAndHistory(object);
   }
   modifyRealTime(object,time){
     let sobject = this.getSobjectById(object.id);

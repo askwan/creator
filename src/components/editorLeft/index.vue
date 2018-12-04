@@ -1,7 +1,10 @@
 <template>
   <div class='left-box fill'>
     <div class="object-title pd-left-small pd-right-small flex-between">
-      <span class="font-16 text-ellipsis" v-show="componentId=='objectDetail'">{{title}}({{otypeName}})</span>
+      <span class="font-16 text-ellipsis" v-show="componentId=='objectDetail'">
+        <i class="el-icon-back pointer-default" @click="resetOtype"></i>
+        {{title}}({{otypeName}})
+      </span>
       <el-button class="btn" type="text" v-show="componentId=='objectDetail'" @click="cloneObject">克隆</el-button>
     </div>
     <div class="object-detail">
@@ -48,6 +51,7 @@
       },
       'sobject.id'(id){
         this.otypeName = this.sobject.otype.name;
+        this.title = this.sobject.name||'default';
       }
     },
     methods:{
@@ -58,6 +62,11 @@
       },
       cloneObject(){
         getEditor().cloneObject();
+      },
+      resetOtype(){
+        // console.log(this.sobject,this.entity)
+        vm.$emit(operate.currentEntity)
+        vm.$emit(operate.changeTab,{name:'diagramList'});
       }
     }
   }

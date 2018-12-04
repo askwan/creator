@@ -316,17 +316,17 @@
 			},
 			addObject(m, it) {
 				this.addHot(it);
-				//let style = otype.formStyles.styles[0];
+				if(IdEdit.currentSobject){
+					return IdEdit.modifyOtype(IdEdit.currentSobject,it.id);
+				}
 				let fromtype = m.type;
 				let geotype = m.positions[0];
 				let otype = it;
-				// console.log(this.entityObj.id,999999)
-				// console.log(this.entityId,123123)
+				console.log(IdEdit.currentSobject,'curr')
 				if(IdEdit.idContext.entity(this.entityObj.id).type=='relation') geotype = 24;
 				IdEdit.createSobject(this.entityObj.id, otype, fromtype, geotype);
 				this.currentDiagram = null;
-				// vm.$emit(operate.changeTab,{name:'objectDetail'})
-				// this.$emit("enterDetail", false);
+				
 			},
 			pathTo(){
 				vm.$emit(operate.changeTab,{name:'addRelation'});

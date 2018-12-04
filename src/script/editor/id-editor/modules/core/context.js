@@ -541,6 +541,12 @@ export function coreContext() {
         otypes = _;
     }
 
+    let loadOptions = {};
+    context.loadOptions = function(url){
+        if(!url) return loadOptions;
+        loadOptions = url;
+    }
+
     
 
     return utilRebind(context, dispatch, 'on');

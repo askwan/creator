@@ -65,6 +65,11 @@ State.clear = function(){
   this.hidden = [];
 }
 
+State.flush = function(){
+  this.relations = [];
+  this.sobjects = {};
+}
+
 /**
  * 获取父对象otype
  * 

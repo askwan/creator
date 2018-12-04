@@ -52,9 +52,16 @@ function parseObjectToOsm (jsonObjects, callback) {
 }
 
 function parseObject (entities, sobject) {
-  let tags = getAttributeTag(sobject)
+  let tags = getAttributeTag(sobject);
+  let context = getEditor().idContext;
   // 循环形态列表
   if (!sobject.forms) return [];
+  // console.log(sobject)
+
+  if(!State.otypes[sobject.otype.id]){
+    return [];
+  }
+  sobject.otype = State.otypes[sobject.otype.id];
 
   
 
@@ -126,15 +133,14 @@ function parseObject (entities, sobject) {
   sobj.copyObject(sobject);
   State.sobjects[sobj.id] = sobj;
 
-  let context = getEditor().idContext;
+  
 
   context.features().setFeature(sobject);
-
-  // let hidden = State.hiddenObjects();
-  // let hideObj = hidden.find(el=>el==sobject.id);
-  // if(hideObj) {
-    
-  // }
+  let hidden = sobject.otype.fields.fields.find(el=>el.name=='indoor');
+  if(hidden && sobject.parents.length>0){
+    getEditor().disableSobject(sobject.id);
+  }
+  
   return entities;
 }
 

@@ -88,6 +88,13 @@ export default class SObject extends DObject {
     this.addAction(this.id, Action.DELETE | Action.BASE)
     return this
   }
+  modyifyOtype(otype){
+    this.otype = otype;
+    if(!this.actions.find(el=>el.operation==33)){
+      this.addAction(this.id, Action.MODIFY | Action.BASE)
+    };
+    return this;
+  }
 
   addAttr (attr) {
     let index = this.attributes.findIndex(attribute => attribute.name == attr.name)

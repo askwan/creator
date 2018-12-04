@@ -5,7 +5,9 @@
 </template>
 <script>
 import model_js from "./script/mapbox";
+import getColor from './script/manage/getColor'
 import { vm } from "@/script/operate";
+import {State} from '@/script/editor/utils/store'
 export default {
   data() {
     return {};
@@ -18,6 +20,7 @@ export default {
   computed: {},
   mounted() {
     model_js.init();
+    getColor.setList(State.styleList)
     // let gui = modelUI.createUI(this.$refs.map3d);
     // console.log(gui)
     this.getData();

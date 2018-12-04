@@ -105,6 +105,11 @@
           this.showRight = true;
           this.currentObj = obj.object;
           vm.$emit('currentObject',obj);
+        });
+        vm.$on(operate.currentEntity,entityId=>{
+          // this.entity = editor.idContext(entityId);
+          console.log(editor.currentEntity,77777);
+          this.entity = editor.currentEntity;
         })
       },
       initIdEditor(){

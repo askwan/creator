@@ -12,7 +12,8 @@ export const operate = {
   showClickdel:'showClickdel',
   constituteOtype:'constituteOtype',
   currentObject:'currentObject',
-  preview:'preview'
+  currentEntity:'currentEntity',
+  preview:'preview',
 }
 
 let vm = new Vue();

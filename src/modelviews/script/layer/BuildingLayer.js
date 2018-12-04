@@ -1,6 +1,6 @@
 import mercatorProj from '../manage/mercatorProj'
 import randomColor from '../manage/randomColor'
-
+import getColor from '../manage/getColor'
 import {
   getEditor
 } from '@/script/operate'
@@ -47,13 +47,27 @@ class BuildingLayer {
     let old = mercatorProj.lonLat2Mercator(lonLat[0], lonLat[1])
     let newd = mercatorProj.lonLat2Mercator(this.lonlat[0], this.lonlat[1])
     let v = new THREE.Vector2(old.x - newd.x, old.y - newd.y)
-
-    // let mercator = mercatorProj.lonLat2Mercator(lonLat[0] - this.lonlat[0], lonLat[1] - this.lonlat[1])
-    // let v = new THREE.Vector2(mercator.x, mercator.y)
     return v
   }
-
-  createGeometry(object, entityId, num, node) {
+  getAttributes(list, name) {
+    for (let i = 0; i < list.length; i++) {
+      let l = list[i]
+      if (l.name == name) {
+        return l.value
+      }
+    }
+    return null
+  }
+  /**
+   * 
+   * @param {*} object 
+   * @param {*} entityId 
+   * @param {*} num 给楼层的几何向上偏移距离
+   */
+  createGeometry(object, entityId, num) {
+    console.log(object)
+    let color = getColor.getColor(object)
+    let attributes = object.attributes
     let geoBox = object.geoBox
     let osmWay = this.getOsmWay(entityId)
     let lonlatArr = []
@@ -62,23 +76,31 @@ class BuildingLayer {
       lonlatArr.push(this.getPlace(id, geoBox))
     }
     let shape = new THREE.Shape(lonlatArr);
+    let height = this.getAttributes(attributes, 'height')
     let extrudeSettings = {
       steps: 2,
-      depth: 2,
+      depth: height ? height : 0,
+      // depth: node?2:20,
       bevelEnabled: false,
       bevelThickness: 1,
       bevelSize: 1,
       bevelSegments: 1
     };
     let geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
+
     let material = new THREE.MeshBasicMaterial({
-      color: this.getColor()
+      color: color.color
     });
-    let mesh = new THREE.Mesh(geometry, material);
-    mesh.position.z += 20 * num
-    if (node) {
-      mesh.position.z += 3
+    if (object.otype.name == '楼层') {
+      material.transparent = true
+      material.opacity = color.opacity
+    } else {
+      material.transparent = false
+      material.opacity = color.opacity
     }
+    let mesh = new THREE.Mesh(geometry, material);
+
+    mesh.position.z += num < 0 || !num ? 0 : num
     return mesh
 
   }
@@ -92,7 +114,7 @@ class BuildingLayer {
         if (form.type == 23) {
           let entityId = form.geom
 
-          group.add(this.createGeometry(child, entityId, num, true))
+          group.add(this.createGeometry(child, entityId, num))
         }
       }
     }
@@ -113,11 +135,13 @@ class BuildingLayer {
         d.list = d.list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
         object.children = d.list
         this.tierGroup.add(this.createBuildingTier(object, 0));
-        this.tierGroup.add(this.createGeometry(object, entityId, 0));
+        this.tierGroup.add(this.createGeometry(object, entityId));
       } else {
-        this.geometryGroup.add(this.createGeometry(object, entityId, 0));
+        this.geometryGroup.add(this.createGeometry(object, entityId));
       }
     });
+
+
 
   }
   addBuilding(allData, data) {
@@ -129,6 +153,9 @@ class BuildingLayer {
       let geoBox = object.geoBox
       let lonlat = [(geoBox.maxx + geoBox.minx) / 2, (geoBox.maxy + geoBox.miny) / 2]
       let objId = object.id
+      if (!object.otype.name == '楼层') {
+        return
+      }
       objectServer.query({
         parents: objId,
         geoEdit: true
@@ -137,9 +164,11 @@ class BuildingLayer {
           d.list = d.list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
           object.children = d.list
           let entityId = object.forms[0].geom
-          let num = parseInt(object.attributes[0].value) + 1
-          this.towerGroup.add(this.createBuildingTier(object, num));
-          this.tierGroup.add(this.createGeometry(object, entityId, num));
+
+          let num = parseInt(this.getAttributes(object.attributes, "FLOOR"))
+          let height = this.getAttributes(object.attributes, 'height')
+          this.towerGroup.add(this.createBuildingTier(object, num * height));
+          this.tierGroup.add(this.createGeometry(object, entityId, num * height));
 
         }
       });

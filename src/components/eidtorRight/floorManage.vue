@@ -72,6 +72,7 @@
           // idEditor.disableSobject(val.id);
           State.hiddenObject(val);
         };
+        // console.log(State.hidden,'ffffff')
       },
       findChildOTypeId(otype){
         let connectors = State.connectors;
@@ -88,8 +89,7 @@
       async getObjects(){
         if(!this.sobject.id) return;
         let otypes = this.findChildOTypeId(this.sobject.otype);
-        console.log(otypes);
-        this.hiddens = State.hiddenObjects();
+        this.hiddens = State.hidden;
         this.rootObj.name = this.sobject.name;
         this.rootObj.id = this.sobject.id;
         this.rootObj.children = [];
@@ -109,18 +109,29 @@
         
       },
       changeView(node){
+        if(node.data.$treeNodeId==1) {
+          vm.$emit(operate.notice,{
+            message:'不能对root节点进行操作。'
+          });
+          return
+        }
         idEditor = getEditor();
         let features = idEditor.idContext.features();
         console.log(node.data);
-        features.toggle(node.data.id)
+        features.toggle(node.data.id);
+        if(this.hiddens.find(el=>el==node.data.id)){
+          idEditor.enableSobject(node.data.id);
+        }else{
+          idEditor.disableSobject(node.data.id);
+        }
         // return
         let hidden = this.hiddens.find(el=>el==node.data.id);
         // console.log(node.data)
-        let list = this.getChildObjFromTree(node.data);
-        list.forEach(obj=>{
-          this.handleChanged(obj,!Boolean(hidden));
-        });
-        this.hiddens = State.hiddenObjects();
+        // let list = this.getChildObjFromTree(node.data);
+        // list.forEach(obj=>{
+        //   this.handleChanged(obj,!Boolean(hidden));
+        // });
+        this.hiddens = State.hidden;
       },
       isView(node){
         let hidden = this.hiddens.find(el=>node.data.id==el);

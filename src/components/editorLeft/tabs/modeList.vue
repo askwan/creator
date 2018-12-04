@@ -14,7 +14,10 @@
         <div class="el-content">
           <p class="font-black font-14 text-ellipsis">{{mode.name}}</p>
           <p class="font-info font-12 text-ellipsis" :title="mode.des">描述：{{mode.des}}</p>
-          <div class="align-right"><span class="pointer-danger font-info" @click.stop="deleteObj(mode)">删除</span></div>
+          <div class="align-right">
+            <a :href="downloadUrl(mode)" class="pointer-default font-default">下载</a>
+            <span class="pointer-danger font-danger" @click.stop="deleteObj(mode)">删除</span>
+            </div>
         </div>
       </div>
       <div class="up-load">
@@ -41,7 +44,8 @@
         name:'dsff',
         modeLists:[],
         showDiag:false,
-        more:true
+        more:true,
+        
       }
     },
     props:['currentObject'],
@@ -95,6 +99,9 @@
         this.modeLists = [];
         this.getList();
 				this.showDiag= false;
+      },
+      downloadUrl(mode){
+        return modelServer.downloadUrl(mode._id);
       }
     },
     filters:{

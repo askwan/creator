@@ -46,6 +46,9 @@ class ModelServer extends Base {
       })
     })
   }
+  downloadUrl(name){
+    return this.url+'/download?_id='+name;
+  }
 }
 
 export default new ModelServer();
