@@ -21,7 +21,8 @@ export default class SObject extends DObject {
     /**
      * 形态
      */
-    this.defineProperty('forms', [])
+    // this.defineProperty('forms', []);
+    this.forms = [];
 
     this.defineProperty('models', { models: [] })
 
@@ -30,7 +31,7 @@ export default class SObject extends DObject {
     this.defineProperty('compose', {});
 
     this.defineProperty('realTime','');
-    // this.realTime = '';
+    this.realTime = '';
   }
 
   createObject (obj) {
@@ -38,6 +39,7 @@ export default class SObject extends DObject {
     // Object.assign(this, obj);
     this.copyObject(obj);
     this.addAction(id, Action.ADDING | Action.BASE);
+    this.realTime = '';
     return this
   }
   copyObject (obj) {
@@ -72,11 +74,12 @@ export default class SObject extends DObject {
         return parse(arr)
       }
     }
-
+    
     sobject.network.nodes.forEach(el=>{
       el.show = true;
     })
-
+    
+    this.realTime = '';
     return sobject
   }
   modifyObject (obj) {
@@ -165,6 +168,7 @@ export default class SObject extends DObject {
    * @param {Object} form 
    */
   modifyForm (form) {
+    this.modifyObject(this);
     let index = this.forms.findIndex(el => el.id == form.id)
     let addAction = this.getAction(form.id, Action.ADDING | Action.FORM);
     if (addAction) {

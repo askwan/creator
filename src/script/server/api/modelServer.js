@@ -1,5 +1,5 @@
 import Base from './Base'
-import {psdeBaseUrl} from '../config'
+import {psdeBaseUrl,token} from '../config'
 
 class ModelServer extends Base {
   constructor(){
@@ -33,7 +33,7 @@ class ModelServer extends Base {
   uploadMode(option){
     let formData= new FormData();
     formData.append('file',option.file.raw);
-    let url = this.url+'/upload'+`?name=${option.name}&desc=${option.desc}`
+    let url = this.url+'/upload'+`?token=${token}&name=${option.name}&des=${option.desc}`
     return new Promise((resove,reject)=>{
       this.uploadFile(url,formData).then(res=>{
         if(res.status==200) {
@@ -47,7 +47,27 @@ class ModelServer extends Base {
     })
   }
   downloadUrl(name){
-    return this.url+'/download?_id='+name;
+    return this.url+'/download/'+name;
+  }
+  updateMode(option){
+    return new Promise((resolve,reject)=>{
+      this.post('/update',option).then(res=>{
+        resolve(res);
+      })
+      .catch(err=>{
+        reject(err);
+      })
+    })
+  }
+  deleteMode(id){
+    return new Promise((resolve,reject)=>{
+      this.post('/delete',{_id:id}).then(res=>{
+        resolve(res);
+      })
+      .catch(err=>{
+        reject(err);
+      })
+    })
   }
 }
 

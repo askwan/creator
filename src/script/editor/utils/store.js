@@ -99,6 +99,19 @@ State.hiddenObject = function(obj){
   if(index==-1) this.hidden.push(obj.id);
 }
 
+State.getSobjectByParents = function(parentsId){
+  let result = [];
+  for(let id in this.sobjects){
+    let sobject = this.sobjects[id];
+    // console.log(sobject.parents)
+    let find = sobject.parents.find(el=>el.id==parentsId);
+    if(find){
+      result.push(sobject);
+    }
+  }
+  return result
+}
+
 
 
 export {

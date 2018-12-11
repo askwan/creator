@@ -1,8 +1,8 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
-    <el-tree :data="Trees" :props="prop" :expand-on-click-node="false">
+    <el-tree highlight-current :data="Trees" :props="prop" :expand-on-click-node="false">
       <span class="flex-between" slot-scope="{node,data}">
-        <i class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
+        <i v-show="node.data.otype&&node.data.attributes.find(el=>el.name=='FLOOR')" class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
         <span>{{node.label}}</span>
         <span class="mg-left-big">
         </span>
@@ -45,18 +45,10 @@
       show(bool){
         if(bool){
           this.getObjects();
-          // if(this.sobject.otype){
-          //   this.otypeTree = [];
-          //   this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
-          // }
         }
       },
       'sobject.id'(id){
         this.getObjects();
-        // if(this.sobject.otype){
-        //   this.otypeTree = [];
-        //   this.otypeTree.push(this.findChildOTypeId(this.sobject.otype));
-        // }
       }
     },
     methods:{
@@ -66,13 +58,10 @@
         
         let forms = State.sobjects[val.id].forms;
         if(!bool){
-          // idEditor.enableSobject(val.id);
           State.showObject(val);
         }else{
-          // idEditor.disableSobject(val.id);
           State.hiddenObject(val);
         };
-        // console.log(State.hidden,'ffffff')
       },
       findChildOTypeId(otype){
         let connectors = State.connectors;
@@ -86,27 +75,29 @@
         });
         return obj;
       },
-      async getObjects(){
+      getObjects(){
         if(!this.sobject.id) return;
+        this.Trees = [];
         let otypes = this.findChildOTypeId(this.sobject.otype);
         this.hiddens = State.hidden;
-        this.rootObj.name = this.sobject.name;
-        this.rootObj.id = this.sobject.id;
-        this.rootObj.children = [];
-        await this.queryChildren(this.rootObj);
-        this.Trees.push(this.rootObj);
+        let rootObj = {};
+        rootObj.name = this.sobject.name;
+        rootObj.id = this.sobject.id;
+        rootObj.children = [];
+        this.queryChildren(rootObj);
+        this.Trees.push(rootObj);
       },
-      async queryChildren(object){
-        let res = await objectServer.query({parents:object.id,geoEdit:true});
-        try {
-          res.list.forEach(obj=>{
-            object.children.push(obj)
-            this.queryChildren(obj);
-          })
-        } catch (error) {
-          console.log(error,res)  
-        }
-        
+      queryChildren(object){
+        let list = State.getSobjectByParents(object.id);
+        list.forEach(obj=>{
+          let copy = Object.assign({},obj);
+          if(object.children.find(el=>el.id==copy.id)){
+
+          }else{
+            object.children.push(copy)
+          }
+          this.queryChildren(copy);
+        })
       },
       changeView(node){
         if(node.data.$treeNodeId==1) {
@@ -115,27 +106,23 @@
           });
           return
         }
+        
         idEditor = getEditor();
         let features = idEditor.idContext.features();
-        console.log(node.data);
-        features.toggle(node.data.id);
         if(this.hiddens.find(el=>el==node.data.id)){
           idEditor.enableSobject(node.data.id);
         }else{
           idEditor.disableSobject(node.data.id);
         }
-        // return
         let hidden = this.hiddens.find(el=>el==node.data.id);
-        // console.log(node.data)
-        // let list = this.getChildObjFromTree(node.data);
-        // list.forEach(obj=>{
-        //   this.handleChanged(obj,!Boolean(hidden));
-        // });
         this.hiddens = State.hidden;
       },
       isView(node){
-        let hidden = this.hiddens.find(el=>node.data.id==el);
-        return !hidden;
+        if(node.data.parents){
+          let hidden = this.hiddens.find(el=>node.data.id==el||node.data.parents.find(parent=>parent.id==el));
+          return !hidden;
+        }
+        
       },
       getChildObjFromTree(root){
         let list = [];

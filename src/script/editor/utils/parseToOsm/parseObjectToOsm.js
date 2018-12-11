@@ -40,12 +40,18 @@ function parseObjectToOsm (jsonObjects, callback) {
     arr.forEach(el=>{
       let k = entities.findIndex(ev=>ev.id==el.id);
       if(k>=0){
-        entities.splice(k,1,el);
+        if(JSON.stringify(entities[k].tags)=='{}'){
+          entities.splice(k,1,el)
+        }else{
+
+        }
       }else{
         entities.push(el);
       }
+      // entities.push(el);
     })
   }
+  // console.log(entities);
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
   callback(null, entities)

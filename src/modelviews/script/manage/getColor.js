@@ -13,14 +13,19 @@ class ColorList {
       opacity: 1
     }
     if (data) {
-      let style = JSON.parse(data.data)
-      let type = style.type
-      if (style.paint[type + '-color']) {
-        objs.color = style.paint[type + '-color']
+      try {
+        let style = JSON.parse(data.data)
+        let type = style.type
+        if (style.paint[type + '-color']) {
+          objs.color = style.paint[type + '-color']
+        }
+        if (style.paint[type + '-opacity']) {
+          objs.opacity = style.paint[type + '-opacity']
+        }
+      } catch (err) {
+        console.log(err)
       }
-      if (style.paint[type + '-opacity']) {
-        objs.opacity = style.paint[type + '-opacity']
-      }
+
     }
     return objs
   }

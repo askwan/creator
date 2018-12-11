@@ -105,6 +105,7 @@ class EditSave {
    */
   formateHistory(context,idedit){
     let sobjects = idedit.currentGraph.sobjectList;
+    let _sobjects = {};
     for(let id in sobjects){
       let sobject = this.clone(sobjects[id]);
       sobject.forms.forEach(form=>{
@@ -112,8 +113,9 @@ class EditSave {
           form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
         }
       })
+      _sobjects[id] = sobject;
     }
-    return sobjects;
+    return _sobjects;
   }
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
@@ -194,7 +196,7 @@ class EditSave {
   }
   getSaveSObject(context,idedit){
     let nowDate = Math.floor(Date.parse(new Date())/1000);
-    let sobjects = this.formateHistory(context,idedit)
+    let sobjects = this.formateHistory(context,idedit);
     let resultSobjectList = [];
     let osmCollection = this.getOsmChanges1(context,idedit);
     for(let id in sobjects){
@@ -217,6 +219,7 @@ class EditSave {
 
     resultSobjectList.forEach(obj=>{
       if(obj.forms.length==0){
+        obj.actions = [];
         obj.deleteObject();
       }
 
@@ -255,9 +258,10 @@ class EditSave {
       })
 
       let creatAction = obj.actions.find(el=>el.operation==33);
-      if(creatAction&&!obj.realTime){
+      if(!obj.realTime){
         obj.realTime = nowDate;
-      }
+      };
+      obj.children = [];
     });
     
     

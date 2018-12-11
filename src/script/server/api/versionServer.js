@@ -4,7 +4,7 @@ import {psdeUrl} from '../config'
 class VersionServer extends Base {
   constructor(){
     super();
-    this.url = psdeUrl +'/version/list/';
+    this.url = psdeUrl +'version/list/';
   }
   getVersions(params={}){
     return new Promise((resolve, reject)=>{

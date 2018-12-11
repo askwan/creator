@@ -23,6 +23,11 @@ class ModelLayer {
   lamplight() {
     let light = new THREE.AmbientLight(0xffffff)
     this.scene.add(light)
+
+    // let lights = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    // lights.position.set(-500, 500, -500);
+
+    // this.scene.add(lights)
   }
 
   addModel(data, from) {

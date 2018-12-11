@@ -1,8 +1,6 @@
 import BuildingLayer from './layer/BuildingLayer'
 import ModelLayer from './layer/ModelLayer'
-import {
-  objectServer,
-} from '@/script/server'
+
 import {
   State
 } from '@/script/editor/utils/store'
@@ -41,7 +39,7 @@ class Model_js {
           source: 'raster-tiles',
           minzoom: 0,
           maxzoom: 22
-        }]
+        }],
       },
       center: this.center,
       zoom: 16,
@@ -75,16 +73,13 @@ class Model_js {
         this.buildingLayer.remove()
         this.modelLayer.addModel(data, form)
       } else if (form.type == 21) {
-        objectServer.query({
-          parents: data.object.id,
-          geoEdit: true
-        }).then(d => {
-          if (d.list.length > 0) {
-            d.list = d.list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
-            this.modelLayer.remove()
-            this.buildingLayer.addBuilding(data, d.list)
-          }
-        })
+        let list =  State.getSobjectByParents(data.object.id);
+        if (list.length > 0) {
+          list = list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
+          this.modelLayer.remove()
+          this.buildingLayer.addBuilding(data, list)
+        }
+     
       }
     }
     // console.log('----------------------------------')

@@ -76,6 +76,14 @@
           isShow:false,
           haveMenu:true,
           componentId:'mapboxmode'
+        },{
+          icon:'el-icon-tickets',
+          id:6,
+          desc:'版本',
+          title:'版本',
+          isShow:false,
+          haveMenu:true,
+          componentId:'versionObject'
         }]
       }
     },
@@ -84,13 +92,15 @@
       'left-content':()=>import('./editorLeft'),
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
       'floorManage':()=>import('./eidtorRight/floorManage.vue'),
-      'mapboxmode':()=>import('../modelviews/mapboxShow.vue')
+      'mapboxmode':()=>import('../modelviews/mapboxShow.vue'),
+      'versionObject':()=>import('./eidtorRight/version.vue')
     },
     computed:{},
     mounted(){
 
       this.$nextTick(()=>{
-        this.listenEvent()
+        this.listenEvent();
+        this.initIdEditor();
       });
 
     },
@@ -98,7 +108,8 @@
     methods:{
       listenEvent(){
         vm.$on(operate.DiagramReady,()=>{
-          this.initIdEditor();
+          // console.log('ooo')
+          // this.initIdEditor();
         });
         vm.$on(operate.preview,(obj)=>{
           this.componentId = 'mapboxmode';
@@ -108,7 +119,6 @@
         });
         vm.$on(operate.currentEntity,entityId=>{
           // this.entity = editor.idContext(entityId);
-          console.log(editor.currentEntity,77777);
           this.entity = editor.currentEntity;
         })
       },

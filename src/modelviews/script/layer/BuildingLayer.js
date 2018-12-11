@@ -7,9 +7,7 @@ import {
 import {
   State
 } from '@/script/editor/utils/store'
-import {
-  objectServer,
-} from '@/script/server'
+
 
 
 class BuildingLayer {
@@ -35,8 +33,16 @@ class BuildingLayer {
    * 添加灯光 --环境光
    */
   lamplight() {
-    let light = new THREE.AmbientLight(0xffffff)
-    this.scene.add(light)
+    let l = new THREE.AmbientLight(0xffffff,0.4)
+    this.scene.add(l)
+      //set up the lights
+      var light = new THREE.DirectionalLight(0xffffff);
+      light.position.set(-50000, 50000, -50000);
+      this.scene.add(light);
+
+      var lights = new THREE.DirectionalLight(0xffffff);
+      lights.position.set(50000, 50000, 50000);
+      this.scene.add(lights);
   }
   getOsmWay(id) {
     let IdEditor = getEditor();
@@ -58,57 +64,122 @@ class BuildingLayer {
     }
     return null
   }
+  createLine(lonlatArr, topLength, height) {
+    let group = new THREE.Group()
+    let line = new THREE.LineBasicMaterial({
+      // color: "#73ccff",
+      color: "#ffffff",
+      // linewidth: 10,
+      // opacity: 0.5,
+      // transparent: true
+    })
+
+    let lonLatHeiBase = []
+    let lonLatHeiPeak = []
+    let lonLatHeiSide = []
+    for (let z = 0; z < lonlatArr.length; z++) {
+      let v = new THREE.Vector3(lonlatArr[z].x, lonlatArr[z].y, 0)
+      let b = new THREE.Vector3(lonlatArr[z].x, lonlatArr[z].y, height)
+
+      lonLatHeiBase.push(v)
+      lonLatHeiPeak.push(b)
+      lonLatHeiSide.push(v)
+      lonLatHeiSide.push(b)
+    }
+
+    lonLatHeiBase.push(lonLatHeiBase[0])
+    lonLatHeiPeak.push(lonLatHeiPeak[0])
+
+    let geomBase = new THREE.Geometry().setFromPoints(lonLatHeiBase);
+    let geomPeak = new THREE.Geometry().setFromPoints(lonLatHeiPeak);
+    let geomSide = new THREE.Geometry().setFromPoints(lonLatHeiSide);
+
+    let wireBase = new THREE.Line(geomBase, line);
+    let wirePeak = new THREE.Line(geomPeak, line);
+    let wireSide = new THREE.LineSegments(geomSide, line);
+
+    wireBase.position.z += topLength
+    wirePeak.position.z += topLength
+    wireSide.position.z += topLength
+
+    group.add(wireBase);
+    group.add(wirePeak);
+    group.add(wireSide);
+    return group
+  }
   /**
    * 
    * @param {*} object 
    * @param {*} entityId 
-   * @param {*} num 给楼层的几何向上偏移距离
+   * @param {*} topNum 给楼层的几何向上偏移距离
    */
-  createGeometry(object, entityId, num) {
-    console.log(object)
+  createGeometry(object, entityId, topNum) {
+    let floorObj = new THREE.Object3D();
+    let multiple
+    let transparent
+    let topLength = topNum < 0 || !topNum ? 0 : topNum * 4
+    if (object.otype.name == '楼层') {
+      transparent = true
+      multiple = 4
+    } else {
+      transparent = false
+      multiple = 2.5
+    }
     let color = getColor.getColor(object)
-    let attributes = object.attributes
-    let geoBox = object.geoBox
+    let heightLength = this.getAttributes(object.attributes, 'height')
+    let height = heightLength ? heightLength * multiple : 0.1
     let osmWay = this.getOsmWay(entityId)
     let lonlatArr = []
+    // console.log(osmWay)
+
     for (let q = 0; q < osmWay.nodes.length - 1; q++) {
       let id = osmWay.nodes[q]
-      lonlatArr.push(this.getPlace(id, geoBox))
+      lonlatArr.push(this.getPlace(id, object.geoBox))
     }
+    // console.log(JSON.stringify(lonlatArr))
     let shape = new THREE.Shape(lonlatArr);
-    let height = this.getAttributes(attributes, 'height')
+
     let extrudeSettings = {
-      steps: 2,
-      depth: height ? height : 0,
-      // depth: node?2:20,
+      steps: 1,
+      depth: height,
       bevelEnabled: false,
-      bevelThickness: 1,
-      bevelSize: 1,
-      bevelSegments: 1
+      bevelThickness: 0,
+      bevelSize: 0,
+      bevelSegments: 0
     };
     let geometry = new THREE.ExtrudeBufferGeometry(shape, extrudeSettings);
-
-    let material = new THREE.MeshBasicMaterial({
-      color: color.color
+    // let material = new THREE.MeshBasicMaterial({
+    //   color: color.color,
+    //   // wireframe:true
+    // });
+    let material = new THREE.MeshPhongMaterial({
+      color: color.color,
+      // specular: 0x555555, 
+      shininess: 30
+      // wireframe:true
     });
-    if (object.otype.name == '楼层') {
-      material.transparent = true
-      material.opacity = color.opacity
-    } else {
-      material.transparent = false
-      material.opacity = color.opacity
-    }
+    
+    material.transparent = transparent
+    material.opacity = color.opacity
+    // material.lights = true
     let mesh = new THREE.Mesh(geometry, material);
+    mesh.position.z += topLength
+    // mesh.receiveShadow = true;
+    // mesh.castShadow = true;
 
-    mesh.position.z += num < 0 || !num ? 0 : num
-    return mesh
+
+    floorObj.add(mesh);
+
+    floorObj.add(this.createLine(lonlatArr, topLength, height))
+
+    return floorObj
 
   }
 
-  createBuildingTier(object, num) {
+  createBuildingTier(list, num) {
     let group = new THREE.Group()
-    for (let i = 0; i < object.children.length; i++) {
-      let child = object.children[i]
+    for (let i = 0; i < list.length; i++) {
+      let child = list[i]
       for (let q = 0; q < child.forms.length; q++) {
         let form = child.forms[q]
         if (form.type == 23) {
@@ -127,20 +198,15 @@ class BuildingLayer {
     let geoBox = object.geoBox
     this.lonlat = [(geoBox.maxx + geoBox.minx) / 2, (geoBox.maxy + geoBox.miny) / 2]
     let entityId = data.entityId
-    objectServer.query({
-      parents: object.id,
-      geoEdit: true
-    }).then(d => {
-      if (d.list.length > 0) {
-        d.list = d.list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
-        object.children = d.list
-        this.tierGroup.add(this.createBuildingTier(object, 0));
-        this.tierGroup.add(this.createGeometry(object, entityId));
-      } else {
-        this.geometryGroup.add(this.createGeometry(object, entityId));
-      }
-    });
 
+    let list = State.getSobjectByParents(object.id);
+    if (list.length > 0) {
+      list = list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
+      this.tierGroup.add(this.createBuildingTier(list, 0));
+      this.tierGroup.add(this.createGeometry(object, entityId));
+    } else {
+      this.geometryGroup.add(this.createGeometry(object, entityId));
+    }
 
 
   }
@@ -148,30 +214,30 @@ class BuildingLayer {
     this.remove()
     let geoBoxs = allData.object.geoBox
     this.lonlat = [(geoBoxs.maxx + geoBoxs.minx) / 2, (geoBoxs.maxy + geoBoxs.miny) / 2]
+    this.otypeBuilding(data)
+  }
+  otypeBuilding(data) {
     for (let i = 0; i < data.length; i++) {
       let object = data[i]
       let geoBox = object.geoBox
       let lonlat = [(geoBox.maxx + geoBox.minx) / 2, (geoBox.maxy + geoBox.miny) / 2]
       let objId = object.id
-      if (!object.otype.name == '楼层') {
-        return
-      }
-      objectServer.query({
-        parents: objId,
-        geoEdit: true
-      }).then(d => {
-        if (d.list.length > 0) {
-          d.list = d.list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
-          object.children = d.list
+      let list = State.getSobjectByParents(objId);
+      list = list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
+      if (object.otype.name != '楼层') {
+        this.otypeBuilding(list)
+      } else {
+        if (list.length > 0) {
           let entityId = object.forms[0].geom
-
           let num = parseInt(this.getAttributes(object.attributes, "FLOOR"))
           let height = this.getAttributes(object.attributes, 'height')
-          this.towerGroup.add(this.createBuildingTier(object, num * height));
+          this.towerGroup.add(this.createBuildingTier(list, num * height));
           this.tierGroup.add(this.createGeometry(object, entityId, num * height));
 
         }
-      });
+      }
+
+
     }
   }
   remove() {
@@ -256,20 +322,20 @@ class BuildingLayer {
     })
   }
 
-  getColor() {
-    //定义字符串变量colorValue存放可以构成十六进制颜色值的值
-    var colorValue = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
-    //以","为分隔符，将colorValue字符串分割为字符数组["0","1",...,"f"]
-    var colorArray = colorValue.split(",");
-    var color = "#"; //定义一个存放十六进制颜色值的字符串变量，先将#存放进去
-    //使用for循环语句生成剩余的六位十六进制值
-    for (var i = 0; i < 6; i++) {
-      //colorArray[Math.floor(Math.random()*16)]随机取出
-      // 由16个元素组成的colorArray的某一个值，然后将其加在color中，
-      //字符串相加后，得出的仍是字符串
-      color += colorArray[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
+  // getColor() {
+  //   //定义字符串变量colorValue存放可以构成十六进制颜色值的值
+  //   var colorValue = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
+  //   //以","为分隔符，将colorValue字符串分割为字符数组["0","1",...,"f"]
+  //   var colorArray = colorValue.split(",");
+  //   var color = "#"; //定义一个存放十六进制颜色值的字符串变量，先将#存放进去
+  //   //使用for循环语句生成剩余的六位十六进制值
+  //   for (var i = 0; i < 6; i++) {
+  //     //colorArray[Math.floor(Math.random()*16)]随机取出
+  //     // 由16个元素组成的colorArray的某一个值，然后将其加在color中，
+  //     //字符串相加后，得出的仍是字符串
+  //     color += colorArray[Math.floor(Math.random() * 16)];
+  //   }
+  //   return color;
+  // }
 }
 export default BuildingLayer
