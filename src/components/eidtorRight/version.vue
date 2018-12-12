@@ -1,6 +1,6 @@
 <template>
   <div class='version-box pd-small'>
-    <div class="pointer-shadow pd-small radius-2 flex-between border-bottom" v-for="(version,i) in versions" :key="i" @click="choseVersion(version)">
+    <div class="pointer-shadow pd-small radius-2 flex-between border-bottom" v-for="(version,i) in versions" :key="i" @click="choseVersion(version,i)">
       <span>
         <i class="el-icon-success" :class="{'font-blue':sobject.version.vid==version.version.vid}" ></i>
         {{version.version.vtime|getDate}}
@@ -18,7 +18,7 @@
       return {
         versions:[],
         pageNum:1,
-        
+        index:null
       }
     },
     props:['show','sobject'],
@@ -57,16 +57,16 @@
             loadNetwork:true
           }).then(res=>{
             this.versions = res.list.sort((a,b)=>{
-              console.log(a.version.vtime<b.version.vtime)
               return a.version.vtime-b.version.vtime;
             })
           })
         }
       },
-      choseVersion(version){
+      choseVersion(version,index){
         // getEditor().modifyRealTime(this.sobject,version.realTime);
         getEditor().changeVersion(version);
-        // State.sobjects[this.sobject.id].realTime = version.realTime;
+        // this.sobject = version;
+        this.sobject.version = version.version;
       }
     }
   }

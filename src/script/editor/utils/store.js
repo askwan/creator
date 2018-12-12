@@ -13,7 +13,8 @@ var State = {
   formstyleType,
   entitys:[],
   hidden:[],
-  _hiddenEntity:[]
+  _hiddenEntity:[],
+  versionObjs:[]
 }
 
 State.cacheRelation = function(relation){
@@ -110,6 +111,24 @@ State.getSobjectByParents = function(parentsId){
     }
   }
   return result
+}
+
+State.setVersionObj = function(sobj){
+  let index = this.versionObjs.findIndex(el=>el.id==sobj.id);
+  if(index==-1){
+    this.versionObjs.push(sobj);
+  }else{
+    this.versionObjs.splice(index,1,sobj);
+  }
+}
+
+State.findVersionObj = function(sobj){
+  let sobject = this.versionObjs.find(el=>el.id==sobj.id);
+  if(sobject) {
+    return JSON.parse(JSON.stringify(sobject));
+  }else{
+    return sobj;
+  }
 }
 
 

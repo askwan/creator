@@ -165,26 +165,8 @@ export default class Editor {
     this.sobjectlist[sobjects.id] = sobjects
   }
   changeVersion(obj){
-    // let sobject = State.sobjects[obj.id];
-    // sobject.actions = obj.actions;
-    let sobject = new SObject();
-    sobject.copyObject(obj);
-    console.log(sobject);
-    sobject.forms.forEach(form=>{
-      if(form.geotype==21){
-        form.geom = 'n'+form.geom.id;
-        form.geomref = 'n'+form.geomref;
-      }else if(form.geotype==22||form.geotype==23){
-        form.geom = 'w'+form.geom.id;
-        form.geomref = 'w'+form.geomref;
-      }else if(form.geotype==24){
-        form.geom = 'r'+form.geom.id;
-        form.geomref = 'r'+form.geomref;
-      }
-    });
-    sobject.otype = State.otypes[sobject.otype.id];
-    State.sobjects[sobject.id] = sobject;
-    dispatch.call('currentObject',this,{object:sobject,entityId:null});
+    State.setVersionObj(obj);
+    this.flush();
   }
   getSObjectByOsmEntity (entityId) {
     let result = this.getSObjectByListOsmEntity(this.currentGraph.sobjectList, entityId)
@@ -226,6 +208,7 @@ export default class Editor {
       objectServer.save(json).then(res=>{
         isAjax = true
         if (res.status == 200) {
+          State.versionObjs = [];
           this.flush();
           dispatch.call('notice',this,{
             type:'success',

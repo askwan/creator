@@ -109,6 +109,7 @@ class EditSave {
     for(let id in sobjects){
       let sobject = this.clone(sobjects[id]);
       sobject.forms.forEach(form=>{
+        console.log(form.geom,123123);
         if(form.geom){
           form.geom = this[TYPE[form.geotype].fnName](context,context.entity(form.geom));
         }
@@ -257,8 +258,12 @@ class EditSave {
 
       })
 
-      let creatAction = obj.actions.find(el=>el.operation==33);
+      if (State.findVersionObj(obj)!==obj){
+        obj.realTime = obj.version.vtime;
+      }
+
       if(!obj.realTime){
+        console.log(obj.realTime,'real')
         obj.realTime = nowDate;
       };
       obj.children = [];

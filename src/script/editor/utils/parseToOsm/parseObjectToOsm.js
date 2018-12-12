@@ -36,7 +36,8 @@ function parseObjectToOsm (jsonObjects, callback) {
 
   for (let i = 0; i < jsonObjectsList.length; i++) {
     let arr = [];
-    arr = parseObject(arr, jsonObjectsList[i]);
+    
+    arr = parseObject(arr, State.findVersionObj(jsonObjectsList[i]));
     arr.forEach(el=>{
       let k = entities.findIndex(ev=>ev.id==el.id);
       if(k>=0){
@@ -51,7 +52,6 @@ function parseObjectToOsm (jsonObjects, callback) {
       // entities.push(el);
     })
   }
-  // console.log(entities);
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
   callback(null, entities)
