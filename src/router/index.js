@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import common from '@/script/common'
+import Edit from '@/views/edit'
+import View from '@/views/view'
 
 Vue.use(Router)
 
@@ -17,14 +18,11 @@ var router =new Router({
     },{
       path:'/view',
       name:'view',
-      component:()=>import('@/views/view')
+      component:View
     },{
       path:'/edit',
       name: 'edit',
-      component: ()=>import('@/views/edit')
-    },{
-      path:'/connect',
-      component:()=>import('@/components/common/connect.vue')
+      component: Edit
     }
   ]
 });

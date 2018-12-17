@@ -10,6 +10,7 @@
   import { queryModelFile, downloadFile } from "@/script/editor/psde/config";
   import {vm,operate,getEditor} from '@/script/operate'
   import{diagramServer,modelServer,dictServer,connectorServer,styleServer} from '@/script/server'
+  import MapContent from '../components/editor'
   export default {
     data(){
       return {
@@ -18,7 +19,7 @@
     },
     props:{},
     components:{
-      'map-content': () => import('../components/editor')
+      'map-content': MapContent
     },
     computed:{},
     mounted(){
@@ -115,14 +116,14 @@
 
       },
       async getConnector(ids){
-        let res = await connectorServer.getList({otIds:ids});
-        try {
-          State.connectors = res.data.list;
-          vm.$emit(operate.DiagramReady);
-          this.loading = false;
-        } catch (error) {
+        this.loading = false;
+        vm.$emit(operate.DiagramReady);
+        // let res = await connectorServer.getList({otIds:ids});
+        // try {
+        //   State.connectors = res.data.list;
+        // } catch (error) {
           
-        }
+        // }
       },
       getStyle(){
         styleServer.getStyles({orderType: "ID",descOrAsc: true,}).then(res=>{

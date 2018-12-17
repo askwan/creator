@@ -1,16 +1,15 @@
-import BuildingLayer from './layer/BuildingLayer'
-import ModelLayer from './layer/ModelLayer'
+import BuildingLayer from '../../script/OneSIS/SObjectSceneManager/LayerManager/CustomLayer/BuildingLayer/BuildingLayer'
+// import ModelLayer from '../../script/OneSIS/SObjectSceneManager/LayerManager/CustomLayer/ModelLayer/ModelLayer'
+import PipelineLayer from '../../script/OneSIS/SObjectSceneManager/LayerManager/CustomLayer/PipelineLayer/PipelineLayer'
 
-import {
-  State
-} from '@/script/editor/utils/store'
+import SObject from '../../script/OneSIS/SObjectSceneManager/LayerManager/CustomLayer/SObject/SObject'
+
 class Model_js {
   constructor() {
     // this.center = [113.658247, 34.774313]
     this.center = [120.433512, 31.324123]
+    this.SObjectList = []
 
-    // this.center = [0, 0]
-    this.three = ''
   }
   init() {
     this.addMapbox()
@@ -47,44 +46,89 @@ class Model_js {
 
     this.map.on("load", () => {
       console.log("mapbox地图加载完");
-      this.buildingLayer = new BuildingLayer()
-      this.modelLayer = new ModelLayer()
-      this.map.addLayer(this.buildingLayer);
-      this.map.addLayer(this.modelLayer);
+      this.allLayer = {}
+
+      this.allLayer.buildingLayer = new BuildingLayer()
+      // this.allLayer.modelLayer = new ModelLayer()
+      this.allLayer.pipelineLayer = new PipelineLayer()
+
+      this.map.addLayer(this.allLayer.buildingLayer);
+      // this.map.addLayer(this.allLayer.modelLayer);
+      this.map.addLayer(this.allLayer.pipelineLayer);
       this.map.resize()
     });
   }
-
+  getAttributes(list, name) {
+    for (let i = 0; i < list.length; i++) {
+      let l = list[i]
+      if (l.name == name) {
+        return l.value
+      }
+    }
+    return null
+  }
+  recursion(list, floor) {
+    for (let i = 0; i < list.length; i++) {
+      let object = list[i]
+      let sobject = new SObject(object)
+      sobject.floor = floor ? floor : null
+      this.SObjectList.push(sobject)
+      if (object.children.length > 0) {
+        if (object.otype.name == '楼层') {
+          let num = parseInt(this.getAttributes(object.attributes, "FLOOR"))
+          sobject.floor = num ? num : null
+          if (sobject.layer) {
+            this.allLayer[sobject.layer].add(sobject)
+          }
+          this.recursion(object.children, num)
+        } else {
+          this.recursion(object.children)
+        }
+      } else {
+        if (sobject.layer) {
+          this.allLayer[sobject.layer].add(sobject)
+        }
+      }
+    }
+  }
   getData(data) {
-    let geoBox = data.object.geoBox
-    let lonlat = [(geoBox.maxx + geoBox.minx) / 2, (geoBox.maxy + geoBox.miny) / 2]
+    let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
     this.map.flyTo({
       center: lonlat,
     });
-    // console.log('----------------------------------')
-    let forms = data.object.forms
-    for (let i = 0; i < forms.length; i++) {
-      let form = forms[i]
-      // console.log(form, 'js----map--------')
-      if (form.type == 23) {
-        this.buildingLayer.addGeometry(data)
-        this.modelLayer.remove()
-      } else if (form.type == 50) {
-        this.buildingLayer.remove()
-        this.modelLayer.addModel(data, form)
-      } else if (form.type == 21) {
-        let list =  State.getSobjectByParents(data.object.id);
-        if (list.length > 0) {
-          list = list.filter(el => State.sobjects[el.id]).map(el => State.sobjects[el.id])
-          this.modelLayer.remove()
-          this.buildingLayer.addBuilding(data, list)
-        }
-     
-      }
+
+    for (let i in this.allLayer) {
+      let layer = this.allLayer[i]
+      layer.remove()
+      layer.setLonLat(lonlat)
     }
+
+    this.recursion([data])
+
+    return
+    // let geoBox = data.object.geoBox
+    // let lonlat = [(geoBox.maxx + geoBox.minx) / 2, (geoBox.maxy + geoBox.miny) / 2]
+    // this.map.flyTo({
+    //   center: lonlat,
+    // });
+    // // console.log('----------------------------------')
+    // let forms = data.object.forms
+    // for (let i = 0; i < forms.length; i++) {
+    //   let form = forms[i]
+    //   console.log(form, data, 'js----map--------')
+    //   let type = form.type
+    //   if (type == 50) {
+    //     this.buildingLayer.remove()
+    //     this.modelLayer.addModel(data, form)
+    //   } else if (type == 21 || type == 22 || type == 23) {
+    //     this.modelLayer.remove()
+    //     this.buildingLayer.addGeometry(data, type)
+    //   }
+    // }
     // console.log('----------------------------------')
 
   }
+
 }
 let model_js = new Model_js()
 export default model_js

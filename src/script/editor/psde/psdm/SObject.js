@@ -32,6 +32,8 @@ export default class SObject extends DObject {
 
     this.defineProperty('realTime','');
     this.realTime = '';
+    this.sdomain = 0;
+    this.children = [];
   }
 
   createObject (obj) {

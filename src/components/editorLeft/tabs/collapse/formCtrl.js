@@ -36,11 +36,11 @@ const fromlist = [{
   value: 33,
   sign: 'add'
 },
-//  {
-//   label: 'Bim模型',
-//   value: 40,
-//   sign: 'add'
-// },
+ {
+  label: 'Bim模型',
+  value: 40,
+  sign: 'add'
+},
  {
   label: '3D模型',
   value: 50,

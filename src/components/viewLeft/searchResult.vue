@@ -119,7 +119,7 @@
         let id = `'${user.id}'`;
 				var obj = {
 					names: this.searchNameVal,
-					uids:id
+					// uids:id
 				};
 				this.loading = true;
 				objectServer.ByNameAndOTName(obj).then(response => {

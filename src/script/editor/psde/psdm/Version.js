@@ -8,7 +8,8 @@ class Version extends CoreData {
     /**
      * 主键id
      */
-    this.defineProperty("vid", 0)
+    // this.defineProperty("vid", 0);
+    this.vid = '';
     /**
      * 版本内容
      */

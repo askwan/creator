@@ -41,6 +41,16 @@ class SObjectGraph {
     if(style.positions&&style.positions.length>0){
       form.geotype = style.positions[0]
     }
+    if(form.type>30){
+      form.style = [{
+        scale: "",
+        smallPX: "",
+        x: "",
+        y: "",
+        z: "",
+        h:""
+      }];
+    }
     return form
   }
 

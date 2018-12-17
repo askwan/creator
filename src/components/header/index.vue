@@ -15,6 +15,7 @@
       </el-button-group>
     </div>
     <div class="header-right flex-align">
+      <div class="font-14 font-black pointer" @click="isShow=true">{{currentSdomain.name}}</div>
       <!-- <div v-if="!userName" class="login font-14 flex-center pointer" @click="login">登录</div> -->
       <common-bar :lists="userLists" height="53" @select="exit">
         <div class="flex-center">
@@ -24,11 +25,21 @@
       </common-bar>
       <common-bar height="53" title="网站导航" :lists="list" @select="choose"></common-bar>
     </div>
+    <el-dialog :visible.sync="isShow">
+      <div class="domain-list flex wrap pd-big">
+        <div class="domain-tag pd-small radius-2 pointer-scale flex-center mg-right-small mg-bottom-small" v-for="item in sdomains" :key="item.id" :class="{active:item.id==currentSdomain.id}" @click="chooseDomain(item)">
+          <i class="el-icon-success mg-right-mini"></i>
+          <span>{{item.name}}</span>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
   import {vm,operate} from '@/script/operate'
   import common from '@/script/common'
+  import {sdomainServer} from '@/script/server'
+  import {State} from '@/script/editor/utils/store.js'
   export default {
     data(){
       return {
@@ -40,7 +51,10 @@
         chooseItem:'浏览',
         activeName:1,
         ifEdit:false,
-        path:''
+        path:'',
+        isShow:false,
+        sdomains:[],
+        currentSdomain:{}
       }
     },
     props:{},
@@ -57,12 +71,20 @@
           this.chooseItem = '浏览';
           this.ifEdit = false;
         }
-      }
+      },
     },
     computed:{},
     mounted(){
       this.listenEvent();
-      
+      sdomainServer.getList().then(res=>{
+        this.sdomains = res.list;
+        // console.log(res);
+        if(res.list.length>0){
+          this.currentSdomain = this.sdomains.find(el=>el.id==10);
+          State.currentDomain = this.currentSdomain;
+          vm.$emit(operate.changeDomain,this.currentSdomain);
+        }
+      })
     },
     created: function() {
       if(sessionStorage.getItem('user')){
@@ -74,7 +96,6 @@
       }
 			var _token = this.$route.query.token;
 			var _url = this.$route.query.url;
-			console.log(_url)
 			if(_token) { //判断地址栏是否有token
 				common.setItem("token", _token);
 				common.getNewUser("get", "/account/authorize", {}, res => {
@@ -115,6 +136,12 @@
         this.path = this.path =='/view'?'/edit':'/view'
         // this.path=='编辑'?path = '/view':path = '/edit';
         this.$router.push(this.path);
+      },
+      chooseDomain(item){
+        this.currentSdomain = item;
+        this.isShow = false;
+        vm.$emit(operate.changeDomain,item);
+        State.currentDomain = item;
       }
     }
   }
@@ -147,6 +174,22 @@
       height: 53px;
       width: 60px;
       color: #666;
+    }
+    .domain-list{
+      height: 300px;
+      overflow-y: auto;
+      align-content: start;
+      .domain-tag{
+        border: 1px solid #ccc;
+        height: 40px;
+        
+      }
+      .active{
+        border-color: #3a8ee6;
+        i{
+          color: #3a8ee6;
+        }
+      }
     }
   }
 </style>

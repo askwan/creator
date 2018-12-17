@@ -131,12 +131,12 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        uids:id
+        // uids:id,
+        sdomains:State.currentDomain.id
       };
       this.loading = true;
       this.objectList = [];
       objectServer.ByNameAndOTName(obj).then(response => {
-        console.log(response,123)
         response.list.forEach((item, index) => {
           var findIndex = this.objectList.findIndex(it => it.id == item.id);
           // console.log(item.otype.id,State.otypes[item.otype.id]);

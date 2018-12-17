@@ -599,7 +599,7 @@ export default {
         geoEdit:true,
         loadNetwork:true,
         geoWkt:extbbox,
-        uids:"'"+_id+"'"
+        // uids:"'"+_id+"'"
       }
       let options = Object.assign(defaultOptions,context.loadOptions());
       for(let key in options){

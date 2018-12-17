@@ -16,6 +16,7 @@ import editsave from './utils/EditSave'
 
 import {RelationOperate,Delete} from './operates'
 import SObject from './psde/psdm/SObject';
+import {transformObject} from './utils/parseToOsm/util.js';
 
 let n = 1000;
 const dispatch = d3_dispatch('currentObject','notice')
@@ -58,7 +59,7 @@ export default class Editor {
         let entity = this.idContext.entity(ele);
         this.currentEntity = entity;
         // this.idContext.perform(actionVisible(ele,{}))
-        // console.log(entity);
+        console.log(entity);
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
@@ -195,6 +196,18 @@ export default class Editor {
   }
   getSobjectById (sid) {
     return State.sobjects[sid];
+  }
+  getSObjectByOtypes(list){
+    let arr = [];
+    list.forEach(otId=>{
+      for(let key in State.sobjects){
+        let sobject = State.sobjects[key];
+        if(sobject.otype.id==otId){
+          arr.push(sobject);
+        }
+      }
+    });
+    return arr;
   }
   saveEdit (context) {
     let json = editsave.getSaveSObject(context, this);
@@ -342,21 +355,56 @@ export default class Editor {
     sobject.modifyObject(sobject);
     this.updateAndHistory(sobject)
   }
-  filterObjectByOtype(arr){
-    for(let id in State.otypes){
-      let showId = arr.find(el=>el==id);
-      if(showId){
-        this.idContext.features().enable(id);
+  // filterObjectByOtype(id){
+  //   this.idContext.features().disable(id);
+  // }
+  enableOtype(otId){
+    this.idContext.features().enable(otId);
+    let children = State.findChildrenOtype(otId);
+    children.forEach((el,i)=>{
+      if(i==children.length-1){
+        this.idContext.features().enable(el);
       }else{
-        this.idContext.features().disable(id);
+        this.idContext.features().enable(el,true);
       }
+      State.enableOt(el);
+    });
+    let showOt = [otId];
+    showOt = showOt.concat(children);
+    if(State.viewObject){
+      this.changeStatusObj(State.viewObject,showOt,true);
+    }
+    let hiddens = State.enableOt(otId);
+    return hiddens;
+  }
+  changeStatusObj(obj,otIds,bool){
+    // console.log(otIds,'otIds')
+    if(otIds.find(el=>el==obj.otype.id)){
+      obj.show = bool;
+    }
+    obj.children.forEach(el=>this.changeStatusObj(el,otIds,bool));
+    return obj;
+  }
+  disableOtype(otId){
+    this.idContext.features().disable(otId);
+    let children = State.findChildrenOtype(otId);
+    children.forEach((el,i)=>{
+      if(i==children.length-1){
+        this.idContext.features().disable(el);
+      }else{
+        this.idContext.features().disable(el,true);
+      }
+      // this.idContext.features().disable(el);
+      State.disableOt(el);
+    });
+    let hiddens = State.disableOt(otId);
+    
+    if(State.viewObject){
+      this.changeStatusObj(State.viewObject,hiddens,false)
     }
 
 
-    
-
-    // this.flush();
-    // _debounce(this.flush,350);
+    return hiddens;
   }
   zoomOut(){
     this.idContext.zoomOut();
@@ -441,6 +489,11 @@ export default class Editor {
       this.relationOperate.setRole(newMember,newRelation.id)
     });
     return newRelation;
+  }
+  copySObject(sobject){
+    let _sobject = transformObject(this.idContext,sobject);
+    _sobject.children = _sobject.children.map(el=>this.copySObject(el));
+    return _sobject;
   }
 
 

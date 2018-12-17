@@ -8,6 +8,7 @@ import styleServer from './api/styleServer'
 import behaviorServer from './api/behaviorServer'
 import connectorServer from './api/connectorServer'
 import versionServer from './api/versionServer'
+import sdomainServer from './api/sdomainServer'
 
 import {
   psdeBaseUrl,
@@ -33,7 +34,8 @@ export {
   behaviorServer,
   connectorServer,
   versionServer,
-  psdeHost
+  psdeHost,
+  sdomainServer
 }
 
 // const myEvent = new CustomEvent('hello',{

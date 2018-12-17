@@ -32,6 +32,7 @@
   import psde from '@/script/editor/psde'
   import mapposition from '@/script/mapposition'
   import {objectServer} from '@/script/server'
+  import {State} from '@/script/editor/utils/store'
   let map;
   export default {
     data(){
@@ -62,27 +63,46 @@
       'currentObject.id'(val){
         // this.showLeft = Boolean(val);
       },
+      
     },
     mounted(){
-      map = mapbox.createMapboxMap('mapbox',()=>{
-        //定位
-        if(this.$route.query.map){
-          let str = this.$route.query.map;
-          let posi = str.split(',');
-          map.setCenter([posi[2],posi[1]],posi[0]);
-          map.setZoom(posi[0]);
-        }else{
-          let position = mapposition.getMapPosition();
-          map.setCenter([position.lng, position.lat], position.zoom );
-          map.setZoom(position.zoom);
-          this.areaObj = mapposition.getArea();
-        }
-        
-      });
-      getMap(map);
+      
+      if(State.currentDomain){
+        this.initMap({sdomains:State.currentDomain.id});
+      }
+
       this.listenEvent();
     },
     methods:{
+      initMap(options){
+        if(document.getElementById('mapbox')){
+          document.getElementById('mapbox').innerHTML = '';
+        }
+        if(map){
+          mapposition.saveMapPosition({
+            lng: map.getCenter().lng,
+            lat: map.getCenter().lat,
+            zoom: map.getZoom() 
+          });
+          mapposition.saveArea(this.areaObj)
+        }
+        map = mapbox.createMapboxMap('mapbox',options,()=>{
+        //定位
+          if(this.$route.query.map){
+            let str = this.$route.query.map;
+            let posi = str.split(',');
+            map.setCenter([posi[2],posi[1]],posi[0]);
+            map.setZoom(posi[0]);
+          }else{
+            let position = mapposition.getMapPosition();
+            map.setCenter([position.lng, position.lat], position.zoom );
+            map.setZoom(position.zoom);
+            this.areaObj = mapposition.getArea();
+          }
+          
+        });
+        getMap(map);
+      },
       listenEvent(){
         vm.$on(operate.selectObject,obj=>{
           this.showDistrict = false;
@@ -104,7 +124,7 @@
             loadObjType: true,
             loadAction: true,
             loadNetwork: true,
-            uids:''
+            // uids:''
           }
           objectServer.query(option).then(res=>{
             this.currentObject = res.list[0];
@@ -125,6 +145,10 @@
               map:str
             }
           });
+        });
+        vm.$on(operate.changeDomain,item=>{
+          // console.log(item,'item');
+          this.initMap({sdomains:item.id});
         })
         window.onbeforeunload = ()=> {
             mapposition.saveMapPosition({

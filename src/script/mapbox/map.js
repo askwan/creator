@@ -11,8 +11,8 @@ import vectorSelect from './VectorSelect'
 let mapboxMap = {}
 let marker = null
 let user = JSON.parse(sessionStorage.getItem('user'));
-function createMapboxMap (container,callback) {
-  let map = createMap(container)
+function createMapboxMap (container,options,callback) {
+  let map = createMap(container,options);
   axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
@@ -31,7 +31,16 @@ function createMapboxMap (container,callback) {
   return map
 }
 
-function createMap (container) {
+function createMap (container,options) {
+  // let id = `'${user.id}'`
+  let defaultOptions = {
+    // uids:id
+  };
+  Object.assign(defaultOptions,options);
+  let str = '';
+  for(let key in defaultOptions){
+    str+=`&${key}=${defaultOptions[key]}`
+  }
   let map = new mapboxgl.Map({
     container: container,
     style: {
@@ -50,7 +59,7 @@ function createMap (container) {
         'vector-tiles': {
           'type': 'vector',
           'tiles': [
-            psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile&uids='${user.id}'`
+            psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
           ],
           'minzoom': 4,
           'maxzoom': 20

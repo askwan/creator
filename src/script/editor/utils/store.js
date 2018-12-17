@@ -13,8 +13,10 @@ var State = {
   formstyleType,
   entitys:[],
   hidden:[],
-  _hiddenEntity:[],
-  versionObjs:[]
+  versionObjs:[],
+  currentDomain:{},
+  hiddenOt:[],
+  viewObject:{}
 }
 
 State.cacheRelation = function(relation){
@@ -50,7 +52,7 @@ State.getDiagram = function(list){
       this.otypes[ev.id] = ev;
       this.otypeIds.push(ev.id);
     })
-  })
+  });
   this.diagrams = list;
 }
 
@@ -129,6 +131,25 @@ State.findVersionObj = function(sobj){
   }else{
     return sobj;
   }
+}
+
+State.disableOt = function(otId){
+  let aim = this.hiddenOt.find(el=>el==otId);
+  if(!aim) this.hiddenOt.push(otId);
+  return this.hiddenOt;
+}
+
+State.enableOt = function(otId){
+  let index = this.hiddenOt.findIndex(el=>el==otId);
+  this.hiddenOt.splice(index,1);
+  return this.hiddenOt;
+}
+
+State.findChildrenOtype = function(otypeId){
+  let otype = this.otypes[otypeId];
+  let connectors = otype.connectors.connectors;
+  let inheritConnectors = connectors.filter(el=>el.dType.id==otypeId&&el.type==2&&State.otypes[el.fId]);
+  return inheritConnectors.map(el=>el.fId);
 }
 
 

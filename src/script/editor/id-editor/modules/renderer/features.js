@@ -194,7 +194,6 @@ export function rendererFeatures(context,otype) {
     });
     
 
-    
     for(let key in otype){
         defineFeature(key,function (entity){
             if(entity.orgData){
@@ -249,26 +248,34 @@ export function rendererFeatures(context,otype) {
     };
 
 
-    features.enable = function(k) {
+    features.enable = function(k,bool) {
         if (_features[k] && !_features[k].enabled) {
             _features[k].enable();
-            update();
+            if(!bool){
+                update();
+            }
         }
+        
     };
 
 
-    features.disable = function(k) {
+    features.disable = function(k,bool) {
         if (_features[k] && _features[k].enabled) {
             _features[k].disable();
-            update();
+            if(!bool){
+                update();
+            }
         }
     };
 
 
-    features.toggle = function(k) {
+    features.toggle = function(k,bool) {
         if (_features[k]) {
             (function(f) { return f.enabled ? f.disable() : f.enable(); }(_features[k]));
-            update();
+            // update();
+            if(!bool){
+                update();
+            }
         }
     };
 

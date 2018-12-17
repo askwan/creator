@@ -128,7 +128,8 @@
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
           otIds:ids,
-          uids:id
+          // uids:id,
+          sdomains:State.currentDomain.id
         };
         this.objectList = [];
         console.log(obj)

@@ -11,7 +11,7 @@
         </el-tooltip>
     </ul>
     <transition name="slider" v-for="(bar,i) in menuList" :key="i" v-if="bar.haveMenu">
-      <div v-if="bar.isShow" class="right shadow" :style="{'z-index':10-i}">
+      <div v-if="bar.isShow" class="right shadow" :style="{'z-index':bar.zindex}">
         <div class="right-header flex-between pd-right-mini">
           <span class="font-16 pd-left-mini">{{bar.title}}</span>
           <i class="el-icon-close font-18 pointer" @click="bar.isShow=false"></i>
@@ -45,13 +45,15 @@
           id:1,
           desc:'放大',
           title:'放大',
-          haveMenu:false
+          haveMenu:false,
+          zindex:10
         },{
           icon:'el-icon-minus',
           id:2,
           desc:'缩小',
           title:'缩小',
-          haveMenu:false
+          haveMenu:false,
+          zindex:10
         },{
           icon:'el-icon-view',
           id:3,
@@ -59,7 +61,8 @@
           title:'过滤',
           isShow:false,
           haveMenu:true,
-          componentId:'rightOtypes'
+          componentId:'rightOtypes',
+          zindex:10
         },{
           icon:'el-icon-sort',
           id:4,
@@ -67,7 +70,8 @@
           title:'结构管理',
           isShow:false,
           haveMenu:true,
-          componentId:'floorManage'
+          componentId:'floorManage',
+          zindex:10
         },{
           icon:'el-icon-printer',
           id:5,
@@ -75,7 +79,8 @@
           title:'模型编辑',
           isShow:false,
           haveMenu:true,
-          componentId:'mapboxmode'
+          componentId:'mapboxmode',
+          zindex:9
         },{
           icon:'el-icon-tickets',
           id:6,
@@ -83,7 +88,8 @@
           title:'版本',
           isShow:false,
           haveMenu:true,
-          componentId:'versionObject'
+          componentId:'versionObject',
+          zindex:10
         }]
       }
     },
@@ -100,7 +106,7 @@
 
       this.$nextTick(()=>{
         this.listenEvent();
-        this.initIdEditor();
+        // this.initIdEditor();
       });
 
     },
@@ -109,32 +115,39 @@
       listenEvent(){
         vm.$on(operate.DiagramReady,()=>{
           // console.log('ooo')
-          // this.initIdEditor();
+          this.initIdEditor();
         });
         vm.$on(operate.preview,(obj)=>{
           this.componentId = 'mapboxmode';
           this.showRight = true;
           this.currentObj = obj.object;
-          vm.$emit('currentObject',obj);
+          vm.$emit(operate.hiddenOtypes);
         });
         vm.$on(operate.currentEntity,entityId=>{
           // this.entity = editor.idContext(entityId);
           this.entity = editor.currentEntity;
         })
+        vm.$on(operate.changeDomain,domain=>{
+          if(!editor) return;
+          editor.idContext.loadOptions({sdomains:domain.id});
+          editor.flush();
+        })
       },
       initIdEditor(){
         editor = new Editor();
         editor.init(this.$refs.container,context=>{
-          console.log('ready');
           let map = context.map();
           let position = mapposition.getMapPosition();
           map.centerZoom([position.lng, position.lat], position.zoom);
-
+          context.loadOptions({sdomains:State.currentDomain.id});
           editor.on('currentObject',data=>{
             if(data.object) {
               // console.log(data.object);
               this.currentObj = data.object;
-              vm.$emit(operate.currentObject,data);
+
+              State.viewObject = editor.copySObject(data.object);
+
+              vm.$emit(operate.hiddenOtypes);
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){
               this.entity = context.entity(data.entityId);
@@ -166,22 +179,12 @@
         getEditor(editor);
       },
       menuTool(item){
-        // if(item.id==1){
-        //   editor.zoomOut();
-        // }else if(item.id==2){
-        //   editor.zoomIn();
-        // }else if(item.id==3){
-        //   this.componentId = 'rightOtypes';
-        //   this.showRight = !this.showRight;
-        // }else if(item.id==4){
-        //   this.componentId = 'floorManage'
-        //   this.showRight = !this.showRight;
-        // }else if(item.id==5){
-        //   this.componentId = 'mapboxmode';
-        //   this.showRight = !this.showRight;
-        // }
+        if(item.id!==5){
+          this.menuList.forEach(tool=>{
+            if(tool.id!==5) tool.isShow = false; 
+          });
+        }
         item.isShow = !item.isShow;
-        this.zIndex++;
         this.title = item.title || item.desc;
       }
     },

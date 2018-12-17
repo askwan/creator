@@ -1,9 +1,11 @@
 
 
-const psdeBaseUrl = 'http://192.168.1.177:8001';
-const psdeHost = psdeBaseUrl;
-// const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';
-// const psdeHost = psdeBaseUrl + '/dae/datastore';
+// const psdeBaseUrl = 'http://192.168.1.178:8001';
+// const psdeHost = psdeBaseUrl;
+
+const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';
+const psdeHost = psdeBaseUrl + '/dae/datastore';
+
 const psdeUrl = psdeHost + '/rest/v0.1.0/datastore/';
 
 const modelUrl = "http://bt1.geosts.ac.cn/api/bim";

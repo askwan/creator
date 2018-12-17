@@ -63,40 +63,33 @@
           State.hiddenObject(val);
         };
       },
-      findChildOTypeId(otype){
-        let connectors = State.connectors;
-        let obj = {};
-        Object.assign(obj,otype);
-        let aim = connectors.filter(el=>el.fId==otype.id);
-        obj.children = obj.children||[];
-        obj.children = aim.map(el=>Object.assign({},State.otypes[el.dType.id]));
-        obj.children.forEach(el=>{
-          this.findChildOTypeId(el)
-        });
-        return obj;
-      },
+
       getObjects(){
         if(!this.sobject.id) return;
         this.Trees = [];
-        let otypes = this.findChildOTypeId(this.sobject.otype);
         this.hiddens = State.hidden;
         let rootObj = {};
         rootObj.name = this.sobject.name;
         rootObj.id = this.sobject.id;
         rootObj.children = [];
-        this.queryChildren(rootObj);
+        // this.queryChildren(rootObj);
+        abc(rootObj);
+        console.log("查询递归",rootObj)
         this.Trees.push(rootObj);
       },
       queryChildren(object){
         let list = State.getSobjectByParents(object.id);
         list.forEach(obj=>{
+          obj = JSON.parse(JSON.stringify(obj))
           let copy = Object.assign({},obj);
+          copy.show = true;
           if(object.children.find(el=>el.id==copy.id)){
 
           }else{
             object.children.push(copy)
+            this.queryChildren(copy);
           }
-          this.queryChildren(copy);
+          
         })
       },
       changeView(node){
@@ -106,16 +99,30 @@
           });
           return
         }
-        
+        let aimObj;
         idEditor = getEditor();
         let features = idEditor.idContext.features();
         if(this.hiddens.find(el=>el==node.data.id)){
           idEditor.enableSobject(node.data.id);
+          let list = [];
+          list.push(idEditor.copySObject(node.data));
+          // console.log(this.Trees,'tree');
+          aimObj =  State.sobjects[this.Trees[0].id];
+          aimObj.children.push(node.data);
+          aimObj = idEditor.copySObject(aimObj);
+          aimObj.show = true;
         }else{
           idEditor.disableSobject(node.data.id);
+          aimObj = State.sobjects[this.Trees[0].id];
+          let index = aimObj.children.findIndex(el=>el.id==node.data.id);
+
+          aimObj.children.splice(index,1);
+          aimObj = idEditor.copySObject(aimObj);
         }
         let hidden = this.hiddens.find(el=>el==node.data.id);
         this.hiddens = State.hidden;
+        State.viewObject = aimObj;
+        vm.$emit(operate.hiddenOtypes);
       },
       isView(node){
         if(node.data.parents){
@@ -136,6 +143,21 @@
       }
     }
   }
+
+  const abc = object=>{
+    let list = State.getSobjectByParents(object.id);
+    list.forEach(obj=>{
+      let copy = Object.assign({},obj);
+      copy.show = true;
+      if(object.children.find(el=>el.id==copy.id)){
+
+      }else{
+        object.children.push(copy)
+      }
+      abc(copy);
+    })
+  }
+
 </script>
 <style lang='scss' scoped>
   .floor-manage{
