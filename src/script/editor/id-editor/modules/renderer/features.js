@@ -154,6 +154,10 @@ export function rendererFeatures(context,otype) {
         );
     });
 
+    defineFeature('area',function(entity,b,geometry){
+        return geometry=='area';
+    });
+
     defineFeature('rail', function isRail(entity) {
         return (
             !!entity.tags.railway ||

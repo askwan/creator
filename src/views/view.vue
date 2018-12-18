@@ -67,24 +67,19 @@
     },
     mounted(){
       
-      if(State.currentDomain){
-        this.initMap({sdomains:State.currentDomain.id});
-      }
-
+      let domain = sessionStorage.getItem('sdomain');
+      if(domain){
+        domain = JSON.parse(domain);
+      };
+      domain = domain ||{};
+      this.initMap({sdomains:domain.id});
       this.listenEvent();
     },
     methods:{
       initMap(options){
+        if(this.$route.path=='/edit') return;
         if(document.getElementById('mapbox')){
           document.getElementById('mapbox').innerHTML = '';
-        }
-        if(map){
-          mapposition.saveMapPosition({
-            lng: map.getCenter().lng,
-            lat: map.getCenter().lat,
-            zoom: map.getZoom() 
-          });
-          mapposition.saveArea(this.areaObj)
         }
         map = mapbox.createMapboxMap('mapbox',options,()=>{
         //定位
@@ -147,8 +142,8 @@
           });
         });
         vm.$on(operate.changeDomain,item=>{
-          // console.log(item,'item');
-          this.initMap({sdomains:item.id});
+          let center = this.getCenter(item.geoBox);
+          map.setCenter([center.y,center.x],map.getZoom());
         })
         window.onbeforeunload = ()=> {
             mapposition.saveMapPosition({
@@ -156,6 +151,7 @@
               lat: map.getCenter().lat,
               zoom: map.getZoom() 
             });
+            
             mapposition.saveArea(this.areaObj)
         };
         

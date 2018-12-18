@@ -266,7 +266,7 @@ class EditSave {
         console.log(obj.realTime,'real')
         obj.realTime = nowDate;
       };
-      if(!obj.sdomain) obj.sdomain = State.currentDomain.id;
+      obj.sdomain = JSON.parse(sessionStorage.getItem('sdomain')).id;
       obj.children = [];
     });
     

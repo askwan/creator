@@ -48,10 +48,6 @@
     },
     methods:{
       async getDiagram(){
-        let user={};
-        if(sessionStorage.getItem('user')){
-          user = JSON.parse(sessionStorage.getItem('user'));
-        }
         this.loading = true;
         let options = {};
         options.loadField = true;
@@ -60,6 +56,7 @@
         options.loadParentField = true;
         options.loadParents = true;
         options.loadConnector = true;
+        options.token = ''
         let res = await diagramServer.query(options);
         try {
           State.getDiagram(res.data.list);

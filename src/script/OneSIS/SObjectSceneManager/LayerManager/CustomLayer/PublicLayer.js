@@ -1,13 +1,13 @@
-import mercatorProj from '../manage/mercatorProj'
+import mercatorProj from './manage/mercatorProj'
 
-import Point from '../Geometry/Point'
-import Line from '../Geometry/Line'
-import Polygon from '../Geometry/Polygon'
-import Model from '../Geometry/Model'
+import Point from './Geometry/Point'
+import Line from './Geometry/Line'
+import Polygon from './Geometry/Polygon'
+import Model from './Geometry/Model'
 
-class BuildingLayer {
+class PublicLayer {
   constructor() {
-    this.id = 'building';
+    this.id = 'public';
     this.type = 'custom';
     this.renderingMode = '3d';
 
@@ -17,22 +17,27 @@ class BuildingLayer {
     this.renderer = ''
 
     this.lonlat = []
-
-    this.group = ''
-
-    this.allOtypeGroup = {}
-
-    this.cGeometry = {}
+    this.group = '' //最外层的组
+    this.allSObjectGroup = {}
+    this.cGeometry = {} //所有的几何类型
+    this.show = true
 
     this.lamplight()
     this.init()
   }
-  /**
-   * 添加灯光 --环境光
-   */
+
+  setShow(value) {
+    this.show = value
+    this.group.visible = value
+  }
+  setLonLat(lonlat) {
+    this.lonlat = lonlat
+  }
+
   lamplight() {
     let l = new THREE.AmbientLight(0xffffff, 0.4)
     this.scene.add(l)
+
     var light = new THREE.DirectionalLight(0xffffff, 0.5);
     light.position.set(-50000, -50000, 50000);
     this.scene.add(light);
@@ -46,32 +51,27 @@ class BuildingLayer {
     this.cGeometry.line = new Line()
     this.cGeometry.polygon = new Polygon()
     this.cGeometry.model = new Model()
-  
   }
-  setLonLat(lonlat) {
-    this.lonlat = lonlat
-  }
-
   add(sobject) {
-    if (this.allOtypeGroup[sobject.otypeId]) {
-
+    if (!this.allSObjectGroup[sobject.id]) {
+      this.allSObjectGroup[sobject.id] = new THREE.Group()
+      this.group.add(this.allSObjectGroup[sobject.id])
     } else {
-      this.allOtypeGroup[sobject.otypeId] = new THREE.Group() 
-      this.group.add(this.allOtypeGroup[sobject.otypeId])
+
     }
     let nodes = sobject.nodes
     for (let i in nodes) {
       let node = nodes[i]
-        this.allOtypeGroup[sobject.otypeId].add(this.cGeometry[node.type].create(this.lonlat, sobject,node))
+      this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
+    }
+    if(!sobject.show){
+      this.allSObjectGroup[sobject.id].visible = false
     }
   }
-
   remove() {
-    this.allOtypeGroup={}
+    this.allSObjectGroup = {}
     this.scene.remove(this.group);
-   
     console.log('remove')
-
     this.resetView()
   }
   resetView() {
@@ -123,4 +123,4 @@ class BuildingLayer {
 
 
 }
-export default BuildingLayer
+export default PublicLayer

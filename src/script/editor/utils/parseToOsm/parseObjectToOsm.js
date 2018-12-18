@@ -36,7 +36,7 @@ function parseObjectToOsm (jsonObjects, callback) {
 
   for (let i = 0; i < jsonObjectsList.length; i++) {
     let arr = [];
-    
+
     arr = parseObject(arr, State.findVersionObj(jsonObjectsList[i]));
     arr.forEach(el=>{
       let k = entities.findIndex(ev=>ev.id==el.id);
@@ -137,9 +137,8 @@ function parseObject (entities, sobject) {
   }
   let sobj = new psde.SObject()
   sobj.copyObject(sobject);
-  State.sobjects[sobj.id] = sobj;
-
-  
+  // State.sobjects[sobj.id] = sobj;
+  State.formateSObject(sobj);
 
   context.features().setFeature(sobject);
   let hidden = sobject.otype.fields.fields.find(el=>el.name=='indoor');

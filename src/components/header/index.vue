@@ -27,7 +27,7 @@
     </div>
     <el-dialog :visible.sync="isShow">
       <div class="domain-list flex wrap pd-big">
-        <div class="domain-tag pd-small radius-2 pointer-scale flex-center mg-right-small mg-bottom-small" v-for="item in sdomains" :key="item.id" :class="{active:item.id==currentSdomain.id}" @click="chooseDomain(item)">
+        <div class="domain-tag pd-small radius-2 pointer-shadow flex-center mg-right-small mg-bottom-small" v-for="item in sdomains" :key="item.id" :class="{active:item.id==currentSdomain.id}" @click="chooseDomain(item)">
           <i class="el-icon-success mg-right-mini"></i>
           <span>{{item.name}}</span>
         </div>
@@ -54,7 +54,10 @@
         path:'',
         isShow:false,
         sdomains:[],
-        currentSdomain:{}
+        currentSdomain:{
+          id:0,
+          name:'请选择时空域'
+        }
       }
     },
     props:{},
@@ -76,13 +79,21 @@
     computed:{},
     mounted(){
       this.listenEvent();
+      if(this.$route.path=='/view'){
+        this.chooseItem = '编辑',
+        this.ifEdit = true;
+      }else{
+        this.chooseItem = '浏览';
+        this.ifEdit = false;
+      }
+      this.path = this.$route.path;
       sdomainServer.getList().then(res=>{
         this.sdomains = res.list;
-        // console.log(res);
         if(res.list.length>0){
-          this.currentSdomain = this.sdomains.find(el=>el.id==10);
-          State.currentDomain = this.currentSdomain;
-          vm.$emit(operate.changeDomain,this.currentSdomain);
+          let domain = sessionStorage.getItem('sdomain');
+          if(domain){
+            this.currentSdomain = JSON.parse(domain);
+          }
         }
       })
     },
@@ -94,27 +105,30 @@
         this.icon = common.getAvatar(obj.avatar);
         return
       }
-			var _token = this.$route.query.token;
-			var _url = this.$route.query.url;
-			if(_token) { //判断地址栏是否有token
-				common.setItem("token", _token);
-				common.getNewUser("get", "/account/authorize", {}, res => {
-					common.setUserInfo(res);
-					this.$router.push({
-						path: "/"
-          });
-          this.userName = common.getInfo('nickName');
-          this.icon = common.getAvatar(common.getInfo('avatar'));
-				})
-			} else { //地址栏没有token 退出重新登陆
-				if(!sessionStorage.getItem('user')){
-          common.exitUser.exitAddress();
-        }
-			}
+			// var _token = this.$route.query.token;
+			// var _url = this.$route.query.url;
+			// if(_token) { //判断地址栏是否有token
+			// 	common.setItem("token", _token);
+			// 	common.getNewUser("get", "/account/authorize", {}, res => {
+			// 		common.setUserInfo(res);
+			// 		this.$router.push({
+			// 			path: "/"
+      //     });
+      //     this.userName = common.getInfo('nickName');
+      //     this.icon = common.getAvatar(common.getInfo('avatar'));
+			// 	})
+			// } else { //地址栏没有token 退出重新登陆
+			// 	if(!sessionStorage.getItem('user')){
+      //     common.exitUser.exitAddress();
+      //   }
+			// }
 		},
     methods:{
       listenEvent(){
-
+        vm.$on('tokenReady',user=>{
+          this.userName = user.nickName;
+          this.icon = common.getAvatar(user.avatar)
+        })
       },
       select(name){
         vm.$emit(operate.openTab,{name:name});
@@ -141,7 +155,7 @@
         this.currentSdomain = item;
         this.isShow = false;
         vm.$emit(operate.changeDomain,item);
-        State.currentDomain = item;
+        sessionStorage.setItem('sdomain',JSON.stringify(item));
       }
     }
   }

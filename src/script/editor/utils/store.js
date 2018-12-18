@@ -14,9 +14,9 @@ var State = {
   entitys:[],
   hidden:[],
   versionObjs:[],
-  currentDomain:{},
   hiddenOt:[],
-  viewObject:{}
+  viewObject:{},
+  parentRoot:{}
 }
 
 State.cacheRelation = function(relation){
@@ -66,11 +66,13 @@ State.clear = function(){
   this.sobjects = {};
   // this.otypeIds = [];
   this.hidden = [];
+  this.parentRoot = {};
 }
 
 State.flush = function(){
   this.relations = [];
   this.sobjects = {};
+  this.parentRoot = {};
 }
 
 /**
@@ -113,6 +115,20 @@ State.getSobjectByParents = function(parentsId){
     }
   }
   return result
+}
+
+State.formateSObject = function(obj){
+  // this.parentRoot[obj.id] = [];
+  if(this.sobjects[obj.id]) return;
+  obj.show = true;
+  this.sobjects[obj.id] = obj;
+  obj.parents.forEach(parent=>{
+    if(!this.parentRoot[parent.id]){
+      this.parentRoot[parent.id] = [];
+    };
+    let index = this.parentRoot[parent.id].findIndex(el=>el.id==obj.id);
+    if(index==-1) this.parentRoot[parent.id].push(obj);
+  })
 }
 
 State.setVersionObj = function(sobj){

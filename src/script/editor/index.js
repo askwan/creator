@@ -38,7 +38,16 @@ export default class Editor {
     Object.assign(this.options,obj);
   }
   init(dom,callback){
-    this.idContext = iD.Context().assetPath("static/")
+    if(dom){
+      dom.innerHTML = '';
+    }
+    this.idContext = null;
+    this.idContext = iD.Context().assetPath("static/");
+    if(sessionStorage.getItem('sdomain')){
+      let domain =JSON.parse(sessionStorage.getItem('sdomain'));
+      this.idContext.loadOptions({sdomains:domain.id});
+      
+    }
     this.idContext.ui()(dom,()=>{
       this.idContext.flush();
       utilRebind(this,dispatch,'on');
@@ -494,6 +503,12 @@ export default class Editor {
     let _sobject = transformObject(this.idContext,sobject);
     _sobject.children = _sobject.children.map(el=>this.copySObject(el));
     return _sobject;
+  }
+  getCenter(box){
+    let x = (box.minx+box.maxx)/2;
+    let y = (box.miny+box.maxy)/2;
+    let z = (box.minz+box.maxz)/2
+    return {x,y,z}
   }
 
 

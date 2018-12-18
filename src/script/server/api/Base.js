@@ -3,7 +3,7 @@ export default class Base {
   constructor(){}
   get(name,options){
     let url = this.url+name;
-    options.token = this.getToken();
+    // options.token = this.getToken();
     return new Promise((resolve,reject) => {
       axios.get(url,{
         params:options

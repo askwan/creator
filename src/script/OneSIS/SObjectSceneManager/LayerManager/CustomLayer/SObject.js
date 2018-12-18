@@ -1,4 +1,4 @@
-import otypeList from '../manage/otypeList'
+import otypeList from './manage/otypeList'
 
 class SObject {
   constructor(props) {
@@ -17,6 +17,7 @@ class SObject {
     // this.layer = 'pipelineLayer' //在哪个图层
     this.floor = null //第几层
     this.isfloor = false
+    this.show=true
 
     this.init()
   }
@@ -26,6 +27,7 @@ class SObject {
     this.name = this.data.name
     this.otypeId = this.data.otype.id
     this.forms = this.data.forms
+    this.show=this.data.show
     this.lonlat = [(this.data.geoBox.maxx + this.data.geoBox.minx) / 2, (this.data.geoBox.maxy + this.data.geoBox.miny) / 2]
     this.setNodes()
     this.setIsFloor()
@@ -33,14 +35,19 @@ class SObject {
   }
 
   setLayer() {
-    let connectors = this.data.otype.connectors.connectors
-    for (let i = 0; i < connectors.length; i++) {
-      let t = connectors[i]
-      this.recursionLayer(t, this.data.otype.id)
-    }
     if (!this.layer) {
-      console.log('没有找到', this.data)
+      let connectors = this.data.otype.connectors.connectors
+      for (let i = 0; i < connectors.length; i++) {
+        let t = connectors[i]
+        this.recursionLayer(t, this.data.otype.id)
+      }
+      if (!this.layer) {
+        this.layer = 'otherLayer'
+
+        console.log('没有找到', this.data)
+      }
     }
+
   }
   recursionLayer(type, id) {
     if (type.type == 2) {
@@ -66,6 +73,8 @@ class SObject {
   setIsFloor() {
     if (this.data.otype.name == '楼层') {
       this.isfloor = true
+      let num = parseInt(this.getAttributes(this.data.attributes, "FLOOR"))
+      this.floor = num ? num : null
     }
   }
   setNodes() {
@@ -88,6 +97,7 @@ class SObject {
       } else if (type == 23) {
         this.nodes[form.id].type = 'polygon'
       } else if (type == 50) {
+        this.layer = 'modelLayer'
         this.nodes[form.id].type = 'model'
       }
       if (form.geom.nodes) {
@@ -96,10 +106,18 @@ class SObject {
           this.nodes[form.id].nodes.push([n.x, n.y, n.z])
         }
       } else {
-        this.nodes[form.id].nodes.push([form.geom.x, form.geom.y])
+        this.nodes[form.id].nodes.push([form.geom.x, form.geom.y, form.geom.z])
       }
     }
   }
-
+  getAttributes(list, name) {
+    for (let i = 0; i < list.length; i++) {
+      let l = list[i]
+      if (l.name == name) {
+        return l.value
+      }
+    }
+    return null
+  }
 }
 export default SObject

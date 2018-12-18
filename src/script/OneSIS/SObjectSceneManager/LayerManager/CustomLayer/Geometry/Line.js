@@ -6,6 +6,7 @@ class Line extends publicFun{
     
   }
   create(lonlat, sobject,node) {
+    // console.log(sobject)
     let floorObj = new THREE.Group();
     let topNum=sobject.floor//楼层数
     let topLength = topNum < 0 || !topNum ? 0 : topNum * 16

@@ -128,11 +128,12 @@ export default {
       //this.objectList = [];
       let user = JSON.parse(sessionStorage.getItem('user'));
       let id = `'${user.id}'`;
+      let sdomain = JSON.parse(sessionStorage.getItem('sdomain'));
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
         // uids:id,
-        sdomains:State.currentDomain.id
+        sdomains:sdomain.id
       };
       this.loading = true;
       this.objectList = [];

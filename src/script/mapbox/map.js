@@ -41,6 +41,7 @@ function createMap (container,options) {
   for(let key in defaultOptions){
     str+=`&${key}=${defaultOptions[key]}`
   }
+  console.log(str)
   let map = new mapboxgl.Map({
     container: container,
     style: {

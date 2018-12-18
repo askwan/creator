@@ -121,6 +121,7 @@
         //     return
         // }
         let user = JSON.parse(sessionStorage.getItem('user'));
+        let sdomain = JSON.parse(sessionStorage.getItem('sdomain'));
         let id = `'${user.id}'`;
         var obj = {
 					names: this.searchValue,
@@ -129,10 +130,9 @@
           pageSize: this.pageSize,
           otIds:ids,
           // uids:id,
-          sdomains:State.currentDomain.id
+          sdomains:sdomain.id
         };
         this.objectList = [];
-        console.log(obj)
         objectServer.ByNameAndOTName(obj).then(res=>{
           res.list = res.list.filter(el=>el.otype);
           console.log(res.list,'res');

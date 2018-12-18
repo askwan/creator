@@ -126,7 +126,7 @@
 							</div>
 						</el-form-item>
 
-						<el-form-item>
+						<el-form-item v-if="item.type==50">
 							<el-button size="mini" class="pull-right" @click="preview(item)">预览</el-button>
 						</el-form-item>
 					</el-form>
@@ -258,10 +258,9 @@
 		},
 		methods: {
 			preview(item){
-				vm.$emit(operate.preview,{
-					entityId:item.geom,
-					object:this.objectDetail
-				});
+				State.viewObject=getEditor().copySObject(this.objectDetail);
+				console.log(State.viewObject)
+				vm.$emit(operate.hiddenOtypes);
 			},
 			positionRefList(forms,item){
 				let aim = [];

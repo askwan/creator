@@ -62,8 +62,8 @@
       getData(){
         let user = JSON.parse(sessionStorage.getItem('user'));
         // console.log(user,'user')
-        // this.diagrams = State.userDiagram(user.id);
-        this.diagrams = State.diagrams;
+        this.diagrams = State.userDiagram(user.id);
+        // this.diagrams = State.diagrams;
         // this.$refs.tree.setCheckedKeys(State.otypeIds);
         IdEditor = getEditor();
         // this.isFalse = false;
@@ -71,12 +71,11 @@
       change(node){
         if(this.hiddens.find(el=>node.data.id==el)){
           this.hiddens = IdEditor.enableOtype(node.data.id);
-
         }else{
           this.hiddens = IdEditor.disableOtype(node.data.id);
         };
-        let arr = IdEditor.getSObjectByOtypes(this.hiddens);
-        arr = arr.map(el=>IdEditor.copySObject(el));
+        // let arr = IdEditor.getSObjectByOtypes(this.hiddens);
+        // arr = arr.map(el=>IdEditor.copySObject(el));
         vm.$emit(operate.hiddenOtypes);
       },
       filterHidden(node){

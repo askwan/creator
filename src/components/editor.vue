@@ -73,15 +73,6 @@
           componentId:'floorManage',
           zindex:10
         },{
-          icon:'el-icon-printer',
-          id:5,
-          desc:'模型视图',
-          title:'模型编辑',
-          isShow:false,
-          haveMenu:true,
-          componentId:'mapboxmode',
-          zindex:9
-        },{
           icon:'el-icon-tickets',
           id:6,
           desc:'版本',
@@ -90,7 +81,17 @@
           haveMenu:true,
           componentId:'versionObject',
           zindex:10
-        }]
+        },{
+          icon:'el-icon-printer',
+          id:5,
+          desc:'模型视图',
+          title:'模型编辑',
+          isShow:false,
+          haveMenu:true,
+          componentId:'mapboxmode',
+          zindex:9
+        }],
+        isLoad:false
       }
     },
     props:{},
@@ -103,7 +104,7 @@
     },
     computed:{},
     mounted(){
-
+      
       this.$nextTick(()=>{
         this.listenEvent();
         // this.initIdEditor();
@@ -114,8 +115,10 @@
     methods:{
       listenEvent(){
         vm.$on(operate.DiagramReady,()=>{
-          // console.log('ooo')
-          this.initIdEditor();
+          // console.log('ooo');
+          if(!this.isLoad){
+            this.initIdEditor();
+          }
         });
         vm.$on(operate.preview,(obj)=>{
           this.componentId = 'mapboxmode';
@@ -131,18 +134,21 @@
           if(!editor) return;
           editor.idContext.loadOptions({sdomains:domain.id});
           editor.flush();
+          let center = editor.getCenter(domain.geoBox);
+          let zoom = editor.idContext.map().zoom();
+          editor.idContext.map().centerZoom([center.y,center.x],zoom);
         })
       },
+      
       initIdEditor(){
         editor = new Editor();
+        this.isLoad = true;
         editor.init(this.$refs.container,context=>{
           let map = context.map();
           let position = mapposition.getMapPosition();
           map.centerZoom([position.lng, position.lat], position.zoom);
-          context.loadOptions({sdomains:State.currentDomain.id});
           editor.on('currentObject',data=>{
             if(data.object) {
-              // console.log(data.object);
               this.currentObj = data.object;
 
               State.viewObject = editor.copySObject(data.object);
@@ -179,6 +185,11 @@
         getEditor(editor);
       },
       menuTool(item){
+        if(item.id==1){
+          return editor.zoomIn();
+        }else if(item.id==2){
+          return editor.zoomOut();
+        }
         if(item.id!==5){
           this.menuList.forEach(tool=>{
             if(tool.id!==5) tool.isShow = false; 

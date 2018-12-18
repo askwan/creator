@@ -40,6 +40,7 @@
     computed:{},
     mounted(){
       this.getObjects();
+      // console.log(State.parentRoot);
     },
     watch:{
       show(bool){
@@ -72,24 +73,14 @@
         rootObj.name = this.sobject.name;
         rootObj.id = this.sobject.id;
         rootObj.children = [];
-        // this.queryChildren(rootObj);
-        abc(rootObj);
-        console.log("查询递归",rootObj)
+        this.queryChildren(rootObj);
         this.Trees.push(rootObj);
       },
       queryChildren(object){
-        let list = State.getSobjectByParents(object.id);
-        list.forEach(obj=>{
-          obj = JSON.parse(JSON.stringify(obj))
-          let copy = Object.assign({},obj);
-          copy.show = true;
-          if(object.children.find(el=>el.id==copy.id)){
 
-          }else{
-            object.children.push(copy)
-            this.queryChildren(copy);
-          }
-          
+        object.children = State.parentRoot[object.id]||[];
+        object.children.forEach(child=>{
+          this.queryChildren(child);
         })
       },
       changeView(node){
@@ -142,20 +133,6 @@
         return list;
       }
     }
-  }
-
-  const abc = object=>{
-    let list = State.getSobjectByParents(object.id);
-    list.forEach(obj=>{
-      let copy = Object.assign({},obj);
-      copy.show = true;
-      if(object.children.find(el=>el.id==copy.id)){
-
-      }else{
-        object.children.push(copy)
-      }
-      abc(copy);
-    })
   }
 
 </script>
