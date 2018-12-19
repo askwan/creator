@@ -1,4 +1,4 @@
-import otypeList from './manage/otypeList'
+// import otypeList from './manage/otypeList'
 
 class SObject {
   constructor(props) {
@@ -31,7 +31,7 @@ class SObject {
     this.lonlat = [(this.data.geoBox.maxx + this.data.geoBox.minx) / 2, (this.data.geoBox.maxy + this.data.geoBox.miny) / 2]
     this.setNodes()
     this.setIsFloor()
-    this.setLayer()
+    // this.setLayer()
   }
 
   setLayer() {

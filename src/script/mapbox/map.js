@@ -1,18 +1,37 @@
 // import { psdeHost } from '../editor/psde/config'
-import {psdeHost} from '@/script/server'
-import { vm, operate } from '@/script/operate'
+import {
+  psdeHost,
+  styleServer
+} from '@/script/server'
+import {
+  State
+} from "@/script/editor/utils/store";
+
+import {
+  vm,
+  operate
+} from '@/script/operate'
 import _debounce from 'lodash-es/debounce'
 
 import axios from 'axios'
 
 import vectorSelect from './VectorSelect'
+import {
+  objectQuery
+} from '../editor/psde/objectService';
+import Operation from './mapOperation/Operation'
+import MapboxGL from '../OneSIS/OneSISGL/MapboxGL'
+import getColor from '../OneSIS/SObjectSceneManager/LayerManager/CustomLayer/manage/getColor'
+import otypeList from '../OneSIS/SObjectSceneManager/LayerManager/CustomLayer/manage/otypeList'
 
 // 全局mapbox地图对象
 let mapboxMap = {}
 let marker = null
 let user = JSON.parse(sessionStorage.getItem('user'));
-function createMapboxMap (container,options,callback) {
-  let map = createMap(container,options);
+
+function createMapboxMap(container, options, callback) {
+  let map = createMap(container, options);
+  if (!map) return null;
   axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
@@ -20,8 +39,8 @@ function createMapboxMap (container,options,callback) {
         map.addLayer(layer)
       }
     }
-    
-    if(callback){
+
+    if (callback) {
       callback();
     }
 
@@ -31,17 +50,18 @@ function createMapboxMap (container,options,callback) {
   return map
 }
 
-function createMap (container,options) {
+function createMap(container, options) {
   // let id = `'${user.id}'`
   let defaultOptions = {
     // uids:id
   };
-  Object.assign(defaultOptions,options);
+  if (!options.sdomains) return null
+  Object.assign(defaultOptions, options);
   let str = '';
-  for(let key in defaultOptions){
-    str+=`&${key}=${defaultOptions[key]}`
+  for (let key in defaultOptions) {
+    str += `&${key}=${defaultOptions[key]}`
   }
-  console.log(str)
+  console.log('时空域', str)
   let map = new mapboxgl.Map({
     container: container,
     style: {
@@ -74,10 +94,38 @@ function createMap (container,options) {
         maxzoom: 22
       }]
     },
-    center: [103.6249284647 , 34.7472541716],
+    center: [103.6249284647, 34.7472541716],
     zoom: 12
   })
 
+  map.on('load', () => {
+
+    styleServer.getStyles({
+      orderType: "ID",
+      descOrAsc: true,
+    }).then(res => {
+      getColor.setList(res.data.list);
+    })
+    // otypeList.setlist(State.otypes);
+    let operation = new Operation(map)
+    map.on('moveend', (e) => {
+      let features = map.queryRenderedFeatures({
+        layers: ['build']
+      });
+      let lv = e.target.transform._zoom
+      console.log(lv, features, 11111)
+      let or = false
+      for (let q = 0; q < features.length; q++) {
+        let f = features[q]
+        if (f.properties.buildingElement && lv > 16) {
+          or = true
+        }
+      }
+      if (or) {
+        operation.moveend()
+      }
+    })
+  })
   map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
   map.addControl(new mapboxgl.ScaleControl({
     maxWidth: 80,
@@ -87,9 +135,9 @@ function createMap (container,options) {
   let moveEvent = function (e) {
     // console.log(e);
     // console.log(map.getBounds())
-    vm.$emit(operate.mapStatus,{
-      posi:map.getCenter(),
-      zoom: Math.round(map.getZoom()) 
+    vm.$emit(operate.mapStatus, {
+      posi: map.getCenter(),
+      zoom: Math.round(map.getZoom())
     })
     vm.$emit(operate.mapBoxZoom, map.getBounds().toArray())
   }
@@ -106,7 +154,7 @@ function createMap (container,options) {
   return map
 }
 
-function addMarker (data) {
+function addMarker(data) {
   mapboxMap.flyTo({
     center: data,
     zoom: 15,
@@ -124,9 +172,9 @@ function addMarker (data) {
     .addTo(mapboxMap)
 }
 
-function flyTo(x,y,z,level=16){
+function flyTo(x, y, z, level = 16) {
   mapboxMap.flyTo({
-    center:[x,y],
+    center: [x, y],
     zoom: level,
     speed: 2,
     curve: 1,
@@ -136,4 +184,9 @@ function flyTo(x,y,z,level=16){
   })
 }
 
-export { createMapboxMap, mapboxMap, addMarker,flyTo }
+export {
+  createMapboxMap,
+  mapboxMap,
+  addMarker,
+  flyTo
+}

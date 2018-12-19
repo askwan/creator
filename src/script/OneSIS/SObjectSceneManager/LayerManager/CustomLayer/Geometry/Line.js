@@ -11,7 +11,7 @@ class Line extends publicFun{
     let topNum=sobject.floor//楼层数
     let topLength = topNum < 0 || !topNum ? 0 : topNum * 16
   
-    let color = this.getColors(sobject.data)
+    // let color = this.getColors(sobject.data)
   
     let lonlatArr = []
     for (let q = 0; q < node.nodes.length; q++) {

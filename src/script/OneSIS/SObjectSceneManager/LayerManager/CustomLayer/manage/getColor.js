@@ -44,8 +44,13 @@ class ColorList {
     if (style && style[0]) {
       return this.getStyle(style[0])
     } else {
+      if (!obj.otype.formStyles) {
+        return
+      }
       let styles = obj.otype.formStyles.styles
-
+      if (!styles) {
+        return
+      }
       for (let i = 0; i < styles.length; i++) {
         let sty = styles[i]
         if (sty.style == 3) {

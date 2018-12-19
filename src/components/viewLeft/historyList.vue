@@ -11,10 +11,10 @@
 							</span>
 							<span v-else>未知用户</span>
 							<span>
-							    {{item.msg}}
+							    {{item.note}}
 							</span>
 						</div>
-				    	<span>{{commonTimeShift(item.vtime)}}</span>
+				    	<span>{{item.ctime}}</span>
 					</li>
 					<!-- <div v-for="(item,i) in objectList" :key="i">
 						{{item.name|filterName}}
@@ -36,7 +36,7 @@
 	import common from "@/script/common.js";
 	// import '../../../static/images/errorDiagram'
 	import * as btMap from "@/script/mapbox";
-	import {versionServer} from '@/script/server'
+	import {versionServer,objectServer} from '@/script/server'
 	
 	export default {
 		data() {
@@ -84,7 +84,7 @@
 				// 	}
 				// };
 				console.log(item)
-				let posi = this.getCenter(item.bbox);
+				let posi = this.getCenter(item.geoBox);
 				btMap.flyTo(posi.x,posi.y,posi.z,17);
 
 			},
@@ -123,30 +123,38 @@
 				return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 			},
 			searchListFn(data) {
-				//当前时间戳
-				this.currentTime = data;
-				//一周前的时间戳
-				this.backCurrentTime = this.currentTime - 604800000;
-				var cur = this.commonTimeShift(this.currentTime);
-				var bac = this.commonTimeShift(this.backCurrentTime);
-				let filter = {
-					// beginTime: bac,
-					// endTime: cur,
-					loadVersion: true,
-					loadAttr: true,
-					loadNetwork: true,
-					loadObjType: true,
-					loadForm: true,
-					loadAction: true,
-					geoEdit:false,
-					pageNum:this.pageNum,
-					pageSize:20,
-					descOrAsc:false,
-					orderType:'VID'
-					}
+				// //当前时间戳
+				// this.currentTime = data;
+				// //一周前的时间戳
+				// this.backCurrentTime = this.currentTime - 604800000;
+				// var cur = this.commonTimeShift(this.currentTime);
+				// var bac = this.commonTimeShift(this.backCurrentTime);
+				// let filter = {
+				// 	// beginTime: bac,
+				// 	// endTime: cur,
+				// 	loadVersion: true,
+				// 	loadAttr: true,
+				// 	loadNetwork: true,
+				// 	loadObjType: true,
+				// 	loadForm: true,
+				// 	loadAction: true,
+				// 	geoEdit:false,
+				// 	pageNum:this.pageNum,
+				// 	pageSize:20,
+				// 	descOrAsc:false,
+				// 	orderType:'VID'
+				// 	}
 					
-				versionServer.getVersions({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
-					if(res.list==0) this.showMore = false
+				// versionServer.getVersions({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
+				// 	if(res.list==0) this.showMore = false
+				// 	this.objectList = this.objectList.concat(res.list);
+				// });
+				let domain = sessionStorage.getItem('sdomain');
+				if(!domain) return alert('请先选择时空域')
+				domain = JSON.parse(domain);
+				objectServer.getChangesets({pageNum:this.pageNum,pageSize:20,descOrAsc:true,orderType:'TIME'}).then(res=>{
+					if(res.list.length==0) this.showMore = false;
+					this.pageNum = res.pageNum;
 					this.objectList = this.objectList.concat(res.list);
 				})
 			},

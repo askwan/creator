@@ -176,6 +176,7 @@ export default class Editor {
   }
   changeVersion(obj){
     State.setVersionObj(obj);
+    this.idContext.loadOptions({versions:obj.version.vid});
     this.flush();
   }
   getSObjectByOsmEntity (entityId) {

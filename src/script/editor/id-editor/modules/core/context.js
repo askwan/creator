@@ -554,9 +554,9 @@ export function coreContext() {
     }
 
     let loadOptions = {};
-    context.loadOptions = function(url){
-        if(!url) return loadOptions;
-        loadOptions = url;
+    context.loadOptions = function(_){
+        if(!_) return loadOptions;
+        Object.assign(loadOptions,_)
     }
 
     

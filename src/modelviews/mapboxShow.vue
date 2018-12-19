@@ -24,7 +24,8 @@ export default {
     let obj = {
       center: [120.433512, 31.324123],
       styleList: State.styleList,
-      otypes: State.otypes
+      otypes: State.otypes,
+      id:'mapbox-3d'
     };
     map = new MapboxGL(obj);
 

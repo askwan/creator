@@ -1,14 +1,16 @@
 import getColor from '../SObjectSceneManager/LayerManager/CustomLayer/manage/getColor'
 import otypeList from '../SObjectSceneManager/LayerManager/CustomLayer/manage/otypeList'
 
-import BuildingLayer from '../SObjectSceneManager/LayerManager/CustomLayer/BuildingLayer'
-import ModelLayer from '../SObjectSceneManager/LayerManager/CustomLayer/ModelLayer'
-import PipelineLayer from '../SObjectSceneManager/LayerManager/CustomLayer/PipelineLayer'
-import OtherLayer from '../SObjectSceneManager/LayerManager/CustomLayer/OtherLayer'
 import SObject from '../SObjectSceneManager/LayerManager/CustomLayer/SObject'
-
+import {
+  BuildingLayer,
+  ModelLayer,
+  PipelineLayer,
+  OtherLayer
+} from '../SObjectSceneManager/LayerManager/CustomLayer/AllLayer'
 class MapboxGL {
   constructor(data) {
+    this.container=data.id
     this.center = data.center
     this.SObjectList = []
     this.allLayer = {
@@ -27,7 +29,7 @@ class MapboxGL {
   }
   addMapbox() {
     this.map = new mapboxgl.Map({
-      container: "mapbox-3d",
+      container: this.container,
       style: {
         version: 8,
         'sprite': 'http://116.62.28.103:8000/creator/static/mapbox/sprite',

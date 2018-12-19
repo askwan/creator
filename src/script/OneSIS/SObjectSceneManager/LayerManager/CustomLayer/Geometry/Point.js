@@ -10,7 +10,7 @@ class Point extends publicFun {
 
     let topLength = topNum < 0 || !topNum ? 0 : topNum * 16
     
-    let color = this.getColors(sobject.data)
+    // let color = this.getColors(sobject.data)
 
     let lonlatArr = []
     lonlatArr = this.getPlace(sobject.lonlat, lonlat)

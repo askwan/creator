@@ -93,6 +93,8 @@
           let domain = sessionStorage.getItem('sdomain');
           if(domain){
             this.currentSdomain = JSON.parse(domain);
+          }else{
+            this.isShow = true;
           }
         }
       })
@@ -105,23 +107,23 @@
         this.icon = common.getAvatar(obj.avatar);
         return
       }
-			// var _token = this.$route.query.token;
-			// var _url = this.$route.query.url;
-			// if(_token) { //判断地址栏是否有token
-			// 	common.setItem("token", _token);
-			// 	common.getNewUser("get", "/account/authorize", {}, res => {
-			// 		common.setUserInfo(res);
-			// 		this.$router.push({
-			// 			path: "/"
-      //     });
-      //     this.userName = common.getInfo('nickName');
-      //     this.icon = common.getAvatar(common.getInfo('avatar'));
-			// 	})
-			// } else { //地址栏没有token 退出重新登陆
-			// 	if(!sessionStorage.getItem('user')){
-      //     common.exitUser.exitAddress();
-      //   }
-			// }
+			var _token = this.$route.query.token;
+			var _url = this.$route.query.url;
+			if(_token) { //判断地址栏是否有token
+				common.setItem("token", _token);
+				common.getNewUser("get", "/account/authorize", {}, res => {
+					common.setUserInfo(res);
+					this.$router.push({
+						path: "/"
+          });
+          this.userName = common.getInfo('nickName');
+          this.icon = common.getAvatar(common.getInfo('avatar'));
+				})
+			} else { //地址栏没有token 退出重新登陆
+				if(!sessionStorage.getItem('user')){
+          common.exitUser.exitAddress();
+        }
+			}
 		},
     methods:{
       listenEvent(){
