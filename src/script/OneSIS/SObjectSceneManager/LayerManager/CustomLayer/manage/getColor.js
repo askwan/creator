@@ -4,13 +4,12 @@ class ColorList {
   }
   setList(val) {
     this.colorList = val
-    console.log(1, this.colorList)
   }
   getColor(obj) {
     let data = this.getStyleId(obj)
     let objs = {
       color: "#ffffff",
-      opacity: 1
+      opacity: 0.5
     }
     if (data) {
       try {

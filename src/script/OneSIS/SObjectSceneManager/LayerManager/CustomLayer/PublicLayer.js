@@ -65,13 +65,13 @@ class PublicLayer {
       this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
     }
     if(!sobject.show){
+      console.log('false');
       this.allSObjectGroup[sobject.id].visible = false
     }
   }
   remove() {
     this.allSObjectGroup = {}
     this.scene.remove(this.group);
-    console.log('remove')
     this.resetView()
   }
   resetView() {

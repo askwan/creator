@@ -26,7 +26,7 @@ class Polygon extends publicFun {
       multiple = 2.5
     }
     let color = this.getColors(sobject.data)
-
+    // console.log(color)
     let heightLength = this.getAttributes(sobject.data.attributes, 'height')
     let height = heightLength ? heightLength * multiple : 0.1
     let lonlatArr = []

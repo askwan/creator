@@ -36,6 +36,7 @@ function createMapboxMap(container, options, callback) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       if (layer.type) {
+        // if(layer.id = 'l7040') continue;
         map.addLayer(layer)
       }
     }
@@ -99,7 +100,7 @@ function createMap(container, options) {
   })
 
   map.on('load', () => {
-
+    let buildLayer = '';
     styleServer.getStyles({
       orderType: "ID",
       descOrAsc: true,
@@ -109,22 +110,29 @@ function createMap(container, options) {
     // otypeList.setlist(State.otypes);
     let operation = new Operation(map)
     map.on('moveend', (e) => {
-      let features = map.queryRenderedFeatures({
-        layers: ['build']
+      let featuresBuilding = map.queryRenderedFeatures({
+        layers: ['l7040']
       });
-      let lv = e.target.transform._zoom
-      console.log(lv, features, 11111)
-      let or = false
-      for (let q = 0; q < features.length; q++) {
-        let f = features[q]
-        if (f.properties.buildingElement && lv > 16) {
-          or = true
-        }
+      let lv = e.target.transform._zoom;
+      // featuresBuilding.forEach(feature=>{
+      //     if(feature.properties.internal){
+      //       if(lv>=18){
+      //         // console.log(feature.properties);
+      //         operation.moveend(feature.properties)
+      //         // operation.moveend(feature.properties.internal);
+      //       }else{
+      //         operation.remove();
+      //       }
+      //     }
+      // });
+      if(lv>=18){
+        operation.moveend();
+      }else{
+        operation.remove();
       }
-      if (or) {
-        operation.moveend()
-      }
-    })
+    });
+    
+
   })
   map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
   map.addControl(new mapboxgl.ScaleControl({

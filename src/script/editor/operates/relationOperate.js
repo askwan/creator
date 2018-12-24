@@ -128,8 +128,8 @@ const highLightEntity = (arr)=>{
  * @param {} context 
  * @param {*} id 
  */
-const positionEntity = (context,id)=>{
-  if(!context) context = getEditor().idContext;
+const positionEntity = (id)=>{
+  let context = getEditor().idContext;
   let entity = context.graph().hasEntity(id)
   context.map().zoomTo(entity)
   context.enter(modeSelect(context,[id]));

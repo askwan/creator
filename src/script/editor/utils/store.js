@@ -16,7 +16,8 @@ var State = {
   versionObjs:[],
   hiddenOt:[],
   viewObject:{},
-  parentRoot:{}
+  parentRoot:{},
+  buildings:{}
 }
 
 State.cacheRelation = function(relation){
@@ -51,15 +52,42 @@ State.getDiagram = function(list){
     el.otypes.forEach(ev=>{
       this.otypes[ev.id] = ev;
       this.otypeIds.push(ev.id);
-    })
+    });
+    
   });
-  this.diagrams = list;
+  for(let id in this.otypes){
+    this.formateOtype(this.otypes[id]);
+  }
+  // console.log(this.otypes[3453])
+  this.diagrams = list.map(el=>{
+    el.otypes = el.otypes.map(otype=>State.otypes[otype.id]);
+    return el
+  })
+}
+
+State.formateOtype = function(otype){
+  let connectors = otype.connectors.connectors;
+  let inheritConnectors = connectors.filter(el=>el.type==2&&otype.id==el.fId&&otype.id!==el.dType.id);
+  inheritConnectors.forEach(connector=>{
+    let _otype = this.otypes[connector.dType.id];
+    if(_otype){
+      _otype = this.formateOtype(_otype);
+      _otype.fields.fields.forEach(field=>{
+        let aim = otype.fields.fields.find(el=>el.id==field.id);
+        if(!aim) otype.fields.fields.push(field);
+      })
+      _otype.formStyles.styles.forEach(style=>{
+        let aim = otype.formStyles.styles.find(el=>el.type==style.type);
+        if(!aim) otype.formStyles.styles.push(style);
+      })
+    }
+  })
+  return otype;
 }
 
 State.findOtypeById = function(id){
   return this.otypes[id];
 }
-
 
 State.clear = function(){
   this.relations = [];
@@ -130,6 +158,19 @@ State.formateSObject = function(obj){
     if(index==-1) this.parentRoot[parent.id].push(obj);
   })
 }
+
+State.setFloor = function(sobject){
+  if(sobject.otype.id=='大楼'){
+    this.buildings[sobject.id] = sobject;
+  }else if(sobject.otype.id=='楼层'){
+    let buildingId;
+    this.buildings[buildingId].children.push(sobject);
+  }else if(sobject.attributes.find(el=>el.id==1555)){
+    
+  }
+
+}
+
 
 State.setVersionObj = function(sobj){
   let index = this.versionObjs.findIndex(el=>el.id==sobj.id);

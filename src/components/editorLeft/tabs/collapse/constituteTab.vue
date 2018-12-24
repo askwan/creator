@@ -4,7 +4,9 @@
       <span class="font-14 no-select">+选择父对象</span>
     </div>
     <div class="">
-      <el-tag v-for="parent in parents" class="mg-right-small mg-bottom-small" :key="parent.id" @close="deleteParent(parent)" closable disable-transitions>{{parent.name||parent.id}}</el-tag>
+      <el-tag v-for="parent in parents" class="mg-right-small mg-bottom-small pointer" :key="parent.id" @close="deleteParent(parent)" closable disable-transitions>
+        <span @click="selectAim(parent)">{{parent.name||parent.id}}</span>
+      </el-tag>
     </div>
   </div>
 </template>
@@ -12,6 +14,7 @@
   import {vm,operate,getEditor} from '@/script/operate';
   import psde from '@/script/editor/psde';
   import {objectServer} from '@/script/server';
+  import {State} from '@/script/editor/utils/store'
   export default {
     data(){
       return {
@@ -53,6 +56,13 @@
       chooseParent(){
         vm.$emit(operate.changeTab,{name:'objectList'});
         // console.log(this.objectDetail.otype,999999)
+      },
+      selectAim(item){
+        let sobject = State.sobjects[item.id];
+        let form = sobject.forms.find(el=>typeof el.geom =='string')
+        if(form){
+          getEditor().relationOperate.positionEntity(undefined,form.geom);
+        }
       },
       getName(parents){
         let str = parents.map(el=>el.id).join(',');

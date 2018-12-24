@@ -137,8 +137,8 @@ export default {
           loadForm: true,
           loadObjType: true,
           loadAction: true,
-          loadNetwork: true
-          // uids:''
+          loadNetwork: true,
+          uids:''
         };
         objectServer.query(option).then(res => {
           this.currentObject = res.list[0];

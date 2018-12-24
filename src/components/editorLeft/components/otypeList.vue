@@ -175,9 +175,10 @@
 				let arr = this.copyDiagramList.filter((diagram, i, copyDiagramList) => {
 					if(diagram.otypes.length == 0) {
 						return false;
-					}
+					};
+					
 					diagram.otypes = diagram.otypes.filter(otype => {
-						if(otype.formStyles.styles.length == 0) {
+						if(!otype.formStyles.styles||otype.formStyles.styles.length == 0) {
 							return false;
 						}
 						otype.formStyles.styles = otype.formStyles.styles.filter(style => {
@@ -238,6 +239,7 @@
 			IdEdit = getEditor();
 			let user = JSON.parse(sessionStorage.getItem('user'));
 			this.diagrams = State.userDiagram(user.id);
+			console.log(this.diagrams,1111)
 			let obj = this.entityObj;
 			this.showDiagramList = true;
 			this.searchValue = "";
@@ -321,8 +323,8 @@
 				}
 				let fromtype = m.type;
 				let geotype = m.positions[0];
-				let otype = it;
-				console.log(IdEdit.currentSobject,'curr')
+				let otype = State.otypes[it.id];
+				// console.log(IdEdit.currentSobject,'curr')
 				if(IdEdit.idContext.entity(this.entityObj.id).type=='relation') geotype = 24;
 				IdEdit.createSobject(this.entityObj.id, otype, fromtype, geotype);
 				this.currentDiagram = null;

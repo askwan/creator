@@ -66,7 +66,8 @@
           }
           let str = otIds.join(',');
           this.getConnector(str);
-        } catch (error) {
+        } catch (err) {
+          console.log(err)
           vm.$emit(operate.notice,{
             type:'error',
             title:'网络错误',
@@ -107,7 +108,7 @@
           vm.$emit(operate.notice,{
             type:'error',
             title:'网络错误',
-            message:error.message
+            message:err.message
           })
         })
 

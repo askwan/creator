@@ -513,17 +513,17 @@ export function coreContext() {
         }
     });
 
-    map.on('move',_debounce(askwan,500));
+    // map.on('move',_debounce(askwan,500));
 
-    function askwan(){
-        let zoom = context.map().zoom();
-        if(zoom<16) return
-        if(zoom<19){
-            context.features().disable('area')
-        }else{
-            context.features().enable('area')
-        }
-    }
+    // function askwan(){
+    //     let zoom = context.map().zoom();
+    //     if(zoom<16) return
+    //     if(zoom<19){
+    //         context.features().disable('area')
+    //     }else{
+    //         context.features().enable('area')
+    //     }
+    // }
 
     background.init();
     features.init();

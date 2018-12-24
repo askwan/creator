@@ -126,8 +126,9 @@
 							</div>
 						</el-form-item>
 
-						<el-form-item v-if="item.type==50">
-							<el-button size="mini" class="pull-right" @click="preview(item)">预览</el-button>
+						<el-form-item>
+							<el-button @click="addRelation(item)" size="mini" class="pull-right mg-right-mini">添加关系</el-button>
+							<el-button  v-if="item.type==50" size="mini" class="pull-right" @click="preview(item)">预览</el-button>
 						</el-form-item>
 					</el-form>
 				</el-collapse-item>
@@ -259,8 +260,11 @@
 		methods: {
 			preview(item){
 				State.viewObject=getEditor().copySObject(this.objectDetail);
-				console.log(State.viewObject)
+				// console.log(State.viewObject)
 				vm.$emit(operate.hiddenOtypes);
+			},
+			addRelation(item){
+				vm.$emit(operate.changeTab,{name:'addRelation'});
 			},
 			positionRefList(forms,item){
 				let aim = [];

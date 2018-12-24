@@ -1,10 +1,10 @@
 
 
-const psdeBaseUrl = 'http://192.168.1.133:8001';
-const psdeHost = psdeBaseUrl;
+// const psdeBaseUrl = 'http://192.168.1.179:8001';
+// const psdeHost = psdeBaseUrl;
 
-// const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';
-// const psdeHost = psdeBaseUrl + '/dae/datastore';
+const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';
+const psdeHost = psdeBaseUrl + '/dae/datastore';
 
 const psdeUrl = psdeHost + '/rest/v0.1.0/datastore/';
 
