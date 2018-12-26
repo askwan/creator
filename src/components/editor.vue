@@ -64,6 +64,15 @@
           componentId:'rightOtypes',
           zindex:10
         },{
+          icon:'el-icon-refresh',
+          id:8,
+          desc:'高度',
+          title:'高度控制',
+          isShow:false,
+          haveMenu:true,
+          componentId:'heightManage',
+          zindex:10
+        },{
           icon:'el-icon-sort',
           id:4,
           desc:'内部结构',
@@ -100,7 +109,8 @@
       'rightOtypes':()=>import('./eidtorRight/otypes.vue'),
       'floorManage':()=>import('./eidtorRight/floorManage.vue'),
       'mapboxmode':()=>import('../modelviews/mapboxShow.vue'),
-      'versionObject':()=>import('./eidtorRight/version.vue')
+      'versionObject':()=>import('./eidtorRight/version.vue'),
+      'heightManage':()=>import('./eidtorRight/heights.vue')
     },
     computed:{},
     mounted(){

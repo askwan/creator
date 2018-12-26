@@ -239,7 +239,6 @@
 			IdEdit = getEditor();
 			let user = JSON.parse(sessionStorage.getItem('user'));
 			this.diagrams = State.userDiagram(user.id);
-			console.log(this.diagrams,1111)
 			let obj = this.entityObj;
 			this.showDiagramList = true;
 			this.searchValue = "";

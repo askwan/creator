@@ -28,9 +28,6 @@ function createOsmNode (geom, tags, org,_t) {
 function createOsmWay (geom,tags,org,collection){
   org = org || {};
   let nodes = [];
-  if(geom.id=='6332437930051'){
-    console.log(geom,tags,org)
-  }
   geom.nodes.forEach(n=>{
     let node = createOsmNode(n,{},org);
     collection.push(node);

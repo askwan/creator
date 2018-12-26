@@ -524,5 +524,14 @@ export function rendererFeatures(context,otype) {
         })
     }
 
+    features.setHeightFeature = function(attr,minAttr){
+        defineFeature(attr.value,function(entity){
+            // let height = Number(entity.tags.height)||0;
+            // let bool = height<=Number(attr.value)&&height>=Number(minAttr.value)
+            entity.tags.height = entity.tags.height || 0;
+            return entity.tags.height == attr.value;
+        })
+    }
+
     return utilRebind(features, dispatch, 'on');
 }

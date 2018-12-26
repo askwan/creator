@@ -223,7 +223,7 @@ export default class Editor {
     let json = editsave.getSaveSObject(context, this);
     console.log(json,'save');
     // console.log(JSON.stringify(json));
-    // return 
+    return 
     let token = localStorage.getItem('token');
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
@@ -242,8 +242,10 @@ export default class Editor {
           dispatch.call('notice',this,{
             type:'error',
             title:'错误',
-            message:'保存失败'
-          })
+            message:res.message
+          });
+          State.versionObjs = [];
+          this.flush();
         };
       })
       .catch(err=>{
@@ -363,11 +365,8 @@ export default class Editor {
     let sobject = this.getSobjectById(object.id);
     sobject.realTime = time;
     sobject.modifyObject(sobject);
-    this.updateAndHistory(sobject)
+    this.updateAndHistory(sobject);
   }
-  // filterObjectByOtype(id){
-  //   this.idContext.features().disable(id);
-  // }
   enableOtype(otId){
     this.idContext.features().enable(otId);
     let children = State.findChildrenOtype(otId);

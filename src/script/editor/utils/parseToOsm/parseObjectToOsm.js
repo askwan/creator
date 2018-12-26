@@ -54,6 +54,7 @@ function parseObjectToOsm (jsonObjects, callback) {
   }
   let ways = entities.filter(el=>el.type=='way');
   ways.forEach(way=>State.ways[way.id]=way);
+  // console.log(entities);
   callback(null, entities)
 }
 
@@ -102,7 +103,7 @@ function parseObject (entities, sobject) {
         nodeids.push(oNode.id)
         entities.push(oNode)
       }
-      let way = createWay(nodeids, geom.id, tags, sobject);
+      let way = createWay(nodeids, geom.uuid, tags, sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
@@ -119,7 +120,7 @@ function parseObject (entities, sobject) {
         form.geom = oNode.id;
         // form.geomref = "n"+form.geomref
       }
-      let way = createWay(nodeids, geom.id, Object.assign({area: 'yes'},tags), sobject);
+      let way = createWay(nodeids, geom.uuid, Object.assign({area: 'yes'},tags), sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
@@ -138,12 +139,12 @@ function parseObject (entities, sobject) {
   let sobj = new psde.SObject()
   sobj.copyObject(sobject);
   // State.sobjects[sobj.id] = sobj;
-  State.formateSObject(sobj);
+  State.formateSObject(getEditor(),sobj);
 
   context.features().setFeature(sobject);
   let hidden = sobject.otype.fields.fields.find(el=>el.name=='indoor');
   if(hidden && sobject.parents.length>0){
-    getEditor().disableSobject(sobject.id);
+    // getEditor().disableSobject(sobject.id);
   }
   
   return entities;

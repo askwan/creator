@@ -120,6 +120,9 @@ class EditSave {
   }
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
+    console.log(changes,4444444);
+    console.log(changes.modified[0]);
+    console.log(changes.modified[0].isHighwayIntersection('n9603061424131'),'inclodes')
     let _osmChange = [];
     //created
     let created = this.formateOsm(context,changes.created,flagType.created);
@@ -128,9 +131,12 @@ class EditSave {
     //deleted
     let deleted = this.formateOsm(context,changes.deleted,flagType.deleted);
     _osmChange = _osmChange.concat(created,modified,deleted);
-
+    
+    // return
     let ways = _osmChange.filter(el=>el.type == 'way');
     ways.forEach(way=>{
+      let entity = deleted.find(el=>el.id==way.refOb.id);
+      console.log(way,4444)
       way.nodes.forEach((el,k)=>{
         let i = _osmChange.findIndex(ev=>ev.id==el.id);
         if(i>-1){
@@ -190,8 +196,15 @@ class EditSave {
             }
           })
         }
+        let index = _osmChange.findIndex(ev=>ev.id==member.refEntity.id);
+        if(index>-1) {
+          member.refEntity = _osmChange[index];
+        }
+
       })
     });
+
+
 
     return _osmChange
   }
@@ -200,6 +213,8 @@ class EditSave {
     let sobjects = this.formateHistory(context,idedit);
     let resultSobjectList = [];
     let osmCollection = this.getOsmChanges1(context,idedit);
+    console.log(osmCollection,'chage');
+    return
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)
@@ -257,15 +272,17 @@ class EditSave {
         }
 
       })
-
-      if (State.findVersionObj(obj)!==obj){
-        obj.realTime = obj.version.vtime;
-      }
-
+      // console.log(obj.realTime,'ffffffff')
       if(!obj.realTime){
-        console.log(obj.realTime,'real')
-        obj.realTime = nowDate;
-      };
+        if (State.findVersionObj(obj)!==obj){
+          obj.realTime = obj.version.vtime;
+        }
+        if(!obj.realTime){
+          obj.realTime = nowDate;
+        };
+      }else{
+        
+      }
       obj.sdomain = JSON.parse(sessionStorage.getItem('sdomain')).id;
       obj.children = [];
     });
@@ -290,6 +307,7 @@ class EditSave {
     let str = JSON.parse(JSON.stringify(s));
     let obj = new SObject();
     obj.copyObject(str);
+    obj.realTime = s.realTime;
     return obj;
   }
   toNum(str){

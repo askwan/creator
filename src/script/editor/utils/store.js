@@ -17,7 +17,8 @@ var State = {
   hiddenOt:[],
   viewObject:{},
   parentRoot:{},
-  buildings:{}
+  heights:{},
+  section:[0,0]
 }
 
 State.cacheRelation = function(relation){
@@ -145,9 +146,10 @@ State.getSobjectByParents = function(parentsId){
   return result
 }
 
-State.formateSObject = function(obj){
+State.formateSObject = function(editor,obj){
   // this.parentRoot[obj.id] = [];
   if(this.sobjects[obj.id]) return;
+  this.managerHeight(editor,obj)
   obj.show = true;
   this.sobjects[obj.id] = obj;
   obj.parents.forEach(parent=>{
@@ -159,16 +161,27 @@ State.formateSObject = function(obj){
   })
 }
 
-State.setFloor = function(sobject){
-  if(sobject.otype.id=='大楼'){
-    this.buildings[sobject.id] = sobject;
-  }else if(sobject.otype.id=='楼层'){
-    let buildingId;
-    this.buildings[buildingId].children.push(sobject);
-  }else if(sobject.attributes.find(el=>el.id==1555)){
-    
+State.managerHeight = function(editor,sobject){
+  let context = editor.idContext;
+  if(!this.heights['0']){
+    this.heights['0'] = [];
+    context.features().setHeightFeature({name:'height',value:0},{name:'min_height',value:0});
   }
-
+  let heightAttr = sobject.attributes.find(el=>el.name=='height'&&el.value);
+  if(heightAttr){
+    if(this.heights[String(heightAttr.value)]){
+      if(!this.heights[String(heightAttr.value)].find(el=>el.id==sobject.id)){
+        this.heights[String(heightAttr.value)].push(sobject);
+      }
+    }else{
+      context.features().setHeightFeature(heightAttr);
+      context.features().disable(heightAttr.value);
+      this.heights[String(heightAttr.value)] = [sobject];
+    }
+  }else{
+    this.heights['0'].push(sobject);
+  }
+  return sobject;
 }
 
 

@@ -35,7 +35,7 @@
     data(){
       return {
         currentEntity:'',
-        relationCollection:[{id:1,name:'新关系',tags:{name:'新关系'}}],
+        relationCollection:[],
         selectRelation:this.item.relation||'',
         role:this.item.role||'',
         lists:[1,2,3,4]
@@ -104,7 +104,7 @@
     },
     methods:{
     	initData(){
-    		
+    		this.relationCollection = [{id:1,name:'新关系',tags:{name:'新关系'}}];
         let relations = State.relations;
         // console.log(this,8888888)
         // console.log(this.relationCollection,666666666666666);
@@ -159,14 +159,15 @@
           });
         }
         let re = context.graph().hasEntity(this.selectRelation);
+
         IdEdit.relationOperate.setRole({id:id,index:re.members.length,role:role,type:type},this.selectRelation,(relation)=>{
           State.cacheRelation(relation);
         });
           let sobject = IdEdit.getSObjectByOsmEntity(id);
           if(sobject){
             let form = sobject.forms.find(el=>el.geom==id);
-            form.geom = this.selectRelation
-            form.geotype = 24;
+            // form.geom = this.selectRelation
+            // form.geotype = 24;
             IdEdit.modifyObjectForm(sobject,form)
           }
       },

@@ -15,7 +15,8 @@ export const operate = {
   currentEntity:'currentEntity',
   preview:'preview',
   changeDomain:'changeDomain',
-  hiddenOtypes:'hiddenOtypes'
+  hiddenOtypes:'hiddenOtypes',
+  heightManager:'heightManager'
 }
 
 let vm = new Vue();
