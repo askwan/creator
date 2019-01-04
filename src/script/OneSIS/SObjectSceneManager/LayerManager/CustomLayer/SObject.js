@@ -16,8 +16,10 @@ class SObject {
     // this.layer = 'modelLayer' //在哪个图层
     // this.layer = 'pipelineLayer' //在哪个图层
     this.floor = null //第几层
+    this.height = null
+    this.min_height = null
     this.isfloor = false
-    this.show=true
+    this.show = true
 
     this.init()
   }
@@ -27,7 +29,7 @@ class SObject {
     this.name = this.data.name
     this.otypeId = this.data.otype.id
     this.forms = this.data.forms
-    this.show=this.data.show
+    this.show = this.data.show
     this.lonlat = [(this.data.geoBox.maxx + this.data.geoBox.minx) / 2, (this.data.geoBox.maxy + this.data.geoBox.miny) / 2]
     this.setNodes()
     this.setIsFloor()
@@ -43,7 +45,6 @@ class SObject {
       }
       if (!this.layer) {
         this.layer = 'otherLayer'
-
         // console.log('没有找到', this.data)
       }
     }
@@ -90,8 +91,14 @@ class SObject {
       this.nodes[form.id] = {}
       this.nodes[form.id].nodes = []
       let type = form.type
+      this.height = parseInt(this.getAttributes(this.data.attributes, "height"))
+      this.min_height = parseInt(this.getAttributes(this.data.attributes, "min_height"))
       if (type == 21) {
-        this.nodes[form.id].type = 'point'
+        if (this.height != this.min_height) {
+          this.nodes[form.id].type = 'line'
+        } else {
+          this.nodes[form.id].type = 'point'
+        }
       } else if (type == 22) {
         this.nodes[form.id].type = 'line'
       } else if (type == 23) {
@@ -117,7 +124,7 @@ class SObject {
         return l.value
       }
     }
-    return null
+    return 0
   }
 }
 export default SObject

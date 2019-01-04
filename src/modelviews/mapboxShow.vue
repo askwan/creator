@@ -1,5 +1,5 @@
 <template>
-  <div class="map-3d" ref="map3d">
+  <div class="map-3d" ref="map3d" :style="{width:width}">
     <div id="mapbox-3d"></div>
   </div>
 </template>
@@ -19,13 +19,17 @@ export default {
     sobject: Object
   },
   components: {},
-  computed: {},
+  computed: {
+    width(){
+      return window.innerWidth*0.4+'px'
+    }
+  },
   mounted() {
     let obj = {
       center: [120.433512, 31.324123],
       styleList: State.styleList,
       otypes: State.otypes,
-      id:'mapbox-3d'
+      id: "mapbox-3d"
     };
     map = new MapboxGL(obj);
 
@@ -36,8 +40,10 @@ export default {
       vm.$on(operate.hiddenOtypes, () => {
         map.start(State.viewObject);
       });
-
-      console.log(State.otypes);
+      // vm.$on(operate.heightManager, e => {
+      //   console.log(e, 6666666);
+      // });
+      // console.log(State.otypes, 323);
     }
   }
 };

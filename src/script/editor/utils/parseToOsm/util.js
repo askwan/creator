@@ -6,7 +6,7 @@ function createOsmNode (geom, tags, org,_t) {
   org = org || {}
   _t = _t || 'vertex';
   let nid = 'n' + geom.id;
-  // console.log(geom,'geom')
+  // console.log(geom,'geom');
   let node = new osmNode({
     id: nid,
     visible: true,
@@ -20,7 +20,8 @@ function createOsmNode (geom, tags, org,_t) {
     orgData: org,
     uuid:geom.uuid,
     vid:geom.vid,
-    _t:_t
+    _t:_t,
+    height:getHeight(org).height
   })
   return node
 }
@@ -51,13 +52,14 @@ function createWay (nodes, id, tags, org) {
     id: wid,
     visible: true,
     version: 1,
-    changeset: 11668672,
+    changeset: 1,
     timestamp: org.realTime,
     user: 'min',
     uid: 0,
     tags: tags,
     nodes: nodes,
-    orgData: org
+    orgData: org,
+    height:getHeight(org).height
   })
   return way
 }
@@ -110,13 +112,14 @@ function createRelation (members, id, tags, org) {
     id: rId,
     visible: true,
     version: 1,
-    changeset: 11668672,
+    changeset: 1,
     timestamp: org.realTime,
     user: 'min',
     uid: 0,
     tags: tags,
     members: members,
-    orgData: org
+    orgData: org,
+    height:getHeight(org).height
   })
   return relation
 }
@@ -158,6 +161,80 @@ function transformObject (context,object){
   return _obj;
 }
 
+const calcGeoBox = (context,sobject)=>{
+  let geoBox = {
+    minx:0,
+    maxx:0,
+    miny:0,
+    maxy:0,
+    minz:0,
+    maxz:0
+  };
+  let forms = sobject.forms;
+  let form = forms.find(el=>el.geom);
+  let entity = context.entity(form.geom);
+  if(entity.type=='node'){
+    geoBox.minx = entity.loc[0];
+    geoBox.maxx = entity.loc[0];
+    geoBox.miny = entity.loc[1];
+    geoBox.maxy = entity.loc[1];
+  }else if(entity.type=='way'){
+    let nodes = entity.nodes.map(el=>context.entity(el));
+    Object.assign(geoBox,getBoundray(nodes));
+  }else if(entity.type=='relation'){
+    if(members.length==0){
+      return geoBox
+    }else{
+      let member0 = members[0];
+      if(member0){
+        let member = context.entity(member0.id);
+        if(member.type=='node'){
+          geoBox.minx = member.loc[0];
+          geoBox.maxx = member.loc[0];
+          geoBox.miny = member.loc[1];
+          geoBox.maxy = member.loc[1];
+        }else if(member.type=='way'){
+          let nodes = member.nodes.map(el=>context.entity(el));
+          Object.assign(geoBox,getBoundray(nodes));
+        }
+      }
+    }
+  }
+
+  return geoBox
+}
+
+const getBoundray = list =>{
+  let obj = {
+    minx:0,
+    maxx:0,
+    miny:0,
+    maxy:0
+  }
+  list.forEach(el=>{
+    let x = el.loc[0];
+    let y = el.loc[1];
+    if(x<obj.minx) obj.minx = x;
+    if(x>obj.maxx) obj.maxx = x;
+    if(y<obj.miny) obj.miny = y;
+    if(y>obj.maxy) obj.maxy = y
+  });
+  return obj
+}
+
+const getHeight = (obj)=>{
+  let height = 0;
+  let heightAttr = obj.attributes.find(el=>el.name=='height');
+  if(heightAttr){
+    height = heightAttr.value = Number(heightAttr.value);
+  }else{
+    
+  }
+  return {
+    height:height
+  }
+}
+
 export {
   createOsmNode,
   createOsmWay,
@@ -165,5 +242,6 @@ export {
   createOsmRelation,
   createRelation,
   getAttributeTag,
-  transformObject
+  transformObject,
+  calcGeoBox
 }

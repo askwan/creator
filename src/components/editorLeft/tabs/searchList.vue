@@ -7,7 +7,7 @@
 			<div class="search-list" v-if="objectListShow">
 				<ul>
 					<li v-for="(item,index) in objectList" :key="index" >
-						<img v-if="item.otype && item.otype.icon" :src="ImageManage.getImgUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" />
+						<img v-if="item.otype && item.otype.icon" :src="ImageManage.getImageUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" />
 						<!-- <i v-else-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
 						<i v-else-if="item.forms[0].type==22" class="iconfont icon-xian1"></i>
 						<i v-else-if="item.forms[0].type==23" class="iconfont icon-mian1"></i>

@@ -1,11 +1,9 @@
 // import { psdeHost } from '../editor/psde/config'
 import {
   psdeHost,
-  styleServer
+  styleServer,
+  psdeBaseUrl
 } from '@/script/server'
-import {
-  State
-} from "@/script/editor/utils/store";
 
 import {
   vm,
@@ -16,13 +14,8 @@ import _debounce from 'lodash-es/debounce'
 import axios from 'axios'
 
 import vectorSelect from './VectorSelect'
-import {
-  objectQuery
-} from '../editor/psde/objectService';
 import Operation from './mapOperation/Operation'
-import MapboxGL from '../OneSIS/OneSISGL/MapboxGL'
 import getColor from '../OneSIS/SObjectSceneManager/LayerManager/CustomLayer/manage/getColor'
-import otypeList from '../OneSIS/SObjectSceneManager/LayerManager/CustomLayer/manage/otypeList'
 
 // 全局mapbox地图对象
 let mapboxMap = {}
@@ -36,7 +29,6 @@ function createMapboxMap(container, options, callback) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       if (layer.type) {
-        // if(layer.id = 'l7040') continue;
         map.addLayer(layer)
       }
     }
@@ -52,7 +44,6 @@ function createMapboxMap(container, options, callback) {
 }
 
 function createMap(container, options) {
-  // let id = `'${user.id}'`
   let defaultOptions = {
     // uids:id
   };
@@ -81,7 +72,9 @@ function createMap(container, options) {
         'vector-tiles': {
           'type': 'vector',
           'tiles': [
-            psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
+            // psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+            psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+            // "http://192.168.1.179:8088/rest/v0.1.0/datastore/slave/geoservice" + `/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
           ],
           'minzoom': 4,
           'maxzoom': 20
@@ -100,38 +93,38 @@ function createMap(container, options) {
   })
 
   map.on('load', () => {
-    let buildLayer = '';
     styleServer.getStyles({
       orderType: "ID",
       descOrAsc: true,
     }).then(res => {
       getColor.setList(res.data.list);
     })
-    // otypeList.setlist(State.otypes);
     let operation = new Operation(map)
     map.on('moveend', (e) => {
-      let featuresBuilding = map.queryRenderedFeatures({
-        layers: ['l7040']
-      });
-      let lv = e.target.transform._zoom;
-      // featuresBuilding.forEach(feature=>{
-      //     if(feature.properties.internal){
-      //       if(lv>=18){
-      //         // console.log(feature.properties);
-      //         operation.moveend(feature.properties)
-      //         // operation.moveend(feature.properties.internal);
-      //       }else{
-      //         operation.remove();
-      //       }
-      //     }
+      // let featuresBuilding = map.queryRenderedFeatures({
+      //   layers: ['l5193']
       // });
-      if(lv>=18){
-        operation.moveend();
-      }else{
+      let featuresBuilding = map.queryRenderedFeatures();
+      let lv = e.target.transform._zoom;
+
+      // console.log(lv, featuresBuilding)
+      if (lv >= 18) {
+        featuresBuilding.forEach(feature => {
+          if (feature.properties.internal) {
+            console.log(lv, feature)
+            let bbox = feature.properties.BBOX
+            operation.moveend(bbox);
+          }
+        });
+        // operation.moveend();
+      } else {
         operation.remove();
       }
     });
-    
+    map.on('click', (e) => {
+      // console.log(123,e)
+    })
+
 
   })
   map.addControl(new mapboxgl.NavigationControl(), 'bottom-right')

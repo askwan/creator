@@ -25,8 +25,6 @@ export function modeAddPoint(context) {
 
     function add(loc) {
         var node = osmNode({ loc: loc });
-        console.log(loc,'loc')
-        console.log(node,'node')
         context.perform(
             actionAddEntity(node),
             t('operations.add.annotation.point')
@@ -36,7 +34,6 @@ export function modeAddPoint(context) {
             modeSelect(context, [node.id]).newFeature(true)
         );
         // context.selectEle(node.id);
-        console.log('complate-point')
     }
 
 

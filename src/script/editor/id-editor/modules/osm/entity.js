@@ -130,6 +130,11 @@ osmEntity.prototype = {
         // return osmEntity.toggle(this, bool)
     },
 
+    updateOrgData:function(o){
+        this.orgData = o;
+        return this
+    },
+
 
     mergeTags: function(tags) {
         var merged = _clone(this.tags), changed = false;

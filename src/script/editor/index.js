@@ -7,7 +7,7 @@ import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
-import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose,actionVisible} from '@/script/editor/id-editor/modules/actions'
+import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose,actionUpdateOrgData} from '@/script/editor/id-editor/modules/actions'
 import { osmNode, osmRelation, osmWay } from '@/script/editor/id-editor/modules/osm'
 
 import { State } from './utils/store'
@@ -16,7 +16,7 @@ import editsave from './utils/EditSave'
 
 import {RelationOperate,Delete} from './operates'
 import SObject from './psde/psdm/SObject';
-import {transformObject} from './utils/parseToOsm/util.js';
+import {transformObject ,calcGeoBox} from './utils/parseToOsm/util.js';
 
 let n = 1000;
 const dispatch = d3_dispatch('currentObject','notice')
@@ -67,7 +67,6 @@ export default class Editor {
       if(ele){
         let entity = this.idContext.entity(ele);
         this.currentEntity = entity;
-        // this.idContext.perform(actionVisible(ele,{}))
         console.log(entity);
       }
       if(this.currentSobject&&this.currentForm) {
@@ -143,6 +142,10 @@ export default class Editor {
     this.sobjectlist[sobject.id] = sobject;
     State.sobjects[sobject.id] = sobject;
     this.idContext.features().setFeature(sobject);
+    // sobject.geoBox = {};
+    sobject.geoBox = calcGeoBox(this.idContext,sobject);
+    // console.log(sobject,4454);
+    this.idContext.perform(actionUpdateOrgData(entityId,sobject));
     dispatch.call('currentObject',this,{object:sobject,entityId:entityId});
   }
   modifySobject (sobject) {
@@ -223,7 +226,7 @@ export default class Editor {
     let json = editsave.getSaveSObject(context, this);
     console.log(json,'save');
     // console.log(JSON.stringify(json));
-    return 
+    // return 
     let token = localStorage.getItem('token');
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
     if (isAjax) {
@@ -273,15 +276,6 @@ export default class Editor {
   setLoadOptions(option){
     this.idContext.loadOptions(option);
     this.flush();
-  }
-  selectSobjects () {
-    let ids = this.idContext.selectedIDs()
-    let sobjects = []
-    ids.forEach(id => {
-      let sobj = this.getSObjectByOsmEntity(id)
-      sobjects.push(sobj)
-    })
-    return sobjects
   }
   addObjectForm (sobject, form) {
     sobject.addForm(form);
@@ -388,10 +382,13 @@ export default class Editor {
   }
   changeStatusObj(obj,otIds,bool){
     // console.log(otIds,'otIds')
-    if(otIds.find(el=>el==obj.otype.id)){
-      obj.show = bool;
+    console.log(obj,'obj')
+    if(obj.id){
+      if(otIds.find(el=>el==obj.otype.id)){
+        obj.show = bool;
+      }
+      obj.children.forEach(el=>this.changeStatusObj(el,otIds,bool));
     }
-    obj.children.forEach(el=>this.changeStatusObj(el,otIds,bool));
     return obj;
   }
   disableOtype(otId){

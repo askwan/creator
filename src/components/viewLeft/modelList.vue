@@ -77,6 +77,8 @@
           pageNum:this.pageNum
         }
         modelServer.getModel(params).then(res=>{
+          res.data.list = res.data.list.filter(el=>el._id&&el.name);
+          console.log(res.data.list,111111)
           State.ModelList = res.data.list;
           //模型列表
           // this.ModelList = [];

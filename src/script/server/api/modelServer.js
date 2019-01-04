@@ -61,7 +61,7 @@ class ModelServer extends Base {
   }
   deleteMode(id){
     return new Promise((resolve,reject)=>{
-      this.post('/delete',{_id:id}).then(res=>{
+      this.post('/delete/'+id,{}).then(res=>{
         resolve(res);
       })
       .catch(err=>{

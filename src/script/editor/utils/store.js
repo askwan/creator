@@ -96,6 +96,7 @@ State.clear = function(){
   // this.otypeIds = [];
   this.hidden = [];
   this.parentRoot = {};
+  this.heights = {};
 }
 
 State.flush = function(){
@@ -163,24 +164,38 @@ State.formateSObject = function(editor,obj){
 
 State.managerHeight = function(editor,sobject){
   let context = editor.idContext;
-  if(!this.heights['0']){
-    this.heights['0'] = [];
-    context.features().setHeightFeature({name:'height',value:0},{name:'min_height',value:0});
-  }
-  let heightAttr = sobject.attributes.find(el=>el.name=='height'&&el.value);
-  if(heightAttr){
-    if(this.heights[String(heightAttr.value)]){
-      if(!this.heights[String(heightAttr.value)].find(el=>el.id==sobject.id)){
-        this.heights[String(heightAttr.value)].push(sobject);
-      }
-    }else{
-      context.features().setHeightFeature(heightAttr);
-      context.features().disable(heightAttr.value);
-      this.heights[String(heightAttr.value)] = [sobject];
+  // if(!this.heights['0']){
+  //   this.heights['0'] = [];
+  //   context.features().setHeightFeature({name:'height',value:0},{name:'min_height',value:0});
+  // }
+  let heightAttr = sobject.attributes.find(el=>el.name=='height'&&el.value)||{name:'height',value:0};
+  let minHeightAttr = sobject.attributes.find(el=>el.name=='min_height'&&el.value)||{name:'min_height',value:0};
+  let name = minHeightAttr.value+"-"+heightAttr.value;
+  if(this.heights[name]){
+    if(!this.heights[name].find(el=>el.id==sobject.id)){
+      this.heights[name].push(sobject);
     }
   }else{
-    this.heights['0'].push(sobject);
+    context.features().setHeightFeature(minHeightAttr,heightAttr);
+    if(minHeightAttr.value!=0) context.features().disable(name);
+    this.heights[name] = [sobject];
   }
+  
+  // console.log(this.heights,'heights')
+
+  // if(heightAttr){
+  //   if(this.heights[String(heightAttr.value)]){
+  //     if(!this.heights[String(heightAttr.value)].find(el=>el.id==sobject.id)){
+  //       this.heights[String(heightAttr.value)].push(sobject);
+  //     }
+  //   }else{
+  //     context.features().setHeightFeature(heightAttr);
+  //     context.features().disable(heightAttr.value);
+  //     this.heights[String(heightAttr.value)] = [sobject];
+  //   }
+  // }else{
+  //   this.heights['0'].push(sobject);
+  // }
   return sobject;
 }
 

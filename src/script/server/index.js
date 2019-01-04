@@ -35,7 +35,8 @@ export {
   connectorServer,
   versionServer,
   psdeHost,
-  sdomainServer
+  sdomainServer,
+  psdeBaseUrl
 }
 
 // const myEvent = new CustomEvent('hello',{

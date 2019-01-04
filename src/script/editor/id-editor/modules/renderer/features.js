@@ -200,7 +200,7 @@ export function rendererFeatures(context,otype) {
 
     for(let key in otype){
         defineFeature(key,function (entity){
-            if(entity.orgData){
+            if(entity.orgData&&entity.orgData.id){
                 return key == entity.orgData.otype.id
             }
         })
@@ -518,18 +518,22 @@ export function rendererFeatures(context,otype) {
         //     if(aim) return true;
         // });
         defineFeature(sobject.id,function(entity){
-            if(entity.orgData){
+            if(entity.orgData&&entity.orgData.id){
+                // console.log(entity.orgData,'orgData')
                 return entity.orgData.parents.find(el=>el.id==sobject.id)||entity.orgData.id==sobject.id;
             }
         })
     }
 
-    features.setHeightFeature = function(attr,minAttr){
-        defineFeature(attr.value,function(entity){
-            // let height = Number(entity.tags.height)||0;
-            // let bool = height<=Number(attr.value)&&height>=Number(minAttr.value)
-            entity.tags.height = entity.tags.height || 0;
-            return entity.tags.height == attr.value;
+    features.setHeightFeature = function(minHeight,height){
+        let name = minHeight.value+"-"+height.value;
+        // console.log(name)
+        defineFeature(name,function(entity){
+            let orgData = entity.orgData||{attributes:[]};
+            let _height = orgData.attributes.find(el=>el.name=='height')||{value:0,name:'height'};
+            let _minHeight = orgData.attributes.find(el=>el.name=="min_height")||{value:'min_height',value:0};
+            let _name = _minHeight.value+"-"+_height.value;
+            return name==_name;
         })
     }
 

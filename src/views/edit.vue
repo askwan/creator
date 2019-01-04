@@ -65,7 +65,8 @@
             otIds.push(id);
           }
           let str = otIds.join(',');
-          this.getConnector(str);
+          this.loading = false;
+          vm.$emit(operate.DiagramReady);
         } catch (err) {
           console.log(err)
           vm.$emit(operate.notice,{
@@ -112,16 +113,6 @@
           })
         })
 
-      },
-      async getConnector(ids){
-        this.loading = false;
-        vm.$emit(operate.DiagramReady);
-        // let res = await connectorServer.getList({otIds:ids});
-        // try {
-        //   State.connectors = res.data.list;
-        // } catch (error) {
-          
-        // }
       },
       getStyle(){
         styleServer.getStyles({orderType: "ID",descOrAsc: true,}).then(res=>{

@@ -69,6 +69,7 @@ class MapboxGL {
     let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
     this.map.flyTo({
       center: lonlat,
+      pitch: 45
     });
     for (let i in this.allLayer) {
       let layer = this.allLayer[i]

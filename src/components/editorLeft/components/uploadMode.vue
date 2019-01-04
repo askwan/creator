@@ -17,7 +17,7 @@
 					</el-form-item>
 				</el-form>
 				<div class="btn">
-					<el-button type="primary" @click="submitUpload">确定</el-button>
+					<el-button :loading="loading" type="primary" @click="submitUpload">确定</el-button>
 					<el-button type="info" @click="close">取消</el-button>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 		watch: {},
 		filters: {},
 		mounted() {
-			this.requestMore();
+			
 		},
 		methods: {
 			// --------拼接---------------------------------------------------
@@ -87,9 +87,12 @@
 				// },()=>{
 				// 	console.log('err')
 				// });
+				this.loading = true;
 				modelServer.uploadMode(this.upData).then(res=>{
 					this.$emit('successFn' , {data: res.data , sign: "success"});
+					this.loading = false;
 				},(err)=>{
+					this.loading = false;
 					console.log(err,'err')
 				})
 
@@ -130,30 +133,12 @@
 			},
 			changeFn(file, fileList) {
 				this.file = file;
-				console.log(file,fileList);
-				// let formData= new FormData();
-				// formData.append('file',file);
-				// console.log(file,typeof file);
-				// console.log(formData);
 				this.upData.file = file;
 			},
 			removeFn(file, fileList) {
 				this.file = "";
 			},
 			// --------分页---------------------------------------------------
-
-			handleCurrentChange(val) {
-				this.page.pageNum = val;
-				this.requestMore();
-			},
-			handleSizeChange(val) {
-				this.page.pageSize = val;
-				this.requestMore();
-			},
-			requestMore() {
-				this.loading = false;
-				this.dataList = [];
-      },
       close(){
         this.$emit('close');
       }

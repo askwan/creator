@@ -62,8 +62,8 @@
       getData(){
         let user = JSON.parse(sessionStorage.getItem('user'));
         // console.log(user,'user')
-        this.diagrams = State.userDiagram(user.id);
-        // this.diagrams = State.diagrams;
+        // this.diagrams = State.userDiagram(user.id);
+        this.diagrams = State.diagrams;
         // this.$refs.tree.setCheckedKeys(State.otypeIds);
         IdEditor = getEditor();
         // this.isFalse = false;

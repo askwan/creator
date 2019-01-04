@@ -10,8 +10,8 @@
           </li>
         </el-tooltip>
     </ul>
-    <transition name="slider" v-for="(bar,i) in menuList" :key="i" v-if="bar.haveMenu">
-      <div v-if="bar.isShow" class="right shadow" :style="{'z-index':bar.zindex}">
+    <transition name="slider" v-for="(bar,i) in menuList" :key="i" >
+      <div v-if="bar.isShow &&bar.haveMenu" class="right shadow" :style="{'z-index':bar.zindex}">
         <div class="right-header flex-between pd-right-mini">
           <span class="font-16 pd-left-mini">{{bar.title}}</span>
           <i class="el-icon-close font-18 pointer" @click="bar.isShow=false"></i>
@@ -57,8 +57,8 @@
         },{
           icon:'el-icon-view',
           id:3,
-          desc:'过滤',
-          title:'过滤',
+          desc:'类模板',
+          title:'类模板过滤',
           isShow:false,
           haveMenu:true,
           componentId:'rightOtypes',

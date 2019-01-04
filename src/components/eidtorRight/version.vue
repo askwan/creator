@@ -54,7 +54,8 @@
             ids:this.sobject.id,
             loadForm:true,
             geoEdit:true,
-            loadNetwork:true
+            loadNetwork:true,
+            uids:''
           }).then(res=>{
             this.versions = res.list.sort((a,b)=>{
               return a.version.vtime-b.version.vtime;

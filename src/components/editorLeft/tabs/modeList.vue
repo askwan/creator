@@ -23,8 +23,11 @@
       <div class="up-load">
         <el-button type="primary" size="mini" icon="el-icon-upload" circle @click="showDiag=true"></el-button>
       </div>
-      <div class="block flex-center" v-show="more">
+      <div class="block flex-center" v-show="more&&!noData">
         <el-button v-loading="loading" @click="loadMore">加载更多</el-button>
+      </div>
+      <div class="flex-center" v-if="noData">
+        <span class="font-24 font-gray">没有数据</span>
       </div>
     </div>
     <upload-mode v-show="showDiag" @close="showDiag = false" :centerDialogVisible="showDiag" @successFn="changeMode"></upload-mode>
@@ -45,7 +48,7 @@
         modeLists:[],
         showDiag:false,
         more:true,
-        
+        noData:false
       }
     },
     props:['currentObject'],
@@ -59,6 +62,16 @@
     mounted(){
       this.getList();
     }, 
+    watch: {
+      modeLists(val){
+        // console.log(val,'va');
+        if(val.length==0) {
+          this.noData = true;
+        }else{
+          this.noData = false;
+        }
+      }
+    },
     methods:{
       startSearch(value){
         this.pageNum = 1;
@@ -71,6 +84,7 @@
       },
       getList(){
         this.loading = true;
+        this.more = true;
         modelServer.getModel({pageNum:this.pageNum,pageSize:this.pageSize,name:this.searchValue}).then(res=>{
           if(res.data.list.length<20) this.more = false;
           let lists = res.data.list.filter(el=>el.name);
@@ -87,7 +101,13 @@
         vm.$emit(operate.changeTab,{name:'objectDetail'});
       },
       deleteObj(mode){
-        console.log(mode);
+        modelServer.deleteMode(mode._id).then(res=>{
+          if(res.status==200){
+            let index = this.modeLists.findIndex(el=>el._id==mode._id);
+            this.modeLists.splice(index,1);
+          }
+          
+        })
       },
       loadMore(){
         this.pageNum++;

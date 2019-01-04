@@ -5,40 +5,17 @@ class Polygon extends publicFun {
   constructor() {
     super()
   }
-  /**
-   * 
-   * @param {*} object 
-   * @param {*} entityId 
-   * @param {*} topNum 给楼层的几何向上偏移距离
-   */
+ 
   create(lonlat, sobject, node) {
     let floorObj = new THREE.Object3D();
-    let multiple //拔高倍数
-    let transparent //是否透明
-    let topNum = sobject.floor //楼层数
-    let topLength = topNum < 0 || !topNum ? 0 : topNum * 16
 
-    if (sobject.isfloor) {
-      transparent = true
-      multiple = 4
-    } else {
-      transparent = false
-      multiple = 2.5
-    }
+    let obj=this.getDataObj(lonlat, sobject,node)
     let color = this.getColors(sobject.data)
-    // console.log(color)
-    let heightLength = this.getAttributes(sobject.data.attributes, 'height')
-    let height = heightLength ? heightLength * multiple : 0.1
-    let lonlatArr = []
 
-    for (let q = 0; q < node.nodes.length; q++) {
-      let coor = node.nodes[q]
-      lonlatArr.push(this.getPlace(coor, lonlat))
-    }
-    let shape = new THREE.Shape(lonlatArr);
+    let shape = new THREE.Shape(obj.lonlatArr);
     let extrudeSettings = {
       steps: 1,
-      depth: height,
+      depth: obj.height,
       bevelEnabled: false,
       bevelThickness: 0,
       bevelSize: 0,
@@ -48,9 +25,12 @@ class Polygon extends publicFun {
 
     let material = new THREE.MeshPhongMaterial({
       color: color.color,
-      shininess: 30
+      shininess: 30,
+      // side: THREE.DoubleSide,
+      // clippingPlanes: [localPlane],
+      // clipShadows: true
     });
-    material.transparent = transparent
+    material.transparent = obj.transparent
     material.opacity = color.opacity
 
     let mesh = new THREE.Mesh(geometry, material);
@@ -61,7 +41,7 @@ class Polygon extends publicFun {
       color: 0xffffff
     }));
     floorObj.add(line);
-    floorObj.position.z += topLength
+    floorObj.position.z += obj.topLength
 
     return floorObj
   }

@@ -83,7 +83,12 @@
             let obj = {};
             obj.id = el.id;
             obj.name = el.name;
-            this.parents.push(obj)
+            let index = this.parents.findIndex(ev=>ev.id==el.id);
+            if(index==-1) {
+              this.parents.push(obj)
+            }else{
+              this.parents.splice(index,1,obj);
+            }
           })
         })
       }

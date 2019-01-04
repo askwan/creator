@@ -32,5 +32,5 @@ export { actionSplit } from './split';
 export { actionStraighten } from './straighten';
 export { actionUnrestrictTurn } from './unrestrict_turn';
 export { actionReflect } from './reflect.js';
-export { actionVisible } from './visible.js';
+export { actionUpdateOrgData } from './update_orgdata.js';
 export { actionClose } from './close.js'

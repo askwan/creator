@@ -120,10 +120,8 @@ class EditSave {
   }
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
-    console.log(changes,4444444);
-    console.log(changes.modified[0]);
-    console.log(changes.modified[0].isHighwayIntersection('n9603061424131'),'inclodes')
     let _osmChange = [];
+    let geomCollection = context.history().base();
     //created
     let created = this.formateOsm(context,changes.created,flagType.created);
     //modified
@@ -136,7 +134,6 @@ class EditSave {
     let ways = _osmChange.filter(el=>el.type == 'way');
     ways.forEach(way=>{
       let entity = deleted.find(el=>el.id==way.refOb.id);
-      console.log(way,4444)
       way.nodes.forEach((el,k)=>{
         let i = _osmChange.findIndex(ev=>ev.id==el.id);
         if(i>-1){
@@ -148,12 +145,27 @@ class EditSave {
     });
 
     deleted.forEach(el=>{
+
+      
+
       if(el['@type']==='Node'){
+        
+        let p = geomCollection._parentWays[el.id];
+        if(p instanceof Array){
+          p.forEach(en=>{
+            let entity = _osmChange.find(ev=>ev.id==en);
+            if(entity){
+              entity.nodes.push(el);
+            }
+          })
+        }
+
+
         let entitys = _osmChange.filter(ev=>ev.refOb.id==el.refOb.id);
         if(entitys.length==0) return
         entitys.forEach(entity=>{
           if(entity['@type']=='Way'){
-            entity.nodes.push(el);
+            if(!entity.nodes.find(ev=>ev.id==el.id)) entity.nodes.push(el);
           }else if(entity['@type']=='Relation'){
             let wayIds = this.getWayFromRelation(el.id,entity);
             wayIds.forEach(id=>{
@@ -214,7 +226,7 @@ class EditSave {
     let resultSobjectList = [];
     let osmCollection = this.getOsmChanges1(context,idedit);
     console.log(osmCollection,'chage');
-    return
+    // return
     for(let id in sobjects){
       let sobject = sobjects[id];
       this.addSObjectList(resultSobjectList,sobject)

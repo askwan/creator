@@ -1,5 +1,3 @@
-import SObject from './SObject'
-import { objectQuery } from '../../editor/psde/objectService';
 import otypeList from '../../OneSIS/SObjectSceneManager/LayerManager/CustomLayer/manage/otypeList';
 
 class SObjectManege{
@@ -9,23 +7,15 @@ class SObjectManege{
   }
   addList(sobject){
     if(this.sobjectList[sobject.id]){
-
     }else{
-      this.sobjectList[sobject.id]=new SObject(sobject)
+      this.sobjectList[sobject.id]=sobject
     }
   }
-  haveOrNot(id){
-    if(this.sobjectList[id]){
-      return true
-    }else{
-      return false
-    }
-  }
+ 
   transform(list){
     let root = list.find(el=>el.id==7183427739648);
     if(!root) return {};
     let otypes = {};
-    // for(let i=0;i<list.length;)
     list.forEach(sobject=>{
       sobject.show = true;
       this.addList(sobject);
@@ -38,11 +28,9 @@ class SObjectManege{
         if(index==-1) this.sobjectGroup[parent.id].push(sobject);
       })
     })
-    console.log(this.sobjectGroup)
     otypeList.setlist(otypes);
     this.getChildren(root);
     this.sobjectList[root.id] = root;
-    console.log(root);
     return root;
   }
   getChildren(sobject){

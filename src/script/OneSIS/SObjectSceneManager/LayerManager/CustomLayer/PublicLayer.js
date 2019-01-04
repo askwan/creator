@@ -55,6 +55,7 @@ class PublicLayer {
   add(sobject) {
     if (!this.allSObjectGroup[sobject.id]) {
       this.allSObjectGroup[sobject.id] = new THREE.Group()
+      this.allSObjectGroup[sobject.id].name = sobject.id
       this.group.add(this.allSObjectGroup[sobject.id])
     } else {
 
@@ -64,7 +65,7 @@ class PublicLayer {
       let node = nodes[i]
       this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
     }
-    if(!sobject.show){
+    if (!sobject.show) {
       console.log('false');
       this.allSObjectGroup[sobject.id].visible = false
     }
@@ -77,6 +78,7 @@ class PublicLayer {
   resetView() {
     this.group = ''
     this.group = new THREE.Group() //总的组
+    this.group.name = 'allGroup' //总的组
     this.scene.add(this.group);
   }
   onAdd(map, gl) {
@@ -89,6 +91,7 @@ class PublicLayer {
     this.resetView()
 
   }
+
   transition(gl, matrix, mapCenter, translate) {
     if (this.group) {
       let lonlat = mercatorProj.lonLat2Mercator(this.lonlat[0], this.lonlat[1])
@@ -103,6 +106,7 @@ class PublicLayer {
     }
   }
   render(gl, matrix) {
+
     let mapCenter = this.map.getCenter()
     //经纬度转坐标
     let translate = mercatorProj.fromLL(mapCenter.lng, mapCenter.lat)

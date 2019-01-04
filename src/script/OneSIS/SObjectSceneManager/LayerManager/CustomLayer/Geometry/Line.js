@@ -6,19 +6,9 @@ class Line extends publicFun{
     
   }
   create(lonlat, sobject,node) {
-    // console.log(sobject)
     let floorObj = new THREE.Group();
-    let topNum=sobject.floor//楼层数
-    let topLength = topNum < 0 || !topNum ? 0 : topNum * 16
-  
-    // let color = this.getColors(sobject.data)
-  
-    let lonlatArr = []
-    for (let q = 0; q < node.nodes.length; q++) {
-      let coor = node.nodes[q]
-      lonlatArr.push(this.getPlace(coor, lonlat))
-    }
-    let geometry = new THREE.Geometry().setFromPoints(lonlatArr);
+    let obj=this.getDataObj(lonlat, sobject,node)
+    let geometry = new THREE.BufferGeometry().setFromPoints(obj.lonlatArr);
     let material = new THREE.LineBasicMaterial( {
       color: 0xff0000,
       // color: color.color,
@@ -27,7 +17,7 @@ class Line extends publicFun{
       // linejoin:  'round' //ignored by WebGLRenderer
     } );
     let line = new THREE.Line(geometry, material);
-    line.position.z += topLength+0.2
+    line.position.z += obj.topLength+0.2
     floorObj.add(line);
     return floorObj
   }

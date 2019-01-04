@@ -817,8 +817,8 @@ export function rendererMap(context) {
 
 
     map.editable = function() {
-        var osmLayer = surface.selectAll('.data-layer-osm');
-        if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
+        // var osmLayer = surface.selectAll('.data-layer-osm');
+        // if (!osmLayer.empty() && osmLayer.classed('disabled')) return false;
 
         return map.zoom() >= context.minEditableZoom();
     };
