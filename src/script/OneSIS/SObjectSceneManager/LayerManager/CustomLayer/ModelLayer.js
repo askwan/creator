@@ -12,7 +12,14 @@ class ModelLayer extends PublicLayer {
 
   }
   add(sobject) {
-    let form = sobject.forms[0]
+    let form
+    for (let i = 0; i < sobject.forms.length; i++) {
+      let f = sobject.forms[i]
+      if (f.type == 50) {
+        form = f
+      }
+
+    }
     let style = form.style[0]
     let loader = new THREE.GLTFLoader();
     loader.load('http://bt1.geosts.ac.cn/api/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file/download/' + form.formref.refid, gltf => {

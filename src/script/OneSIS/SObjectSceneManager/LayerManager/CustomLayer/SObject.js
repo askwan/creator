@@ -12,7 +12,7 @@ class SObject {
     this.nodes = {} //坐标和种类【点线面】way area node relation
     this.lonlat = '' //中心坐标
 
-    this.layer = '' //在哪个图层
+    this.layer = [] //在哪个图层
     // this.layer = 'modelLayer' //在哪个图层
     // this.layer = 'pipelineLayer' //在哪个图层
     this.floor = null //第几层
@@ -44,7 +44,7 @@ class SObject {
         this.recursionLayer(t, this.data.otype.id)
       }
       if (!this.layer) {
-        this.layer = 'otherLayer'
+        this.layer.push('otherLayer') 
         // console.log('没有找到', this.data)
       }
     }
@@ -57,10 +57,10 @@ class SObject {
         return
       }
       if (l.name == '建筑元素') {
-        this.layer = 'buildingLayer'
+        this.layer.push('buildingLayer') 
         return
       } else if (l.name == '管线') {
-        this.layer = 'pipelineLayer'
+        this.layer.push('pipelineLayer') 
         return
       } else {
         let connectors = l.connectors.connectors
@@ -91,10 +91,10 @@ class SObject {
       this.nodes[form.id] = {}
       this.nodes[form.id].nodes = []
       let type = form.type
-      this.height = parseInt(this.getAttributes(this.data.attributes, "height"))
-      this.min_height = parseInt(this.getAttributes(this.data.attributes, "min_height"))
+      this.height = this.getAttributes(this.data.attributes, "height")
+      this.min_height = this.getAttributes(this.data.attributes, "min_height")
       if (type == 21) {
-        if (this.height != this.min_height) {
+        if (this.height - this.min_height != 0) {
           this.nodes[form.id].type = 'line'
         } else {
           this.nodes[form.id].type = 'point'
@@ -104,7 +104,7 @@ class SObject {
       } else if (type == 23) {
         this.nodes[form.id].type = 'polygon'
       } else if (type == 50) {
-        this.layer = 'modelLayer'
+        this.layer.push('modelLayer') 
         this.nodes[form.id].type = 'model'
       }
       if (form.geom.nodes) {

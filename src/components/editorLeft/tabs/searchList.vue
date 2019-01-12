@@ -143,10 +143,11 @@ export default {
           // console.log(item.otype.id,State.otypes[item.otype.id]);
           if(State.otypes[item.otype.id]){
             item.otype = State.otypes[item.otype.id];
+            if (findIndex == -1) {
+              this.objectList.push(item);
+            }
           }
-          if (findIndex == -1) {
-            this.objectList.push(item);
-          }
+          
         });
         //this.objectList = response.list;
         if (this.objectList.length > 0) {

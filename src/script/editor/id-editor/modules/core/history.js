@@ -130,7 +130,6 @@ export function coreHistory(context) {
         merge: function(entities, extent) {
             _stack[0].graph.rebase(entities, _map(_stack, 'graph'), false);
             _tree.rebase(entities, false);
-
             dispatch.call('change', this, undefined, extent);
         },
 

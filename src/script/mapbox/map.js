@@ -25,7 +25,8 @@ let user = JSON.parse(sessionStorage.getItem('user'));
 function createMapboxMap(container, options, callback) {
   let map = createMap(container, options);
   if (!map) return null;
-  axios.get(psdeHost + '/stylePreview/sourceLayers').then(function (res) {
+  // psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+  axios.get(psdeBaseUrl + '/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/stylePreview/sourceLayers').then(function (res) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       if (layer.type) {
@@ -53,7 +54,7 @@ function createMap(container, options) {
   for (let key in defaultOptions) {
     str += `&${key}=${defaultOptions[key]}`
   }
-  console.log('时空域', str)
+  // console.log('时空域', str)
   let map = new mapboxgl.Map({
     container: container,
     style: {
@@ -74,7 +75,7 @@ function createMap(container, options) {
           'tiles': [
             // psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
             psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
-            // "http://192.168.1.179:8088/rest/v0.1.0/datastore/slave/geoservice" + `/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
+            // "http://192.168.1.133:8088/rest/v0.1.0/datastore/slave/geoservice" + `/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
           ],
           'minzoom': 4,
           'maxzoom': 20
@@ -108,10 +109,10 @@ function createMap(container, options) {
       let lv = e.target.transform._zoom;
 
       // console.log(lv, featuresBuilding)
-      if (lv >= 18) {
+      if (lv >= 17) {
         featuresBuilding.forEach(feature => {
           if (feature.properties.internal) {
-            console.log(lv, feature)
+            // console.log(lv, feature)
             let bbox = feature.properties.BBOX
             operation.moveend(bbox);
           }
@@ -185,9 +186,80 @@ function flyTo(x, y, z, level = 16) {
   })
 }
 
+function changeSdomain(sdomain){
+  let str = `&sdomains=${sdomain.id}`;
+  let style = {
+      version: 8,
+      'sprite': 'http://116.62.28.103:8000/creator/static/mapbox/sprite',
+      sources: {
+        'raster-tiles': {
+          type: 'raster',
+          tiles: [
+            'http://www.google.cn/maps/vt?lyrs=s@781&gl=cn&x={x}&y={y}&z={z}'
+          ],
+          tileSize: 256,
+          minzoom: 0,
+          maxzoom: 22
+        },
+        'vector-tiles': {
+          'type': 'vector',
+          'tiles': [
+            // psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+            psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+            // "http://192.168.1.133:8088/rest/v0.1.0/datastore/slave/geoservice" + `/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
+          ],
+          'minzoom': 4,
+          'maxzoom': 20
+        }
+      },
+      layers: [{
+        id: 'raster-tiles',
+        type: 'raster',
+        source: 'raster-tiles',
+        minzoom: 0,
+        maxzoom: 22
+      }]
+    };
+
+  let source = {
+    'type': 'vector',
+    'tiles': [
+      psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+    ],
+    'minzoom': 4,
+    'maxzoom': 20
+  }
+  
+  let center = getCenter(sdomain.geoBox);
+
+  mapboxMap.setCenter([center.y, center.x], mapboxMap.getZoom());
+  // mapboxMap.setStyle(style);
+  mapboxMap.remove();
+  // console.log(mapboxMap.getSource('vector-tiles'));
+  // let source = mapboxMap.getSource('vector-tiles');
+  // source.tiles.splice(0,1,psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`)
+  // mapboxMap.removeSource('vector-tiles');
+  mapboxMap.setStyle(style);
+  // mapboxMap.addSource('vector-tiles',source);
+  setTimeout(() => {
+    console.log('style',sdomain.id)
+    console.log(mapboxMap.getStyle());
+  }, 5000);
+}
+
+function getCenter(bbox){
+    let center = {};
+    center.x = (bbox.minx + bbox.maxx) / 2;
+    center.y = (bbox.miny + bbox.maxy) / 2;
+    center.z = (bbox.minz + bbox.maxz) / 2;
+    return center;
+}
+
 export {
   createMapboxMap,
   mapboxMap,
   addMarker,
-  flyTo
+  flyTo,
+  changeSdomain,
+  getCenter
 }

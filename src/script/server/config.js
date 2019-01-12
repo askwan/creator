@@ -1,6 +1,6 @@
 
 
-// const psdeBaseUrl = 'http://192.168.1.179:8080/datastore';
+// const psdeBaseUrl = 'http://192.168.1.133:8001';
 // const psdeHost = psdeBaseUrl;
 
 const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';

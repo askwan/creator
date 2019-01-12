@@ -1,7 +1,7 @@
 <template>
   <div class='root fill pd-small floor-manage' v-loading="loading">
     <el-tree highlight-current :data="Trees" :props="prop" :expand-on-click-node="false">
-      <span class="flex-between" slot-scope="{node,data}">
+      <span class="flex-between" slot-scope="{node}">
         <i v-show="node.data.otype&&node.data.attributes.find(el=>el.name=='FLOOR')" class="el-icon-view font-14 icon-view" :class="{show:isView(node)}" @click="changeView(node)"></i>
         <span>{{node.label}}</span>
         <span class="mg-left-big">

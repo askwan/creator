@@ -78,7 +78,7 @@
         //     this.parents.push(obj)
         //   })
         // });
-        objectServer.query({ids:str}).then(res=>{
+        objectServer.query({ids:str,uids:""}).then(res=>{
           res.list.forEach(el=>{
             let obj = {};
             obj.id = el.id;

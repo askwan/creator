@@ -160,6 +160,7 @@ export default {
         });
       });
       vm.$on(operate.changeDomain, item => {
+        if(map&&typeof map.remove == 'function') map.remove();
         this.initMap({ sdomains: item.id }, () => {
           let center = this.getCenter(item.geoBox);
           map.setCenter([center.y, center.x], map.getZoom());

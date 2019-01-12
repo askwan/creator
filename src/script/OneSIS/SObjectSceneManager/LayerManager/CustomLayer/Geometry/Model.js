@@ -6,6 +6,7 @@ class Model extends publicFun{
     
   }
   create(lonlat, sobject,node) {
+    console.log(form)
     let floorObj = new THREE.Object3D();
     let form=sobject.forms[0]
     let style = form.style[0]

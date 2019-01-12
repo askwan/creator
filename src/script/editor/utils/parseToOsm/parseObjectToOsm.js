@@ -56,6 +56,14 @@ function parseObjectToOsm (jsonObjects, callback) {
   ways.forEach(way=>State.ways[way.id]=way);
   // console.log(entities);
   // console.log(entities);
+  // let a = entities.find(el=>el.id=="n744181256220");
+  // if(a){
+  //   console.log(a)
+  // }
+  // let b = entities.find(el=>el.id=="n744181256197");
+  // let c = entities.find(el=>el.id=="n744181256196");
+  // if(b) console.log(b);
+  // if(c) console.log(c);
   // callback(null,[]);
   callback(null, entities)
 }

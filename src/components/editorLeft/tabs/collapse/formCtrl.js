@@ -23,6 +23,10 @@ const fromlist = [{
   label: 'Polygon',
   value: 23,
   sign: 'add'
+},{
+  label: 'Polygon',
+  value: 24,
+  sign: 'add'
 }, {
   label: 'Isohypse',
   value: 31,

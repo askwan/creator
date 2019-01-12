@@ -63,6 +63,7 @@ class PublicLayer {
     let nodes = sobject.nodes
     for (let i in nodes) {
       let node = nodes[i]
+      console.log(222222222,sobject)
       this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
     }
     if (!sobject.show) {

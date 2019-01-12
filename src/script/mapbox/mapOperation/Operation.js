@@ -10,32 +10,38 @@ class Operation {
   constructor(map) {
     this.map = map
     this.layer = new MapGL(map)
-    this.addLayer()
+    // this.addLayer()
     // this.moveend();
     this.rootObj = '';
   }
   addLayer() {
-    this.map.addLayer({
-      'id': 'build',
-      'type': 'fill-extrusion',
-      'source': 'vector-tiles',
-      'source-layer': "l5193",
-      'paint': {
-        'fill-extrusion-color': ['to-color', ['get', 'color'], '#484896'],
-        'fill-extrusion-opacity': {
-          "stops": [
-            [17, 1],
-            [18, 0]
-          ]
-        },
-        'fill-extrusion-height': ["*", ['to-number', ['get', 'height']],
-          ['to-number', ['get', 'FLOOR']]
-        ],
-        'fill-extrusion-base': ["*", ["-", ['to-number', ['get', 'FLOOR']], 1],
-          ['to-number', ['get', 'height']]
-        ]
-      },
-    });
+console.log(this.map)
+// return
+//     this.map.addLayer({
+//       'id': 'build',
+//       'type': 'fill-extrusion',
+//       'source': 'vector-tiles',
+//       'source-layer': "l5193",
+//       'paint': {
+//         'fill-extrusion-color': ['to-color', ['get', 'color'], '#484896'],
+//         'fill-extrusion-opacity': {
+//           "stops": [
+//             [17, 1],
+//             [18, 0]
+//           ]
+//         },
+//         // 'fill-extrusion-height': ["*", ['to-number', ['get', 'height']],
+//         //   ['to-number', ['get', 'FLOOR']]
+//         // ],
+//         // 'fill-extrusion-base': ["*", ["-", ['to-number', ['get', 'min_height']], 1],
+//         //   ['to-number', ['get', 'height']]
+//         // ],
+//         'fill-extrusion-height': ['to-number', ['get', 'height'], 0],
+//         'fill-extrusion-base': ['to-number', ['get', 'min_height'], 0]
+//       },
+//     });
+
+    // {"id":"testid","source":"geoserver-states","source-layer":"states","type":"fill","paint":{"fill-color":"#73ccff","fill-opacity":0.5}}
 
     // this.map.addLayer({
     //   id: 'building',
@@ -60,6 +66,7 @@ class Operation {
   }
   moveend(_obj) {
     let domain = JSON.parse(sessionStorage.getItem('sdomain'));
+    console.log(_obj)
     let obj = {
       // parents: 2169714253824,
       geoWkt: _obj,
@@ -80,12 +87,14 @@ class Operation {
         this.layer.start(this.rootObj.children);
       };
       return
-    }
+    };
+    console.log(44445)
     objectServer.query(obj).then(res => {
       console.log(11111111, res)
       let list = res.list;
       let sobject = sObjectManege.transform(list);
       this.rootObj = sobject;
+      console.log(this.rootObj);
       this.layer.start(this.rootObj);
 
       // if(sobject.children){

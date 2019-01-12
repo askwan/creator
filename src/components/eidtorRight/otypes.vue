@@ -8,7 +8,7 @@
       highlight-current
       ref="tree"
     >
-      <span class="flex-between" slot-scope="{node,data}">
+      <span class="flex-between" slot-scope="{node}">
         <i v-show="!node.data.otypes" class="el-icon-view font-14 icon-view" :class="{show:filterHidden(node)}" @click="change(node)"></i>
         <span class="font-14">{{node.label}}</span>
         <span class="mg-left-big">

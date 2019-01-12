@@ -62,15 +62,17 @@
       this.relationsList = [];
       this.otype = this.currentObject.otype;
       this.getList(this.otype);
-      console.log(this.otype,45646)
     },
     methods:{
       getList(otype){
+        // otype = State.otypes[otype.id];
+        console.log(otype,77777)
         if(otype.connectors&&otype.connectors.connectors){
           otype.connectors.connectors.forEach(connector=>{
             if(connector.relation){
               let relation = this.relationsList.find(el=>el.id==connector.relation.id);
               if(!relation) this.relationsList.push(connector.relation);
+              console.log(this.relationsList,'ffff')
             }
           })
         }

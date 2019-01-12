@@ -526,13 +526,13 @@ export function rendererFeatures(context,otype) {
     }
 
     features.setHeightFeature = function(minHeight,height){
-        let name = minHeight.value+"-"+height.value;
+        let name = minHeight.value+"_"+height.value;
         // console.log(name)
         defineFeature(name,function(entity){
             let orgData = entity.orgData||{attributes:[]};
             let _height = orgData.attributes.find(el=>el.name=='height')||{value:0,name:'height'};
             let _minHeight = orgData.attributes.find(el=>el.name=="min_height")||{value:'min_height',value:0};
-            let _name = _minHeight.value+"-"+_height.value;
+            let _name = _minHeight.value+"_"+_height.value;
             return name==_name;
         })
     }

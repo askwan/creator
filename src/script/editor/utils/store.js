@@ -164,13 +164,14 @@ State.formateSObject = function(editor,obj){
 
 State.managerHeight = function(editor,sobject){
   let context = editor.idContext;
-  // if(!this.heights['0']){
-  //   this.heights['0'] = [];
-  //   context.features().setHeightFeature({name:'height',value:0},{name:'min_height',value:0});
-  // }
+
+  let min = sobject.attributes.find(el=>el.name=="minheight");
+  if(min) sobject.attributes.push({name:'min_height',value:min.value});
+
+
   let heightAttr = sobject.attributes.find(el=>el.name=='height'&&el.value)||{name:'height',value:0};
   let minHeightAttr = sobject.attributes.find(el=>el.name=='min_height'&&el.value)||{name:'min_height',value:0};
-  let name = minHeightAttr.value+"-"+heightAttr.value;
+  let name = minHeightAttr.value+"_"+heightAttr.value;
   if(this.heights[name]){
     if(!this.heights[name].find(el=>el.id==sobject.id)){
       this.heights[name].push(sobject);

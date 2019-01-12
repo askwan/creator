@@ -182,6 +182,7 @@ const calcGeoBox = (context,sobject)=>{
     let nodes = entity.nodes.map(el=>context.entity(el));
     Object.assign(geoBox,getBoundray(nodes));
   }else if(entity.type=='relation'){
+    let members = entity.members;
     if(members.length==0){
       return geoBox
     }else{

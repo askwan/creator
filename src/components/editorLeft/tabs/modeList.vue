@@ -96,6 +96,7 @@
       select(mode){
         IdEditor = getEditor();
         IdEditor.currentForm.formref.refid = mode.fid;
+        IdEditor.currentForm.formref.name = mode.name;
         IdEditor.modifyObjectForm(this.currentObject, IdEditor.currentForm);
         IdEditor.currentForm = null;
         vm.$emit(operate.changeTab,{name:'objectDetail'});

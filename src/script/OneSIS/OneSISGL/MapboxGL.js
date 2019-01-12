@@ -87,7 +87,9 @@ class MapboxGL {
       }
       this.SObjectList.push(sobject)
       if (sobject.layer) {
-        this.allLayer[sobject.layer].add(sobject)
+        for(let q=0;q<sobject.layer.length;q++){
+          this.allLayer[sobject.layer[q]].add(sobject)
+        }
       }
       if (object.children.length > 0) {
         this.recursion(object.children, sobject.floor)

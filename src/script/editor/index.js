@@ -382,7 +382,7 @@ export default class Editor {
   }
   changeStatusObj(obj,otIds,bool){
     // console.log(otIds,'otIds')
-    console.log(obj,'obj')
+    // console.log(obj,'obj')
     if(obj.id){
       if(otIds.find(el=>el==obj.otype.id)){
         obj.show = bool;
