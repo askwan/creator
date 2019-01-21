@@ -11,7 +11,6 @@ class Polygon extends publicFun {
 
     let obj=this.getDataObj(lonlat, sobject,node)
     let color = this.getColors(sobject.data)
-
     let shape = new THREE.Shape(obj.lonlatArr);
     let extrudeSettings = {
       steps: 1,

@@ -14,7 +14,10 @@
 							    {{item.note}}
 							</span>
 						</div>
+						<div style="width:100%;">
 				    	<span>{{item.ctime}}</span>
+							<span class="float-right" style="color:#666;">{{item.sdomain|getSdomain}}</span>
+						</div>
 					</li>
 					<!-- <div v-for="(item,i) in objectList" :key="i">
 						{{item.name|filterName}}
@@ -36,7 +39,8 @@
 	import common from "@/script/common.js";
 	// import '../../../static/images/errorDiagram'
 	import * as btMap from "@/script/mapbox";
-	import {versionServer,objectServer} from '@/script/server'
+	import {versionServer,objectServer} from '@/script/server';
+	import {State} from '@/script/editor/utils/store.js'
 	
 	export default {
 		data() {
@@ -54,12 +58,17 @@
 				showMore:true
 			};
 		},
-		props: [],
+		props: ['isShow'],
 		components: {
 			
 		},
 		watch: {
-			
+			isShow(bool){
+				if(bool){
+					this.objectList = [];
+					this.searchListFn(this.currentTime);
+				}
+			}
 		},
 		mounted() {
 			this.objectList = [];
@@ -68,24 +77,18 @@
 		filters:{
 			filterName(str){
 				return str ? str : 'default'
+			},
+			getSdomain(id){
+				let result = State.sdomainList.find(el=>el.id==id)
+				return result ? result.name : 'default';
 			}
 		},
 		methods: {
 			addBgColorFn(item,index){
 				this.addBgColor = index;
-				// if (item.forms && item.forms.length>0) {
-				// 	if (item.forms[0].geom) {
-				// 		var obj = JSON.parse(item.forms[0].geom);
-				// 		if (obj.coordinates && obj.coordinates.length==1 && obj.coordinates[0].length>0) {
-				// 			btMap.addMarker(obj.coordinates[0][0]);
-				// 		} else if (obj.coordinates && obj.coordinates.length==2) {
-				// 			btMap.addMarker(obj.coordinates);
-				// 		}
-				// 	}
-				// };
-				console.log(item)
 				let posi = this.getCenter(item.geoBox);
 				btMap.flyTo(posi.x,posi.y,posi.z,17);
+				// btMap.fitBbox(item.geoBox);
 
 			},
 			getCenter(bbox){
@@ -123,36 +126,10 @@
 				return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 			},
 			searchListFn(data) {
-				// //当前时间戳
-				// this.currentTime = data;
-				// //一周前的时间戳
-				// this.backCurrentTime = this.currentTime - 604800000;
-				// var cur = this.commonTimeShift(this.currentTime);
-				// var bac = this.commonTimeShift(this.backCurrentTime);
-				// let filter = {
-				// 	// beginTime: bac,
-				// 	// endTime: cur,
-				// 	loadVersion: true,
-				// 	loadAttr: true,
-				// 	loadNetwork: true,
-				// 	loadObjType: true,
-				// 	loadForm: true,
-				// 	loadAction: true,
-				// 	geoEdit:false,
-				// 	pageNum:this.pageNum,
-				// 	pageSize:20,
-				// 	descOrAsc:false,
-				// 	orderType:'VID'
-				// 	}
-					
-				// versionServer.getVersions({pageSize:20,descOrAsc:true,orderType:'VID',pageNum:this.pageNum,}).then(res=>{
-				// 	if(res.list==0) this.showMore = false
-				// 	this.objectList = this.objectList.concat(res.list);
-				// });
 				let domain = sessionStorage.getItem('sdomain');
 				if(!domain) return alert('请先选择时空域')
 				domain = JSON.parse(domain);
-				objectServer.getChangesets({pageNum:this.pageNum,pageSize:20,descOrAsc:true,orderType:'TIME'}).then(res=>{
+				objectServer.getChangesets({pageNum:this.pageNum,pageSize:20,descOrAsc:true,orderType:'TIME',sdomains:domain.id}).then(res=>{
 					if(res.list.length==0) this.showMore = false;
 					this.pageNum = res.pageNum;
 					this.objectList = this.objectList.concat(res.list);

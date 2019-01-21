@@ -66,6 +66,7 @@ class MapboxGL {
     });
   }
   start(data) {
+    // console.log(11111111111111,data)
     let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
     this.map.flyTo({
       center: lonlat,

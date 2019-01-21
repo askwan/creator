@@ -200,6 +200,7 @@ export function rendererBackgroundSource(data) {
 
 
 rendererBackgroundSource.Bing = function(data, dispatch) {
+    console.trace();
 
     // http://msdn.microsoft.com/en-us/library/ff701716.aspx
     // http://msdn.microsoft.com/en-us/library/ff701701.aspx

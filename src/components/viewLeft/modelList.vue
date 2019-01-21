@@ -1,8 +1,8 @@
 <template>
-  <div class='modelist'>
+  <div class='modelist' v-loading='loading'>
     <!-- 搜索上传 -->
     <div class="search-box flex">
-      <el-input
+      <!-- <el-input
         class="search"
         placeholder="搜索"
         v-model="input1"
@@ -10,14 +10,16 @@
       </el-input>
       <el-tooltip effect="dark" content="上传新模型" placement="bottom">
         <el-button class="mg-left-small" type="primary" size="mini" icon="el-icon-upload" circle @click="modelUploadFn"></el-button>
-      </el-tooltip>
+      </el-tooltip> -->
+      <!-- <search-bar @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></search-bar> -->
+      <el-input suffix-icon="el-icon-search" v-model="searchValue" @change="startSearch" placeholder="请输入模型名称"></el-input>
     </div>
     <!-- 模型列表 -->
     <ul class="model-lis">
       <li v-for="it in ModelList" :key="it.fid">
         <span style="float: left">{{it.name}}</span>
         <span style="float: right; color: #999999; font-size: 14px">
-          <a :href="modelDownloadFn(downloadFile.baseURL,it.fid)" style="margin-left: 5px;color: #999999;">
+          <a :href="downloadFile.downloadUrl(it.fid)" style="margin-left: 5px;color: #999999;">
             <i class="el-icon-download"></i>
           </a>
         </span>
@@ -39,25 +41,26 @@
 <script>
   import {State} from '@/script/editor/utils/store'
   import axios from 'axios'
-  import { queryModelFile,downloadFile } from "@/script/editor/psde/config";
+  import { downloadFile } from "@/script/editor/psde/config";
   import {modelServer} from '@/script/server'
-  // import { queryModelFile, downloadFile } from "@/script/editor/psde/config";
   export default {
     data(){
       return {
-        input1:"",
+        searchValue:"",
         ModelList: [], //模型列表
         showDiag:false,
-        downloadFile: downloadFile,
+        downloadFile: modelServer,
         showMore:true,
         pageNum:1,
         pageSize:20,
         arrModelList:[],
+        loading:false
       }
     },
     props:{},
     components:{
-      uploadMode:()=>import('../editorLeft/components/uploadMode.vue')
+      uploadMode:()=>import('../editorLeft/components/uploadMode.vue'),
+      searchBar: () => import("@/components/common/searchBar")
     },
     computed:{},
     mounted(){
@@ -74,33 +77,20 @@
       getModels(){
         let params = {
           pageSize:20,
-          pageNum:this.pageNum
+          pageNum:this.pageNum,
+          name:this.searchValue
         }
+        this.loading = true;
         modelServer.getModel(params).then(res=>{
+          this.loading = false;
+          if(res.data.list.length<20) this.showMore = false;
           res.data.list = res.data.list.filter(el=>el._id&&el.name);
-          console.log(res.data.list,111111)
-          State.ModelList = res.data.list;
-          //模型列表
-          // this.ModelList = [];
-          // this.ModelList = State.ModelList;
-          let arrModel = State.ModelList
-          arrModel.forEach(e=>{
-            this.ModelList.push(e)
-          })
-            this.arrModelList = this.ModelList
-          
-
-          if(arrModel.length == 0){
-            this.showMore = false
-          }
+          this.ModelList = this.ModelList.concat(res.data.list);
         })
         
       },
       modelUploadFn(){
 				this.showDiag = true;
-      },
-      modelDownloadFn(a, b) {
-        return a + "/" + b;
       },
       changeMode(data){
         // console.log(data,"emitList")
@@ -130,6 +120,20 @@
           this.ModelList = model
           this.showMore = true
         }
+
+        // modelServer.getModel({pageNum:1,pageSize:20,name:this.searchValue}).then(res=>{
+        //   if(res.data.list.length<20) this.more = false;
+        //   let lists = res.data.list.filter(el=>el.name);
+        //   this.modeLists = this.modeLists.concat(lists);
+        //   this.pageNum = res.data.pageNum;
+        //   this.loading = false;
+        // })
+
+      },
+      startSearch(){
+        this.pageNum = 1;
+        this.ModelList = [];
+        this.getModels();
       },
       //加载更多
       searchObject(){

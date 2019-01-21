@@ -12,9 +12,9 @@ common.ucJumpUrl = common.newUcHttp  + '/#/userCenter'; // Uc跳转地址
 common.getNewUser = function (newType, newUrl, sendData, correctCallback, errorCallback) {
   let url = `${UcServerUrl}${newUrl}?token=${common.getItem("token")}`
   axios.get(url).then(function (res) {
-    correctCallback(res.data.data)
+    correctCallback(res.data)
   }).catch(function (res) {
-    errorCallback(res.data.data)
+    errorCallback(res.data)
   })
 }
 
@@ -66,6 +66,7 @@ common.setUserInfo = function (data) {
     common.setInfo(i, data[i])
   };
   sessionStorage.setItem('user',JSON.stringify(window.user));
+  // localStorage.setItem('user',JSON.stringify(window.user));
   // console.log(window.user)
 }
 common.TimeShift = function (timeStamp, select) { // 时间戳格式转换日期

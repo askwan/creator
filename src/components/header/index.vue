@@ -40,6 +40,7 @@
   import common from '@/script/common'
   import {sdomainServer} from '@/script/server'
   import {State} from '@/script/editor/utils/store.js'
+  import axios from 'axios'
   export default {
     data(){
       return {
@@ -89,40 +90,43 @@
       this.path = this.$route.path;
       sdomainServer.getList().then(res=>{
         this.sdomains = res.list;
+        State.sdomainList = res.list;
         if(res.list.length>0){
           let domain = sessionStorage.getItem('sdomain');
-          if(domain){
-            this.currentSdomain = JSON.parse(domain);
+          if(domain||this.$route.query.sdomains){
+            if(domain){
+              this.currentSdomain = JSON.parse(domain);
+            }else{
+              this.currentSdomain = this.sdomains.find(el=>el.id==this.$route.query.sdomains);
+              sessionStorage.setItem('sdomain',JSON.stringify(this.currentSdomain));
+            }
+            // vm.$emit(operate.readyMap,this.currentSdomain);
           }else{
             this.isShow = true;
           }
         }
+        vm.$emit('sdomainReady',res.list);
       })
     },
     created: function() {
-      if(sessionStorage.getItem('user')){
-        let obj = JSON.parse(sessionStorage.getItem('user'));
-
-        this.userName = obj.nickName;
-        this.icon = common.getAvatar(obj.avatar);
-        return
-      }
-			var _token = this.$route.query.token;
+      
+			var _token = localStorage.getItem("token");
 			var _url = this.$route.query.url;
 			if(_token) { //判断地址栏是否有token
-				common.setItem("token", _token);
+        // common.setItem("token", _token);
 				common.getNewUser("get", "/account/authorize", {}, res => {
-					common.setUserInfo(res);
-					this.$router.push({
-						path: "/"
-          });
-          this.userName = common.getInfo('nickName');
-          this.icon = common.getAvatar(common.getInfo('avatar'));
-				})
-			} else { //地址栏没有token 退出重新登陆
-				if(!sessionStorage.getItem('user')){
-          common.exitUser.exitAddress();
-        }
+					if(res.status==200){
+            common.setUserInfo(res.data);
+            this.userName = common.getInfo('nickName');
+            this.icon = common.getAvatar(common.getInfo('avatar'));
+            localStorage.setItem('token',_token);
+          }else if(res.status==450){
+            common.exitUser.exitAddress();
+          }
+        })
+
+			} else {
+        common.exitUser.exitAddress();
 			}
 		},
     methods:{
@@ -152,6 +156,9 @@
         this.path = this.path =='/view'?'/edit':'/view'
         // this.path=='编辑'?path = '/view':path = '/edit';
         this.$router.push(this.path);
+        setTimeout(() => {
+          vm.$emit('sdomainReady',this.sdomains);
+        }, 200);
       },
       chooseDomain(item){
         this.currentSdomain = item;

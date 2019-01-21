@@ -8,7 +8,7 @@ import { select as d3_select } from 'd3-selection';
 import _debounce from 'lodash-es/debounce';
 import {utilRebind}  from './id-editor/modules/util/rebind'
 import {actionAddEntity,actionChangeTags,actionAddVertex,actionClose,actionUpdateOrgData} from '@/script/editor/id-editor/modules/actions'
-import { osmNode, osmRelation, osmWay } from '@/script/editor/id-editor/modules/osm'
+import { osmNode, osmWay } from '@/script/editor/id-editor/modules/osm'
 
 import { State } from './utils/store'
 import SObjectGraph from './utils/SObjectGraph'
@@ -19,7 +19,7 @@ import SObject from './psde/psdm/SObject';
 import {transformObject ,calcGeoBox} from './utils/parseToOsm/util.js';
 
 let n = 1000;
-const dispatch = d3_dispatch('currentObject','notice')
+const dispatch = d3_dispatch('currentObject','notice','loading')
 var relationRandomId = 1;
 let isAjax = true;
 export default class Editor {
@@ -67,7 +67,6 @@ export default class Editor {
       if(ele){
         let entity = this.idContext.entity(ele);
         this.currentEntity = entity;
-        console.log(entity);
       }
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
@@ -77,6 +76,7 @@ export default class Editor {
           this.updateAndHistory(this.currentSobject)
         };
         dispatch.call('currentObject',this,{object:this.currentSobject,entity:ele});
+        this.currentForm = null;
         return
       }
       let sobject, form;
@@ -97,7 +97,7 @@ export default class Editor {
       }else{
         dispatch.call('currentObject',this,{object:null,entityId:ele});
       }
-      console.log(this.currentSobject)
+      
     });
     this.idContext.on('saveObjects',context=>{
       this.saveEdit(context);
@@ -124,7 +124,7 @@ export default class Editor {
 
 
 
-  setTool (style, otype, modeOptions) {
+  setTool (modeOptions) {
     let geotype = modeOptions.form.geotype;
     this.currentForm = modeOptions.form;
     if (geotype == 21) {
@@ -142,15 +142,12 @@ export default class Editor {
     this.sobjectlist[sobject.id] = sobject;
     State.sobjects[sobject.id] = sobject;
     this.idContext.features().setFeature(sobject);
-    // sobject.geoBox = {};
     sobject.geoBox = calcGeoBox(this.idContext,sobject);
-    // console.log(sobject,4454);
     this.idContext.perform(actionUpdateOrgData(entityId,sobject));
     dispatch.call('currentObject',this,{object:sobject,entityId:entityId});
   }
   modifySobject (sobject) {
     this.currentGraph.updateSObject(sobject)    
-    // console.log('更新', this.currentGraph)
   }
   modifyOtype(sobject,otypeId){
     sobject.modyifyOtype(State.otypes[otypeId]);
@@ -183,25 +180,16 @@ export default class Editor {
     this.flush();
   }
   getSObjectByOsmEntity (entityId) {
-    let result = this.getSObjectByListOsmEntity(this.currentGraph.sobjectList, entityId)
-    if (result != null) {
-      return result
-    }
-    result = this.getSObjectByListOsmEntity(this.sobjectlist, entityId)
-    if (result != null) {
-      return result
-    }
-    return null
-  }
-  getSObjectByListOsmEntity (sobjects, entityId) {
+
     let aimobj = null;
-    for (let key in sobjects) {
-      let sobject = sobjects[key]
-      for (let i = 0;i < sobject.forms.length;i++) {
+
+    for(let key in State.sobjects){
+      let sobject = State.sobjects[key];
+      for(let i=0;i<sobject.forms.length;i++){
         let form = sobject.forms[i];
-        if(!form.geom) continue
-        if (form.geom == entityId) {
-          aimobj = sobject
+        if(form.geom==entityId){
+          aimobj = sobject;
+          break;
         }
       }
     }
@@ -210,18 +198,6 @@ export default class Editor {
   getSobjectById (sid) {
     return State.sobjects[sid];
   }
-  getSObjectByOtypes(list){
-    let arr = [];
-    list.forEach(otId=>{
-      for(let key in State.sobjects){
-        let sobject = State.sobjects[key];
-        if(sobject.otype.id==otId){
-          arr.push(sobject);
-        }
-      }
-    });
-    return arr;
-  }
   saveEdit (context) {
     let json = editsave.getSaveSObject(context, this);
     console.log(json,'save');
@@ -229,10 +205,12 @@ export default class Editor {
     // return 
     let token = localStorage.getItem('token');
     if(!json.length) return dispatch.call('notice',this,{title:'提示',message:'未检测到变更'});
+    dispatch.call('loading',this,true);
     if (isAjax) {
       isAjax = false;
       objectServer.save(json).then(res=>{
-        isAjax = true
+        isAjax = true;
+        dispatch.call('loading',this,false);
         if (res.status == 200) {
           State.versionObjs = [];
           this.flush();
@@ -256,7 +234,8 @@ export default class Editor {
           type:'error',
           title:'错误',
           message:err
-        })
+        });
+        dispatch.call('loading',this,false);
       })
     }
   }
@@ -302,16 +281,6 @@ export default class Editor {
   modifySObjectNetwork (srcObject, relation) {
     srcObject.modifyNetworkNode(relation)
     this.updateAndHistory(srcObject)
-  }
-  querySObjectByOType (sobjectlist, oytpeId) {
-    let result = []
-    for (let i = 0;i < sobjectlist.length;i++) {
-      let sobject = sobjectlist[i]
-      if (sobject.otype.id == oytpeId) {
-        result.push(sobject)
-      }
-    }
-    return result
   }
   createSObjectNetwork (srcObject, tagObject, relation) {
     let node = new psde.RNode();
@@ -381,8 +350,6 @@ export default class Editor {
     return hiddens;
   }
   changeStatusObj(obj,otIds,bool){
-    // console.log(otIds,'otIds')
-    // console.log(obj,'obj')
     if(obj.id){
       if(otIds.find(el=>el==obj.otype.id)){
         obj.show = bool;
@@ -400,7 +367,6 @@ export default class Editor {
       }else{
         this.idContext.features().disable(el,true);
       }
-      // this.idContext.features().disable(el);
       State.disableOt(el);
     });
     let hiddens = State.disableOt(otId);
@@ -425,9 +391,7 @@ export default class Editor {
     newSobject.copyObject(JSON.parse(str));
     newSobject.id = n++;
     newSobject.createObject(newSobject);
-    // console.log(newSobject,'new')
     this.currentSobject = newSobject;
-
     newSobject.forms.forEach(form=>{
       let entity = this.copyEntity(form.geom);
       form.geom = entity.id;

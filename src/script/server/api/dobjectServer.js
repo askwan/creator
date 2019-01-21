@@ -1,10 +1,10 @@
 import Base from './Base'
 import {psdeUrl} from '../config'
 
-class ObjectServer extends Base {
+class DObjectServer extends Base {
   constructor(){
     super();
-    this.url = psdeUrl+'object'
+    this.url = psdeUrl+'dobject'
   }
   query(option={}){
     let user = sessionStorage.getItem('user');
@@ -59,28 +59,6 @@ class ObjectServer extends Base {
       })
     })
   }
-  queryBySobjectId(sobjectId){
-    let option = {
-      loadAttr:true,
-      loadForm:true,
-      ids:sobjectId,
-      loadVersion:true,
-      geoEdit:true,
-      loadNetwork:true,
-      loadCompose:true
-    };
-    return this.query(option)
-  }
-  queryByBbox(bbox){
-    let option = {
-      loadForm:true,
-      geoEdit:true,
-      loadNetwork:true,
-      geoWkt:bbox,
-      loadAttr:true,
-    };
-    return this.query(option);
-  }
 }
 
-export default new ObjectServer();
+export default new DObjectServer();

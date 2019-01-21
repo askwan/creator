@@ -591,8 +591,8 @@ export default {
       let maxx = tile.extent[1][0]
       let maxy = tile.extent[1][1]
       var extbbox = `BBOX(${minx} ${maxx} ${miny} ${maxy})`
-      let user = JSON.parse(sessionStorage.getItem('user'));
-      let _id = user.id+'';
+      // let user = JSON.parse(sessionStorage.getItem('user'));
+      // let _id = user.id+'';
       let str = 'object/query?';
       let defaultOptions = {
         loadForm:true,

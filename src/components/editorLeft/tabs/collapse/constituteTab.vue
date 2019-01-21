@@ -65,19 +65,11 @@
         }
       },
       getName(parents){
-        let str = parents.map(el=>el.id).join(',');
         this.parents = [];
+        if(!(parents instanceof Array)) return []
+        let str = parents.map(el=>el.id).join(',');
         if(str.length==0) return
         
-        // psde.objectQuery.loadObject({ids:str}).then(res=>{
-        //   res.list.forEach(el=>{
-        //     let obj = {};
-        //     console.log(el)
-        //     obj.id = el.id;
-        //     obj.name = el.name;
-        //     this.parents.push(obj)
-        //   })
-        // });
         objectServer.query({ids:str,uids:""}).then(res=>{
           res.list.forEach(el=>{
             let obj = {};

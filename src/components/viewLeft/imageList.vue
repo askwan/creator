@@ -6,7 +6,7 @@
         <li v-for="it in imagesList" :key="it.id" :title="it.name">
           <span style="float: left">{{it.name}}</span>
           <span style="float: right; color: #999999; font-size: 14px">
-            <a :href="modelDownloadFn(downloadImage.baseURL,it.dataRef)" style="margin-left: 5px;color: #999999;">
+            <a :href="hdfsServer.downloadUrl(it.dataRef)" style="margin-left: 5px;color: #999999;">
               <i class="el-icon-download"></i>
             </a>
           </span>
@@ -25,8 +25,7 @@
 </template>
 <script>
   import {State} from '@/script/editor/utils/store'
-  import axios from 'axios'
-  import { imageList,downloadImage } from "@/script/editor/psde/config";
+  import { hdfsServer,dobjectServer } from '@/script/server';
   export default {
     data(){
       return {
@@ -34,7 +33,7 @@
         showMore:true,
         pageNum:1, 
         pageSize:20,
-        downloadImage:downloadImage
+        hdfsServer:hdfsServer
       }
     },
     props:{},
@@ -49,21 +48,16 @@
       getImages(){
         let params = {
           pageSize:20,
-          pageNum:this.pageNum
+          pageNum:this.pageNum,
+          uids:''
         }
-        axios.get(imageList.baseURL,{params:params}).then(res=>{
-          // console.log(res,"098")
-          if(res.data.status == 200){
-            // console.log(res.data.data.list)
-              let arrImages = res.data.data.list
-              if(arrImages.length == 0){
-                this.showMore = false
-              }
-              arrImages.forEach(e => {
-                this.imagesList.push(e)
-              });
-          }
+
+        dobjectServer.query(params).then(res=>{
+          // console.log(res,8888);
+          this.imagesList = this.imagesList.concat(res.list);
+          if(res.list.length<20) this.showMore = false;
         })
+
       },
       searchObject(){
 				this.pageNum++;

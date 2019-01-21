@@ -29,8 +29,12 @@ function createMapboxMap(container, options, callback) {
   axios.get(psdeBaseUrl + '/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/stylePreview/sourceLayers').then(function (res) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
-      if (layer.type) {
-        map.addLayer(layer)
+      try {
+        if (layer.type) {
+          map.addLayer(layer)
+        }
+      } catch (error) {
+        
       }
     }
 
@@ -89,7 +93,7 @@ function createMap(container, options) {
         maxzoom: 22
       }]
     },
-    center: [103.6249284647, 34.7472541716],
+    center: options.center||[103.6249284647, 34.7472541716],
     zoom: 12
   })
 
@@ -186,6 +190,11 @@ function flyTo(x, y, z, level = 16) {
   })
 }
 
+function fitBbox(bbox){
+  let box = [[bbox.minx,bbox.miny],[bbox.maxx,bbox.maxy]];
+  mapboxMap.fitBounds(box);
+}
+
 function changeSdomain(sdomain){
   let str = `&sdomains=${sdomain.id}`;
   let style = {
@@ -235,16 +244,8 @@ function changeSdomain(sdomain){
   mapboxMap.setCenter([center.y, center.x], mapboxMap.getZoom());
   // mapboxMap.setStyle(style);
   mapboxMap.remove();
-  // console.log(mapboxMap.getSource('vector-tiles'));
-  // let source = mapboxMap.getSource('vector-tiles');
-  // source.tiles.splice(0,1,psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`)
-  // mapboxMap.removeSource('vector-tiles');
   mapboxMap.setStyle(style);
   // mapboxMap.addSource('vector-tiles',source);
-  setTimeout(() => {
-    console.log('style',sdomain.id)
-    console.log(mapboxMap.getStyle());
-  }, 5000);
 }
 
 function getCenter(bbox){
@@ -261,5 +262,6 @@ export {
   addMarker,
   flyTo,
   changeSdomain,
-  getCenter
+  getCenter,
+  fitBbox
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class='version-box pd-small'>
+  <div class='version-box pd-small' v-loading='loading'>
     <div class="pointer-shadow pd-small radius-2 flex-between border-bottom" v-for="(version,i) in versions" :key="i" @click="choseVersion(version,i)">
       <span>
         <i class="el-icon-success" :class="{'font-blue':sobject.version.vid==version.version.vid}" ></i>
@@ -7,6 +7,7 @@
       </span>
       <el-button type="text">选择版本</el-button>
     </div>
+    
   </div>
 </template>
 <script>
@@ -18,7 +19,8 @@
       return {
         versions:[],
         pageNum:1,
-        index:null
+        index:null,
+        loading:false
       }
     },
     props:['show','sobject'],
@@ -32,6 +34,7 @@
     mounted(){
       
       this.getVersion();
+      this.listenEvent();
     },
     filters:{
       getDate(time){
@@ -47,8 +50,14 @@
       }
     },
     methods:{
+      listenEvent(){
+        vm.$on('saveReady',()=>{
+          this.getVersion();
+        })
+      },
       getVersion(){
         if(this.sobject.id){
+          this.loading = true;
           objectServer.query({
             loadVersion:true,
             ids:this.sobject.id,
@@ -57,10 +66,13 @@
             loadNetwork:true,
             uids:''
           }).then(res=>{
+            this.loading = false;
             this.versions = res.list.sort((a,b)=>{
               return a.version.vtime-b.version.vtime;
             })
           })
+        }else{
+          this.versions = [];
         }
       },
       choseVersion(version,index){

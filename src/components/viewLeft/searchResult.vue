@@ -42,13 +42,12 @@
 </template>
 <script>
 	import { vm, operate, getContext } from "@/script/operate";
-	import ImageManage from "@/script/editor/psde/ImageManage";
 	import * as btMap from "@/script/mapbox";
-	import {objectServer} from '@/script/server'
+	import {objectServer,imageServer} from '@/script/server'
 	export default {
 		data() {
 			return {
-				ImageManage: ImageManage,
+				ImageManage: imageServer,
 				errorOtypeImg: 'this.src="' + require("../../../static/images/errorOtype.jpg") + '"',
 				searchNameVal: "",
 				objectList: [],
@@ -116,10 +115,13 @@
 			searchObject() {
 				//this.objectList = [];
 				let user = JSON.parse(sessionStorage.getItem('user'));
-        let id = `'${user.id}'`;
+				let id = `'${user.id}'`;
+				let domain = sessionStorage.getItem('sdomain');
+				domain = JSON.parse(domain);
 				var obj = {
 					names: this.searchNameVal,
-					// uids:id
+					uids:'',
+					sdomains:domain.id
 				};
 				this.loading = true;
 				objectServer.ByNameAndOTName(obj).then(response => {
@@ -150,7 +152,8 @@
 					let x = (item.geoBox.maxx+item.geoBox.minx)/2;
 					let y = (item.geoBox.maxy+item.geoBox.miny)/2;
 					let z = (item.geoBox.maxz+item.geoBox.minz)/2;
-					btMap.flyTo(x,y,z);
+					// btMap.flyTo(x,y,z);
+					btMap.fitBbox(item.geoBox);
 				}
 
 				

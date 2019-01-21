@@ -9,6 +9,8 @@ import behaviorServer from './api/behaviorServer'
 import connectorServer from './api/connectorServer'
 import versionServer from './api/versionServer'
 import sdomainServer from './api/sdomainServer'
+import dobjectServer from './api/dobjectServer'
+import hdfsServer from './api/hdfsServer'
 
 import {
   psdeBaseUrl,
@@ -36,7 +38,9 @@ export {
   versionServer,
   psdeHost,
   sdomainServer,
-  psdeBaseUrl
+  psdeBaseUrl,
+  dobjectServer,
+  hdfsServer
 }
 
 // const myEvent = new CustomEvent('hello',{

@@ -8,16 +8,6 @@
 				<ul>
 					<li v-for="(item,index) in objectList" :key="index" >
 						<img v-if="item.otype && item.otype.icon" :src="ImageManage.getImageUrl(item.otype.icon)" :onerror="errorOtypeImg" alt="加载失败" />
-						<!-- <i v-else-if="item.forms[0].type==21" class="iconfont icon-dian"></i>
-						<i v-else-if="item.forms[0].type==22" class="iconfont icon-xian1"></i>
-						<i v-else-if="item.forms[0].type==23" class="iconfont icon-mian1"></i>
-						<i v-else-if="item.forms[0].type==31" class="iconfont icon-yuedengyu"></i>
-						<span v-else-if="item.forms[0].type==32">Dem</span>
-						<span v-else-if="item.forms[0].type==33">Tin</span>
-						<i v-else-if="item.forms[0].type==40" class="iconfont icon-bim"></i>
-						<i v-else-if="item.forms[0].type==50" class="iconfont icon-ic_d_rotation"></i>
-						<i v-else-if="item.forms[0].type==61" class="iconfont icon-ganlanqiu"></i>
-						<i v-else class="iconfont icon-meiyougengduo"></i> -->
 						<span @click="openObject(item,index)">{{item.name}} (<span>{{getOtypeName(item)}}</span>)</span>
 					</li>
 				</ul>
@@ -132,7 +122,7 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        // uids:id,
+        uids:"",
         sdomains:sdomain.id
       };
       this.loading = true;

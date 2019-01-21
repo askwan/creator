@@ -110,12 +110,17 @@ State.flush = function(){
  * 
  */
 State.getParentOtypeById = function(id){
-  // console.log(this.connectors)
-  let array = this.connectors.filter(el=>el.dType.id==id&&el.type==8);
-  if(array.length>0){
-    array = array.filter(el=>this.otypes[el.fId]).map(el=>this.otypes[el.fId]);
+  
+  let result = [];
+  for(let key in this.otypes){
+    let otype = this.otypes[key];
+    let aimOts = otype.connectors.connectors.filter(el=>el.dType.id==id&&el.type==8);
+    aimOts.forEach(connector=>{
+      if(!result.find(el=>el.id==connector.fId)) result.push(this.otypes[connector.fId])
+    })
   }
-  return array;
+  return result;
+
 }
 
 

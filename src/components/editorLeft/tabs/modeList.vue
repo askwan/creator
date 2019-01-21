@@ -12,7 +12,10 @@
           <span class="font-14 font-white">{{mode.name|splice2}}</span>
         </div>
         <div class="el-content">
-          <p class="font-black font-14 text-ellipsis">{{mode.name}}</p>
+          <p class="font-black font-14 text-ellipsis">
+            <span>{{mode.name}}</span>
+            <el-tag class="pull-right" size="mini">{{mode.extension}}</el-tag>
+          </p>
           <p class="font-info font-12 text-ellipsis" :title="mode.des">描述：{{mode.des}}</p>
           <div class="align-right">
             <a :href="downloadUrl(mode)" class="pointer-default font-default">下载</a>

@@ -5,16 +5,16 @@
     </div>
     <ul class="menu-list">
         <el-tooltip v-for="item in menuList" :key="item.id" class="item" effect="light" :content="item.desc" placement="left-end">
-          <li class="menu-box pointer flex-center" @click="menuTool(item)">
+          <li class="menu-box pointer flex-center" :class="{actived:item.isShow}" @click="menuTool(item)">
               <i class="font-16 font-white" :class="[item.icon]"></i>
           </li>
         </el-tooltip>
     </ul>
     <transition name="slider" v-for="(bar,i) in menuList" :key="i" >
-      <div v-if="bar.isShow &&bar.haveMenu" class="right shadow" :style="{'z-index':bar.zindex}">
-        <div class="right-header flex-between pd-right-mini">
+      <div class="right shadow" :style="{'z-index':bar.zindex}" :class="{animate:bar.isShow &&bar.haveMenu}">
+        <div class="right-header flex-between pd-right-mini pd-left-mini">
           <span class="font-16 pd-left-mini">{{bar.title}}</span>
-          <i class="el-icon-close font-18 pointer" @click="bar.isShow=false"></i>
+          <i class="el-icon-close font-18 pointer-danger" @click="bar.isShow=false"></i>
         </div>
         <div class="right-content">
           <component :is="bar.componentId" :show="bar.isShow" :sobject="currentObj"></component>
@@ -46,14 +46,14 @@
           desc:'放大',
           title:'放大',
           haveMenu:false,
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-minus',
           id:2,
           desc:'缩小',
           title:'缩小',
           haveMenu:false,
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-view',
           id:3,
@@ -62,7 +62,7 @@
           isShow:false,
           haveMenu:true,
           componentId:'rightOtypes',
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-refresh',
           id:8,
@@ -71,7 +71,7 @@
           isShow:false,
           haveMenu:true,
           componentId:'heightManage',
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-sort',
           id:4,
@@ -80,7 +80,7 @@
           isShow:false,
           haveMenu:true,
           componentId:'floorManage',
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-tickets',
           id:6,
@@ -89,7 +89,7 @@
           isShow:false,
           haveMenu:true,
           componentId:'versionObject',
-          zindex:10
+          zindex:11
         },{
           icon:'el-icon-printer',
           id:5,
@@ -98,7 +98,7 @@
           isShow:false,
           haveMenu:true,
           componentId:'mapboxmode',
-          zindex:9
+          zindex:10
         }],
         isLoad:false
       }
@@ -160,7 +160,7 @@
           editor.on('currentObject',data=>{
             if(data.object) {
               this.currentObj = data.object;
-
+              console.log(data.object)
               State.viewObject = editor.copySObject(data.object);
 
               vm.$emit(operate.hiddenOtypes);
@@ -181,6 +181,20 @@
             obj.type = obj.type || 'info';
             obj.title = obj.title || '提示';
             this.$notify(obj);
+          });
+          let loading;
+          editor.on('loading',bool=>{
+            if(bool){
+              loading = this.$loading({
+                lock:true,
+                text:'waiting',
+                spinner:'el-icon-loading',
+                background:'rgba(255,255,255,0.4)'
+              })
+            }else{
+              loading.close();
+              vm.$emit('saveReady');
+            }
           })
         });
         window.onbeforeunload = function(event){
@@ -195,11 +209,13 @@
         getEditor(editor);
       },
       menuTool(item){
+        // console.log(item.isShow,'item');
         if(item.id==1){
           return editor.zoomIn();
         }else if(item.id==2){
           return editor.zoomOut();
         }
+        if(item.isShow) return item.isShow = false
         if(item.id!==5){
           this.menuList.forEach(tool=>{
             if(tool.id!==5) tool.isShow = false; 
@@ -230,18 +246,19 @@
   .right{
     position: absolute;
     right: 0;
-    
-    top: 60px;
-    bottom: 40px;
+    transition: transform .3s;
+    transform: translateX(100%);
+    top: 0px;
+    bottom: 0px;
     background-color: #fff;
-    z-index: 1;
+    z-index: 10;
     overflow: hidden;
     .right-header{
-      height: 40px;
+      height: 50px;
       border-bottom: 1px solid #ccc;
     }
     .right-content{
-      height: calc(100% - 40px);
+      height: calc(100% - 50px);
       background-color: #f1f1f1;
       overflow-y: auto;
       
@@ -252,6 +269,9 @@
   }
   .slider-enter, .slider-leave-to /* .fade-leave-active below version 2.1.8 */ {
     transform:translate(100%,0);
+  }
+  .animate{
+    transform: translateX(0);
   }
   .menu-list{
     position: absolute;
@@ -269,5 +289,9 @@
         background-color: rgba($color: #000000, $alpha: 0.7)
       }
     }
+    .actived{
+      background-color: rgba($color: #000000, $alpha: 0.8)
+    }
+    
   }
 </style>

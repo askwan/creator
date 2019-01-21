@@ -7,7 +7,7 @@
       <common-search @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></common-search>
     </div>
   
-    <div ref="list" class='object-list pd-big'>
+    <div ref="list" class='object-list pd-big' v-loading='loading'>
       <div v-if="objectList.length>0" v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
         <div class="icon-text flex-center radius-2 mg-right-big">
           <span class="font-14 font-white">{{item.name|splice2}}</span>
@@ -50,7 +50,8 @@
         searchValue:'',
         pageSize:20,
         loading:false,
-        otName:''
+        otName:'',
+        parentIds:''
       }
     },
     props:['currentObject'],
@@ -102,13 +103,18 @@
         this.otName = '';
         let parentOts = State.getParentOtypeById(this.currentObject.otype.id);
         let ids = parentOts.map(el=>el.id).join(',');
-        console.log(ids,888888888)
-        this.queryObject(ids);
+        this.parentIds = ids;
+        this.queryObject();
       }
     },
     methods:{
-      queryObject(ids){
+      queryObject(){
         this.$refs.list.scrollTop = 0;
+        if(this.parentIds.length==0) {
+          this.objectList = [];
+          this.total = 0;
+          return
+        }
         this.loading = true;
         // if(!this.searchValue) {
         //   this.pageNum = 1;
@@ -125,17 +131,15 @@
         let id = `'${user.id}'`;
         var obj = {
 					names: this.searchValue,
-					otNames: this.otName,
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
-          otIds:ids,
-          // uids:id,
+          otIds:this.parentIds,
+          uids:"",
           sdomains:sdomain.id
         };
         this.objectList = [];
         objectServer.ByNameAndOTName(obj).then(res=>{
           res.list = res.list.filter(el=>el.otype);
-          console.log(res.list,'res');
           this.total = res.total;
           this.pageNum = res.pageNum;
           this.objectList = res.list;
@@ -144,18 +148,27 @@
       },
       getObjectByRelation(){
         let connector = this.otype.connectors.connectors.find(el=>{
-          if(typeof el.relation == 'object' && el.relation.id==this.currentRelation.id){
+          if(el.type==32&&el.relation&&el.relation.id == this.currentRelation.id&&el.dType.id != this.currentObject.otype.id){
             return true;
           }else{
             return false;
           }
         });
-        this.otName = connector.dType.name;
+        if(!connector) {
+          this.objectList = [];
+          return
+        }
+        let ids = connector.dType.id;
+        let sdomain = JSON.parse(sessionStorage.getItem('sdomain'));
         let obj = {
-          otNames:connector.dType.name
+          otIds:ids,
+          uids:"",
+          sdomains:sdomain.id
         };
+        this.loading = true;
         objectServer.ByNameAndOTName(obj).then(res=>{
           this.objectList = res.list;
+          this.loading = false;
         })
       },
       selectObj(obj){
@@ -187,7 +200,6 @@
         }
       },
       loadMore(num){
-        console.log(num);
         this.pageNum = num;
         
         this.queryObject();

@@ -66,13 +66,11 @@
     methods:{
       getList(otype){
         // otype = State.otypes[otype.id];
-        console.log(otype,77777)
         if(otype.connectors&&otype.connectors.connectors){
           otype.connectors.connectors.forEach(connector=>{
             if(connector.relation){
-              let relation = this.relationsList.find(el=>el.id==connector.relation.id);
+              let relation = this.relationsList.find(el=>el.id==connector.relation.id&&connector.dType.id!=otype.id);
               if(!relation) this.relationsList.push(connector.relation);
-              console.log(this.relationsList,'ffff')
             }
           })
         }

@@ -36,10 +36,7 @@ import { FDomain, CDomain, RDomain } from './attribute/FDomain'
 import Diagram from './diagram/Diagram'
 import Proxy from './Proxy'
 
-import { objectQuery } from './objectService'
-import {psdeApi,modelUrl} from './config'
-import versionServer from './versionService'
-import {fileServer} from './fileServer'
+import {psdeApi} from './config'
 
 export default {
   Field,
@@ -77,8 +74,4 @@ export default {
   RNode,
   RObject,
   psdeApi,
-  objectQuery,
-  versionServer,
-  fileServer,
-  modelUrl,
 }

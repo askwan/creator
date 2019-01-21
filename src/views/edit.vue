@@ -56,10 +56,13 @@
         options.loadParentField = true;
         options.loadParents = true;
         options.loadConnector = true;
-        options.token = ''
-        let res = await diagramServer.query(options);
+        options.token = '';
+        let user = JSON.parse(sessionStorage.getItem('user'));
+        // let a = await diagramServer.queryByUserid({userId:user.id});
+        // console.log(a,"a");
+        let list = await diagramServer.query(options);
         try {
-          State.getDiagram(res.data.list);
+          State.getDiagram(list);
           let otIds = [];
           for(let id in State.otypes){
             otIds.push(id);

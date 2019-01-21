@@ -1,5 +1,5 @@
 <template>
-  <div class="view fill">
+  <div class="view fill" v-loading="gloabLoading">
     <div class="search shadow">
       <search-bar @startSearch="search" :searchValue="viewSearchValue" :loading="loading"></search-bar>
     </div>
@@ -35,6 +35,7 @@
             :is="componentId"
             :viewSearchValue="viewSearchValue"
             :sobject="currentObject"
+            :loading="loading"
             @closeLoading="loading=false"
           ></component>
         </div>
@@ -61,6 +62,7 @@ export default {
       showDistrict: false,
       areaObj: {},
       loading: false,
+      gloabLoading:true,
       // floorShow: true
     };
   },
@@ -79,22 +81,23 @@ export default {
   watch: {
     "currentObject.id"(val) {
       // this.showLeft = Boolean(val);
-    }
+    },
+    // "$router"(from,to){
+    //   console.log(from)
+    // }
   },
   mounted() {
-    let domain = sessionStorage.getItem("sdomain");
-    if (domain) {
-      domain = JSON.parse(domain);
-    }
-    domain = domain || {};
-    this.initMap({ sdomains: domain.id });
     this.listenEvent();
+    
+    
   },
   methods: {
     initMap(options, callback) {
+      console.log("initmap");
+      this.gloabLoading = false;
       if (this.$route.path == "/edit") return;
-      if (document.getElementById("mapbox")) {
-        document.getElementById("mapbox").innerHTML = "";
+      if(map){
+        map.remove();
       }
       map = mapbox.createMapboxMap("mapbox", options, () => {
         //定位
@@ -102,6 +105,7 @@ export default {
         if (typeof callback == "function") {
           callback();
         } else {
+          
           if (this.$route.query.map) {
             let str = this.$route.query.map;
             let posi = str.split(",");
@@ -118,6 +122,20 @@ export default {
       getMap(map);
     },
     listenEvent() {
+      vm.$on('sdomainReady',list=>{
+        console.log(list,'list');
+        
+
+        let domain = sessionStorage.getItem("sdomain");
+        if (domain) {
+          domain = JSON.parse(domain);
+        }
+        domain = domain || {};
+        domain.id = domain.id || this.$route.query.sdomains;
+        this.initMap({ sdomains: domain.id });
+        
+
+      })
       vm.$on(operate.selectObject, obj => {
         this.showDistrict = false;
         if (!obj.id) {
@@ -126,12 +144,6 @@ export default {
           this.viewSearchValue = "";
           return;
         }
-        // psde.objectQuery.getDetailById.query({ids:obj.id}).then(res=>{
-        //   console.log(res,'ressss')
-        //   this.currentObject = res.list[0];
-        //   this.componentId = 'viewLeft';
-        //   this.showLeft = true;
-        // });
         let option = {
           ids: obj.id,
           loadForm: true,
@@ -140,10 +152,17 @@ export default {
           loadNetwork: true,
           uids:''
         };
+        this.loading = true;
         objectServer.query(option).then(res => {
           this.currentObject = res.list[0];
           this.componentId = "viewLeft";
           this.showLeft = true;
+          this.loading = false;
+          if(this.currentObject.name){
+            this.viewSearchValue = this.currentObject.name
+          }else{
+            this.viewSearchValue = ''
+          }
         });
       });
       vm.$on(operate.openTab, obj => {
@@ -152,18 +171,35 @@ export default {
       });
       vm.$on(operate.mapStatus, obj => {
         let str = `${obj.zoom},${obj.posi.lat},${obj.posi.lng}`;
+        let sdomain = sessionStorage.getItem('sdomain');
+        sdomain = JSON.parse(sdomain);
         this.$router.replace({
           path: "/view",
           query: {
-            map: str
+            map: str,
+            sdomains:sdomain.id
           }
         });
+        sessionStorage.setItem('href',location.href)
       });
       vm.$on(operate.changeDomain, item => {
+        this.showLeft = false;
+        this.viewSearchValue = '';
         if(map&&typeof map.remove == 'function') map.remove();
         this.initMap({ sdomains: item.id }, () => {
           let center = this.getCenter(item.geoBox);
           map.setCenter([center.y, center.x], map.getZoom());
+          let posi = this.$route.query.map
+          this.$router.replace({
+            path:'/view',
+            query:{
+              map:posi,
+              sdomains:item.id
+            }
+          })
+          // let center = map.getCenter();
+          // map.setCenter([center.lng,center.lat],map.getZoom());
+          // mapbox.fitBbox(item.geoBox);
         });
       });
       window.onbeforeunload = () => {
@@ -175,6 +211,17 @@ export default {
 
         mapposition.saveArea(this.areaObj);
       };
+      window.onfocus = (event)=>{
+        if(this.$route.path=='/view'){
+          if(sessionStorage.getItem('href')===location.href){
+          }else{
+            location.reload();
+          }
+        }
+      }
+      vm.$on(operate.readyMap,(sdomain)=>{
+        this.initMap({sdomains:sdomain.id,center:[0,0]});
+      })
     },
     search(val) {
       this.viewSearchValue = val;
@@ -196,6 +243,7 @@ export default {
       if (!this.areaObj.geoBox) return (this.showDistrict = true);
       let center = this.getCenter(this.areaObj.geoBox);
       mapbox.flyTo(center.x, center.y, center.z, 10);
+      // mapbox.fitBbox(this.areaObj.geoBox);
     },
     getCenter(bbox) {
       let center = {};
@@ -219,9 +267,8 @@ export default {
 </script>
 <style lang='scss' scoped>
 .view {
-  // background-color: red;
-  // overflow: hidden;
   $width: 120px;
+  // background: red;
   .search {
     position: absolute;
     left: 20px;

@@ -79,7 +79,7 @@ function parseObject (entities, sobject) {
   }
   sobject.otype = State.otypes[sobject.otype.id];
 
-  
+  // if(sobject.id==3031887691778) console.log(sobject)
 
 
   let otypeIds = State.otypeIds;

@@ -84,16 +84,21 @@
         getEditor().modifySObjectNetwork(this.objectDetail,node);
       },
       initNetwork(field,value){
-        this.parents = this.objectDetail.parents;
-        this.objectDetail.network.nodes.forEach(node=>{
-          // this.$set(node,'show',true);
-          if(node.edge.relation){
-            node.edge.relation.fields.fields.forEach(field=>{
-              field.value = node.properties[field.name];
-            })
-          }
-        })
-        this.nodes = this.objectDetail.network.nodes;
+        if(this.objectDetail.network&&this.objectDetail.network.nodes instanceof Array){
+          this.parents = this.objectDetail.parents;
+          this.objectDetail.network.nodes.forEach(node=>{
+            // this.$set(node,'show',true);
+            if(node.edge.relation){
+              node.edge.relation.fields.fields.forEach(field=>{
+                field.value = node.properties[field.name];
+              })
+            }
+          })
+          this.nodes = this.objectDetail.network.nodes;
+        }else{
+          this.nodes = [];
+        }
+        
       }
     }
   }

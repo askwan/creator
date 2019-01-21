@@ -1,5 +1,5 @@
 <template>
-  <div class='detail-content pd-small'>
+  <div class='detail-content pd-small' v-loading='loading'>
     <div class="detail-name align-center font-16 text-ellipsis mg-bottom-mini">
       {{sobject.name|formateName}}
     </div>
@@ -28,21 +28,39 @@
         </li>
       </ul>
     </div>
+    <div class="source-box property-box" v-if="dobject.id">
+      <div class="font-14">来源</div>
+      <ul class="property-table">
+        <li class="property-row flex">
+          <div class="e-name pd-mini font-12 text-ellipsis">文件名：</div>
+          <div class="e-value pd-mini font-12 text-ellipsis">{{dobject.name}}</div>
+        </li>
+        <li class="property-row flex" v-for="(item,key) in dobject.attributes" :key="key">
+          <div class="e-name pd-mini font-12 text-ellipsis">{{item.name}}：</div>
+          <div class="e-value pd-mini font-12 text-ellipsis">{{item.value}}</div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 <script>
   import psde from '@/script/editor/psde';
-  import {otypeServer} from '@/script/server';
+  import {otypeServer,dobjectServer} from '@/script/server';
   export default {
     data(){
       return {
-        attrs:[]
+        attrs:[],
+        dobject:{}
       }
     },
     props:{
       sobject:{
         type:Object,
         default:()=>{return {}}
+      },
+      loading:{
+        type:Boolean,
+        default:false
       }
     },
     filters:{
@@ -54,6 +72,7 @@
       'sobject.id'(id){
         if(id){
           this.getAttrs();
+          this.getDobject();
         }
       }
     },
@@ -62,33 +81,12 @@
 
     },
     mounted(){
-      // this.getAttrs();
+      this.getAttrs();
+      this.getDobject();
     },
     methods:{
       getAttrs(){
         this.attrs = [];
-          // new psde.OType().query({ids:this.sobject.otype.id}).then(res=>{
-          //   console.log(res,7777777777777)
-          //   let arr = res.list[0].fields.fields;  
-          //   arr.forEach(el=>{
-          //     let obj = {};
-          //     obj.name = el.name;
-          //     obj.caption = el.caption;
-          //     obj.value = '';
-
-          //     this.attrs.push(obj);
-          //   })
-          //   this.sobject.attributes.forEach(attr=>{
-          //     let field = this.attrs.find(el=>el.name==attr.name);
-          //     if(field) {
-          //       field.value = attr.value;
-          //     }else{
-          //       attr.caption = attr.name;
-          //       this.attrs.push(attr);
-          //     }
-          //   })
-          // });
-          // if(!this.sobject.otype) return
           otypeServer.query({ids:this.sobject.otype.id}).then(res=>{
             let arr = res.list[0].fields.fields;  
             arr.forEach(el=>{
@@ -109,7 +107,14 @@
               }
             })
           })
-
+      },
+      getDobject(){
+        this.dobject = {};
+        dobjectServer.query({fromIds:this.sobject.from,uids:''}).then(res=>{
+          if(res.list[0]){
+            this.dobject = res.list[0];
+          }
+        })
       }
     }
   }

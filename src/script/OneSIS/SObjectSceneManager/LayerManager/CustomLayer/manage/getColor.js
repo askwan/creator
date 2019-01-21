@@ -26,6 +26,17 @@ class ColorList {
       }
 
     }
+    if (objs.color instanceof Array) {
+      for (let i = 0; i < objs.color.length; i++) {
+        let n = objs.color[i]
+        if (n[0] == '#') {
+          objs = {
+            color: n,
+            opacity: 0.5
+          }
+        }
+      }
+    } else {}
     return objs
   }
   getStyleId(obj) {

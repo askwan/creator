@@ -5,6 +5,8 @@ export default class SobjectManage extends Base {
   constructor(context){
     super(context);
     this.context = context;
+    this.State = State;
+    this.sobjectlist = {};
   }
   setContext(context){
     this.context = context;
@@ -18,12 +20,12 @@ export default class SobjectManage extends Base {
   enableSobject(objId){
     let features = this.context.features();
     features.enable(objId);
-    State.showObject({id:objId});
+    this.State.showObject({id:objId});
   }
   disableSobject(objId){
     let features = this.context.features();
     features.disable(objId);
-    State.hiddenObject({id:objId});
+    this.State.hiddenObject({id:objId});
   }
   enableOtype(otId){
     this.context.features().enable(otId);
@@ -34,11 +36,11 @@ export default class SobjectManage extends Base {
       }else{
         this.context.features().enable(el,true);
       }
-      State.enableOt(el);
+      this.State.enableOt(el);
     });
     let showOt = [otId];
     showOt = showOt.concat(children);
-    if(State.viewObject){
+    if(this.State.viewObject){
       this.changeStatusObj(State.viewObject,showOt,true);
     }
     let hiddens = State.enableOt(otId);
@@ -46,19 +48,19 @@ export default class SobjectManage extends Base {
   }
   disableOtype(){
     this.context.features().disable(otId);
-    let children = State.findChildrenOtype(otId);
+    let children = this.State.findChildrenOtype(otId);
     children.forEach((el,i)=>{
       if(i==children.length-1){
         this.context.features().disable(el);
       }else{
         this.context.features().disable(el,true);
       }
-      State.disableOt(el);
+      this.State.disableOt(el);
     });
-    let hiddens = State.disableOt(otId);
+    let hiddens = this.State.disableOt(otId);
     
-    if(State.viewObject){
-      this.changeStatusObj(State.viewObject,hiddens,false)
+    if(this.State.viewObject){
+      this.changeStatusObj(this.State.viewObject,hiddens,false)
     }
     return hiddens;
   }
@@ -70,10 +72,21 @@ export default class SobjectManage extends Base {
     return obj;
   }
   setTool(style,otype,modeOptions){
-
+    let geotype = modeOptions.form.geotype;
+    this.currentForm = modeOptions.form;
+    if (geotype == 21) {
+      document.querySelector('.add-point').click();
+    }else if (geotype == 22) {
+      document.querySelector('.add-line').click();
+    }else if (geotype == 23) {
+      document.querySelector('.add-area').click();
+    };
   }
-  createSobject(){
-
+  createSobject(entityId,otype,formType,geoType){
+    let sobject = new SObject();
+    sobject.forms = [{
+      
+    }]
   }
   modifySobject(){
 

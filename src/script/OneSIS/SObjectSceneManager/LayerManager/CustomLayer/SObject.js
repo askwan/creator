@@ -37,13 +37,13 @@ class SObject {
   }
 
   setLayer() {
-    if (!this.layer) {
+    if (this.layer.length<1) {
       let connectors = this.data.otype.connectors.connectors
       for (let i = 0; i < connectors.length; i++) {
         let t = connectors[i]
         this.recursionLayer(t, this.data.otype.id)
       }
-      if (!this.layer) {
+      if (this.layer.length<1) {
         this.layer.push('otherLayer') 
         // console.log('没有找到', this.data)
       }

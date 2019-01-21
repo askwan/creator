@@ -87,6 +87,8 @@
 				this.transformObj(val);
 				if(val.realTime){
 					this.time = new Date(val.realTime*1000);
+				}else{
+					this.time = ''
 				}
 			}
 		},

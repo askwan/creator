@@ -1,1 +1,6 @@
 [1208/084652.089:ERROR:file_io.cc(134)] WriteFile: 管道正在被关闭。 (0xE8)
+[0110/161928.557:ERROR:process_info.cc(329)] VirtualQueryEx: 拒绝访问。 (0x5)
+[0110/161928.558:ERROR:process_info.cc(550)] ReadMemoryInfo failed
+[0110/161928.562:ERROR:process_reader_win.cc(151)] SuspendThread: 拒绝访问。 (0x5)
+[0110/161928.562:ERROR:exception_snapshot_win.cc(88)] thread ID 15100 not found in process
+[0110/161928.562:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: 已尝试访问正在退出的过程。 (0xc000010a)

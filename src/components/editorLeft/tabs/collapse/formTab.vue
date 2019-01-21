@@ -182,30 +182,13 @@
 		},
 		computed: {
 			formateList() {
-				// this.objtypeLists.forEach(el => {
-				// 	if(el.type===50 || el.type===40) {
-				// 		if (el.style == "") {
-				// 			el.style = [];
-				// 			el.style[0] = {
-				// 				scale: "",
-				// 				smallPX: "",
-				// 				x: "",
-				// 				y: "",
-				// 				z: "",
-				// 				h:""
-				// 			};
-				// 		}
-				// 	} else {
-				// 		if (el.style == "") {
-				// 			el.style = [];
-				// 		}
-				// 	}
-				// 	if(typeof el.style == "string" && el.style != "") {
-				// 		el.style = JSON.parse(el.style);
-				// 	}
-					
-				// 	// return el;
-				// });
+				this.objtypeLists.forEach(ev=>{
+					let result = this.objectDetail.otype.formStyles.styles.find(el=>el.type==ev.type);
+					if(result){
+						if(!ev.minGrain) ev.minGrain = result.minGrain;
+						if(!ev.maxGrain) ev.maxGrain = result.maxGrain;
+					}
+				})
 				return this.objtypeLists;
 			}
 		},
@@ -460,7 +443,7 @@
 					this.objectDetail.otype,
 					style.type
 				);
-				IdEdit.setTool(toolstyle, this.objectDetail.otype, {
+				IdEdit.setTool({
 					sobject: this.objectDetail,
 					form: style
 				});

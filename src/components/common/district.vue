@@ -18,7 +18,7 @@
 </template>
 <script>
 
-import { flyTo } from "@/script/mapbox";
+import { flyTo,fitBbox } from "@/script/mapbox";
 import {objectServer} from '@/script/server'
 export default {
   data() {
@@ -66,6 +66,7 @@ export default {
       }
       let center = this.getCenter(item.geoBox);
       flyTo(center.x, center.y, center.z, level);
+      // fitBbox(item.geoBox);
       this.$emit("select", item);
       this.closeIt();
     },

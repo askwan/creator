@@ -76,8 +76,9 @@ function createOsmRelation (geom,tags,org,collection){
       collection.push(new Member(node.id,el.role,node.type));
       members.push(node.id);
     }else if(el.type=='way'){
-      if(typeof el.refEntity=='object'){
+      if(el.refEntity && typeof el.refEntity=='object'){
         let option = {}
+        if(!el.refEntity) console.log(el,org,'entity')
         el.refEntity.id = el.id;
         if(el.refEntity.nodes[0].id===el.refEntity.nodes[el.refEntity.nodes.length-1].id){
           option.area = 'yes';
@@ -143,18 +144,28 @@ function transformObject (context,object){
   _obj.forms.forEach(form=>{
     if(form.geom){
       let entity = context.entity(form.geom);
-      if(form.geotype==21){
+      if(entity.type=='node'){
         form.geom = new osm.OsmNode(entity);
-      }else if(form.geotype==22){
+      }else if(entity.type=='way'){
         form.geom = new osm.OsmWay();
         form.geom.setOsmWay(context,entity);
-      }else if(form.geotype == 23){
-        form.geom = new osm.OsmWay();
-        form.geom.setOsmWay(context,entity);
-      }else if(form.geotype==24){
+      }else if(entity.type=='relation'){
         form.geom = new osm.OsmRelation();
         form.geom.setOsmRelation(context,entity);
-      }
+      } 
+      // if(form.geotype==21){
+      //   form.geom = new osm.OsmNode(entity);
+      // }else if(form.geotype==22){
+      //   form.geom = new osm.OsmWay();
+      //   form.geom.setOsmWay(context,entity);
+      // }else if(form.geotype == 23){
+      //   form.geom = new osm.OsmWay();
+      //   console.log(entity,'entity')
+      //   form.geom.setOsmWay(context,entity);
+      // }else if(form.geotype==24){
+      //   form.geom = new osm.OsmRelation();
+      //   form.geom.setOsmRelation(context,entity);
+      // }
       form.geom.clearId();
     }
   });

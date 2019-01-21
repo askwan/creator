@@ -74,8 +74,6 @@
         }else{
           this.hiddens = IdEditor.disableOtype(node.data.id);
         };
-        // let arr = IdEditor.getSObjectByOtypes(this.hiddens);
-        // arr = arr.map(el=>IdEditor.copySObject(el));
         vm.$emit(operate.hiddenOtypes);
       },
       filterHidden(node){

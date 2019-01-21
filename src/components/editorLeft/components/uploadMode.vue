@@ -80,13 +80,6 @@
 				this.modelFileUpload+=`name=${this.upData.name}&desc=${this.upData.desc}`;
 			},
 			updateFn(){
-				// console.log('upload');
-				// psde.fileServer.uploadMode(this.upData).then(res=>{
-				// 	console.log(res.data)
-				// 	this.$emit('successFn' , {data: res.data , sign: "success"});
-				// },()=>{
-				// 	console.log('err')
-				// });
 				this.loading = true;
 				modelServer.uploadMode(this.upData).then(res=>{
 					this.$emit('successFn' , {data: res.data , sign: "success"});

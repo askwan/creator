@@ -5,7 +5,7 @@ import { interpolateNumber as d3_interpolateNumber } from 'd3-interpolate';
 import { select as d3_select } from 'd3-selection';
 
 import { data } from '../../data';
-import { geoExtent, geoMetersToOffset, geoOffsetToMeters} from '../geo';
+import { geoExtent, geoMetersToOffset, geoOffsetToMeters } from '../geo';
 import { rendererBackgroundSource } from './background_source';
 import { rendererTileLayer } from './tile_layer';
 import { utilQsString, utilStringQs } from '../util';
@@ -98,7 +98,7 @@ export function rendererBackground(context) {
 
 
         var overlays = selection.selectAll('.layer-overlay')
-            .data(_overlayLayers, function(d) { return d.source().name(); });
+            .data(_overlayLayers, function (d) { return d.source().name(); });
 
         overlays.exit()
             .remove();
@@ -107,40 +107,40 @@ export function rendererBackground(context) {
             .insert('div', '.layer-data')
             .attr('class', 'layer layer-overlay')
             .merge(overlays)
-            .each(function(layer) { d3_select(this).call(layer); });
+            .each(function (layer) { d3_select(this).call(layer); });
     }
 
 
-    background.updateImagery = function() {
+    background.updateImagery = function () {
         if (context.inIntro()) return;
 
         var b = background.baseLayerSource(),
-           /*  o = _overlayLayers
-                .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
-                .map(function (d) { return d.source().id; })
-                .join(','), */
+            /*  o = _overlayLayers
+                 .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
+                 .map(function (d) { return d.source().id; })
+                 .join(','), */
             meters = geoOffsetToMeters(b.offset()),
             epsilon = 0.01,
             x = +meters[0].toFixed(2),
             y = +meters[1].toFixed(2);
-            //q = utilStringQs(window.location.hash.substring(1));
+        //q = utilStringQs(window.location.hash.substring(1));
 
         var id = b.id;
         if (id === 'custom') {
             id = 'custom:' + b.template();
         }
 
-       /*  if (id) {
-            q.background = id;
-        } else {
-            delete q.background;
-        } */
+        /*  if (id) {
+             q.background = id;
+         } else {
+             delete q.background;
+         } */
 
-       /*  if (o) {
-            q.overlays = o;
-        } else {
-            delete q.overlays;
-        } */
+        /*  if (o) {
+             q.overlays = o;
+         } else {
+             delete q.overlays;
+         } */
 
         /* if (Math.abs(x) > epsilon || Math.abs(y) > epsilon) {
             q.offset = x + ',' + y;
@@ -154,9 +154,9 @@ export function rendererBackground(context) {
 
         var imageryUsed = [b.imageryUsed()];
 
-       /*  _overlayLayers
-            .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
-            .forEach(function (d) { imageryUsed.push(d.source().imageryUsed()); }); */
+        /*  _overlayLayers
+             .filter(function (d) { return !d.source().isLocatorOverlay() && !d.source().isHidden(); })
+             .forEach(function (d) { imageryUsed.push(d.source().imageryUsed()); }); */
 
         var gpx = context.layers().layer('gpx');
         if (gpx && gpx.enabled() && gpx.hasGpx()) {
@@ -166,43 +166,43 @@ export function rendererBackground(context) {
             imageryUsed.push(extension + 'data file');
         }
 
-       /*  var mapillary_images = context.layers().layer('mapillary-images');
-        if (mapillary_images && mapillary_images.enabled()) {
-            imageryUsed.push('Mapillary Images');
-        }
-
-        var mapillary_signs = context.layers().layer('mapillary-signs');
-        if (mapillary_signs && mapillary_signs.enabled()) {
-            imageryUsed.push('Mapillary Signs');
-        }
-
-        var openstreetcam_images = context.layers().layer('openstreetcam-images');
-        if (openstreetcam_images && openstreetcam_images.enabled()) {
-            imageryUsed.push('OpenStreetCam Images');
-        } */
+        /*  var mapillary_images = context.layers().layer('mapillary-images');
+         if (mapillary_images && mapillary_images.enabled()) {
+             imageryUsed.push('Mapillary Images');
+         }
+ 
+         var mapillary_signs = context.layers().layer('mapillary-signs');
+         if (mapillary_signs && mapillary_signs.enabled()) {
+             imageryUsed.push('Mapillary Signs');
+         }
+ 
+         var openstreetcam_images = context.layers().layer('openstreetcam-images');
+         if (openstreetcam_images && openstreetcam_images.enabled()) {
+             imageryUsed.push('OpenStreetCam Images');
+         } */
 
         context.history().imageryUsed(imageryUsed);
     };
 
 
-    background.sources = function(extent) {
-        return _backgroundSources.filter(function(source) {
+    background.sources = function (extent) {
+        return _backgroundSources.filter(function (source) {
             return source.intersects(extent);
         });
     };
 
 
-    background.dimensions = function(_) {
+    background.dimensions = function (_) {
         if (!_) return;
         baseLayer.dimensions(_);
 
-        _overlayLayers.forEach(function(layer) {
+        _overlayLayers.forEach(function (layer) {
             layer.dimensions(_);
         });
     };
 
 
-    background.baseLayerSource = function(d) {
+    background.baseLayerSource = function (d) {
         if (!arguments.length) return baseLayer.source();
 
         // test source against OSM imagery blacklists..
@@ -216,22 +216,22 @@ export function rendererBackground(context) {
             tested = 0,
             regex, i;
 
-    /*     for (i = 0; i < blacklists.length; i++) {
-            try {
-                regex = new RegExp(blacklists[i]);
-                fail = regex.test(template);
-                tested++;
-                if (fail) break;
-            } catch (e) {
-               
-            }
-        } */
+        /*     for (i = 0; i < blacklists.length; i++) {
+                try {
+                    regex = new RegExp(blacklists[i]);
+                    fail = regex.test(template);
+                    tested++;
+                    if (fail) break;
+                } catch (e) {
+                   
+                }
+            } */
 
         // ensure at least one test was run.
-      if (!tested) {
-           // regex = new RegExp('.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*');
-           // fail = regex.test(template);
-        } 
+        if (!tested) {
+            // regex = new RegExp('.*\.google(apis)?\..*/(vt|kh)[\?/].*([xyz]=.*){3}.*');
+            // fail = regex.test(template);
+        }
 
         baseLayer.source(!fail ? d : background.findSource('none'));
         dispatch.call('change');
@@ -240,30 +240,30 @@ export function rendererBackground(context) {
     };
 
 
-    background.findSource = function(id) {
-        return _find(_backgroundSources, function(d) {
+    background.findSource = function (id) {
+        return _find(_backgroundSources, function (d) {
             return d.id && d.id === id;
         });
     };
 
 
-    background.bing = function() {
+    background.bing = function () {
         background.baseLayerSource(background.findSource('Bing'));
     };
 
 
-    background.showsLayer = function(d) {
+    background.showsLayer = function (d) {
         return d.id === baseLayer.source().id ||
-            _overlayLayers.some(function(layer) { return d.id === layer.source().id; });
+            _overlayLayers.some(function (layer) { return d.id === layer.source().id; });
     };
 
 
-    background.overlayLayerSources = function() {
+    background.overlayLayerSources = function () {
         return _overlayLayers.map(function (l) { return l.source(); });
     };
 
 
-    background.toggleOverlayLayer = function(d) {
+    background.toggleOverlayLayer = function (d) {
         var layer;
 
         for (var i = 0; i < _overlayLayers.length; i++) {
@@ -280,7 +280,7 @@ export function rendererBackground(context) {
             .source(d)
             .projection(context.projection)
             .dimensions(baseLayer.dimensions()
-        );
+            );
 
         _overlayLayers.push(layer);
         dispatch.call('change');
@@ -288,7 +288,7 @@ export function rendererBackground(context) {
     };
 
 
-    background.nudge = function(d, zoom) {
+    background.nudge = function (d, zoom) {
         baseLayer.source().nudge(d, zoom);
         dispatch.call('change');
         background.updateImagery();
@@ -296,7 +296,7 @@ export function rendererBackground(context) {
     };
 
 
-    background.offset = function(d) {
+    background.offset = function (d) {
         if (!arguments.length) return baseLayer.source().offset();
         baseLayer.source().offset(d);
         dispatch.call('change');
@@ -305,7 +305,7 @@ export function rendererBackground(context) {
     };
 
 
-    background.brightness = function(d) {
+    background.brightness = function (d) {
         if (!arguments.length) return _brightness;
         _brightness = d;
         if (context.mode()) dispatch.call('change');
@@ -313,7 +313,7 @@ export function rendererBackground(context) {
     };
 
 
-    background.contrast = function(d) {
+    background.contrast = function (d) {
         if (!arguments.length) return _contrast;
         _contrast = d;
         if (context.mode()) dispatch.call('change');
@@ -321,7 +321,7 @@ export function rendererBackground(context) {
     };
 
 
-    background.saturation = function(d) {
+    background.saturation = function (d) {
         if (!arguments.length) return _saturation;
         _saturation = d;
         if (context.mode()) dispatch.call('change');
@@ -329,107 +329,114 @@ export function rendererBackground(context) {
     };
 
 
-    background.sharpness = function(d) {
+    background.sharpness = function (d) {
         if (!arguments.length) return _sharpness;
         _sharpness = d;
         if (context.mode()) dispatch.call('change');
         return background;
     };
+    background.init = function () {
+        var template = context.storage('background-custom-template') || '';
+        var custom = rendererBackgroundSource.Custom(template);
+        template = "http://www.google.cn/maps/vt?lyrs=s@781&gl=cn&x={x}&y={y}&z={zoom}"
+        let sou = custom.template(template);
+        background.baseLayerSource(sou);
+    }
 
 
-    background.init = function() {
-        function parseMap(qmap) {
-            if (!qmap) return false;
-            var args = qmap.split('/').map(Number);
-            if (args.length < 3 || args.some(isNaN)) return false;
-            return geoExtent([args[2], args[1]]);
-        }
+    background.init1 = function () {
+        /*  function parseMap(qmap) {
+              if (!qmap) return false;
+              var args = qmap.split('/').map(Number);
+              if (args.length < 3 || args.some(isNaN)) return false;
+              return geoExtent([args[2], args[1]]);
+          }
+  
+          var dataImagery = data.imagery || [],
+              q = utilStringQs(window.location.hash.substring(1)),
+             // requested = q.background || q.layer,
+              extent = parseMap(q.map),
+              first,
+              best;
+  
+          // Add all the available imagery sources
+          _backgroundSources = dataImagery.map(function(source) {
+              if (source.type === 'bing') {
+                  return rendererBackgroundSource.Bing(source, dispatch);
+              } else if (/^EsriWorldImagery/.test(source.id)) {
+                  return rendererBackgroundSource.Esri(source);
+              } else {
+                  return rendererBackgroundSource(source);
+              }
+          });*/
 
-        var dataImagery = data.imagery || [],
-            q = utilStringQs(window.location.hash.substring(1)),
-           // requested = q.background || q.layer,
-            extent = parseMap(q.map),
-            first,
-            best;
 
-        // Add all the available imagery sources
-        _backgroundSources = dataImagery.map(function(source) {
-            if (source.type === 'bing') {
-                return rendererBackgroundSource.Bing(source, dispatch);
-            } else if (/^EsriWorldImagery/.test(source.id)) {
-                return rendererBackgroundSource.Esri(source);
-            } else {
-                return rendererBackgroundSource(source);
-            }
-        });
 
-       
-
-        first = _backgroundSources.length && _backgroundSources[0];
+        // first = _backgroundSources.length && _backgroundSources[0];
 
         // Add 'None'
-        _backgroundSources.unshift(rendererBackgroundSource.None());
+        //_backgroundSources.unshift(rendererBackgroundSource.None());
 
         // Add 'Custom'
         var template = context.storage('background-custom-template') || '';
         var custom = rendererBackgroundSource.Custom(template);
-        _backgroundSources.unshift(custom);
+        //  _backgroundSources.unshift(custom);
 
 
         // Decide which background layer to display
-       // if (!requested && extent) {
-           // best = _find(this.sources(extent), function(s) { return s.best(); });
-       // }
-       // if (requested && requested.indexOf('custom:') === 0) {
-            //template = requested.replace(/^custom:/, '');
-           // template="https://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png";
-           template= "http://www.google.cn/maps/vt?lyrs=s@781&gl=cn&x={x}&y={y}&z={zoom}"
-            let sou=custom.template(template);
-            background.baseLayerSource(sou);
-           // context.storage('background-custom-template', template);
-      //  } else {
-           /*  background.baseLayerSource(
-                background.findSource(requested) ||
-                best ||
-                background.findSource(context.storage('background-last-used')) ||
-                background.findSource('Bing') ||
-                first ||
-                background.findSource('none')
-            ); */
-       // }
+        // if (!requested && extent) {
+        // best = _find(this.sources(extent), function(s) { return s.best(); });
+        // }
+        // if (requested && requested.indexOf('custom:') === 0) {
+        //template = requested.replace(/^custom:/, '');
+        // template="https://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png";
+        template = "http://www.google.cn/maps/vt?lyrs=s@781&gl=cn&x={x}&y={y}&z={zoom}"
+        let sou = custom.template(template);
+        background.baseLayerSource(sou);
+        // context.storage('background-custom-template', template);
+        //  } else {
+        /*  background.baseLayerSource(
+             background.findSource(requested) ||
+             best ||
+             background.findSource(context.storage('background-last-used')) ||
+             background.findSource('Bing') ||
+             first ||
+             background.findSource('none')
+         ); */
+        // }
 
-        var locator = _find(_backgroundSources, function(d) {
-            return d.overlay && d.default;
-        });
+        //var locator = _find(_backgroundSources, function(d) {
+        //    return d.overlay && d.default;
+        // });
 
-        if (locator) {
-            background.toggleOverlayLayer(locator);
-        }
+        // if (locator) {
+        //   background.toggleOverlayLayer(locator);
+        // }
 
-        var overlays = (q.overlays || '').split(',');
-        overlays.forEach(function(overlay) {
-            overlay = background.findSource(overlay);
-            if (overlay) {
-                background.toggleOverlayLayer(overlay);
-            }
-        });
-
-        if (q.gpx) {
-            var gpx = context.layers().layer('gpx');
-            if (gpx) {
-                gpx.url(q.gpx);
-            }
-        }
-
-        if (q.offset) {
-            var offset = q.offset.replace(/;/g, ',').split(',').map(function(n) {
-                return !isNaN(n) && n;
-            });
-
-            if (offset.length === 2) {
-                background.offset(geoMetersToOffset(offset));
-            }
-        }
+        /*  var overlays = (q.overlays || '').split(',');
+          overlays.forEach(function(overlay) {
+              overlay = background.findSource(overlay);
+              if (overlay) {
+                  background.toggleOverlayLayer(overlay);
+              }
+          });
+  
+          if (q.gpx) {
+              var gpx = context.layers().layer('gpx');
+              if (gpx) {
+                  gpx.url(q.gpx);
+              }
+          }
+  
+          if (q.offset) {
+              var offset = q.offset.replace(/;/g, ',').split(',').map(function(n) {
+                  return !isNaN(n) && n;
+              });
+  
+              if (offset.length === 2) {
+                  background.offset(geoMetersToOffset(offset));
+              }
+          }*/
     };
 
 
