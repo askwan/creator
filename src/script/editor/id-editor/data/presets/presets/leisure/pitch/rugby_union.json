@@ -1,6 +1,7 @@
 {
-    "icon": "america-football",
+    "icon": "maki-america-football",
     "fields": [
+        "name",
         "surface",
         "lit"
     ],

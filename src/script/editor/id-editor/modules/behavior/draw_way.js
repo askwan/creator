@@ -43,7 +43,6 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
 
 
     function keydown() {
-        
         if (d3_event.keyCode === d3_keybinding.modifierCodes.alt) {
             if (context.surface().classed('nope')) {
                 context.surface()
@@ -121,7 +120,7 @@ export function behaviorDrawWay(context, wayId, index, mode, startGraph) {
         for (var i = 0; i < parents.length; i++) {
             var parent = parents[i];
             var nodes = parent.nodes.map(function(nodeID) { return graph.entity(nodeID); });
-            
+
             if (origWay.isClosed()) { // Check if Area
                 if (finishDraw) {
                     nodes.splice(-2, 1);

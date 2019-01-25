@@ -4,15 +4,15 @@ import { tooltip } from '../util/tooltip';
 
 
 // these are module variables so they are preserved through a ui.restart()
-var sawVersion = null,
-    isNewVersion = false,
-    isNewUser = false;
+var sawVersion = null;
+var isNewVersion = false;
+var isNewUser = false;
 
 
 export function uiVersion(context) {
 
-    var currVersion = context.version,
-        matchedVersion = currVersion.match(/\d\.\d\.\d.*/);
+    var currVersion = context.version;
+    var matchedVersion = currVersion.match(/\d+\.\d+\.\d+.*/);
 
     if (sawVersion === null && matchedVersion !== null) {
         isNewVersion = (context.storage('sawVersion') !== currVersion);
@@ -38,7 +38,7 @@ export function uiVersion(context) {
                 .attr('target', '_blank')
                 .attr('tabindex', -1)
                 .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CHANGELOG.md#whats-new')
-                .call(svgIcon('#gift-11'))
+                .call(svgIcon('#maki-gift-11'))
                 .call(tooltip()
                     .title(t('version.whats_new', { version: currVersion }))
                     .placement('top')

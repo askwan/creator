@@ -1,5 +1,5 @@
 {
-    "icon": "shop",
+    "icon": "fas-blender",
     "fields": [
         "name",
         "operator",

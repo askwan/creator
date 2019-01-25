@@ -25,7 +25,6 @@ export function modeDrawArea(context, wayId, startGraph) {
 
             if (node.id === way.first() || node.id === penultimate) {
                 behavior.finish();
-                // context.selectEle(wayId);
             } else {
                 addNode(node, d);
             }

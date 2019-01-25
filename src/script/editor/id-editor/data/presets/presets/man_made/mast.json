@@ -1,5 +1,5 @@
 {
-    "icon": "poi-mast",
+    "icon": "maki-communications-tower",
     "fields": [
         "tower/type",
         "tower/construction",

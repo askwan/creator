@@ -160,7 +160,6 @@
                 "annotation": "Zlúčiť {n} objektov.",
                 "not_eligible": "Tieto objekty nemôžno zlúčiť.",
                 "not_adjacent": "Tieto objekty nemôžno zlúčiť, pretože ich koncové body nie sú spojené.",
-                "restriction": "Tieto objekty nemôžno zlúčiť, pretože aspoň jeden je členom relácie \"{relation}\".",
                 "incomplete_relation": "Tieto objekty nemôžno zlúčiť, pretože aspoň jeden z nich nebol úplne stiahnutý.",
                 "conflicting_tags": "Tieto objekty nemôžno zlúčiť, pretože niktoré ich označenia majú odporujúce si hodnoty."
             },
@@ -282,12 +281,6 @@
                 "connected_to_hidden": "Tento objekt nemôžno rozdeliť, pretože je spojený so skrytým objektom."
             },
             "restriction": {
-                "help": {
-                    "select": "Kliknite pre výber segmentu cesty.",
-                    "toggle": "Kliknite pre prepnutie zákazov odbočenia.",
-                    "toggle_on": "Kliknite pre pridanie \"{restriction}\" obmedzenia.",
-                    "toggle_off": "Kliknite pre odstránenie \"{restriction}\"  obmedzenia,"
-                },
                 "annotation": {
                     "create": "Pridať zákaz odbočenia",
                     "delete": "Odstrániť zákaz odbočenia"
@@ -310,9 +303,6 @@
             "localized_translation_language": "Zvoľte jazyk",
             "localized_translation_name": "Meno"
         },
-        "zoom_in_edit": "Priblížiť mapu pre úpravu",
-        "login": "prihlásenie",
-        "logout": "odhlásiť",
         "loading_auth": "Pripája sa k OpenStreetMap...",
         "report_a_bug": "Nahlásiť chybu",
         "help_translate": "Pomoc s prekladom",
@@ -341,8 +331,7 @@
             "created": "Vytvorené",
             "about_changeset_comments": "O popisoch súborov zmien",
             "about_changeset_comments_link": "//wiki.openstreetmap.org/wiki/Good_changeset_comments",
-            "google_warning": "V popise ste spomenuli Google: nezabúdajte, že kopírovanie z Google máp je prísne zakázané.",
-            "google_warning_link": "http://www.openstreetmap.org/copyright"
+            "google_warning": "V popise ste spomenuli Google: nezabúdajte, že kopírovanie z Google máp je prísne zakázané."
         },
         "contributors": {
             "list": "Úpravy od {users}",
@@ -384,7 +373,6 @@
                 "title": "Merania",
                 "selected": "{n} vybraných",
                 "geometry": "Geometria",
-                "closed": "uzavretá",
                 "center": "Stred",
                 "perimeter": "Obvod",
                 "length": "Dĺžka",
@@ -458,22 +446,17 @@
             "title": "Pozadie",
             "description": "Nastavenia pozadia",
             "key": "B",
-            "percent_brightness": "{opacity}% jas",
             "none": "Žiadne",
             "best_imagery": "Najviac známy zdroj obrázkov pre túto polohu",
             "switch": "Prepnúť späť na toto pozadie",
             "custom": "Voliteľné",
-            "custom_button": "Upraviť volitelné pozadie",
-            "custom_prompt": "Vyplňte vzorovú URL pre mapové dlaždice. Platné polia sú: \n    - {zoom}/{z}, {x}, {y} pre Z/X/Y dlaždicovú schému \n    - {ty} pre TMS štýl s prevrátenými Y súradnicami\n    - {u} pre quadtile schému \n    - {switch:a,b,c} pre DNS server multiplexing\n\nPríklad:\n{example}",
-            "fix_misalignment": "Upraviť posun obrázkov",
-            "imagery_source_faq": "Odkiaľ pochádzajú tieto obrázky?",
             "reset": "vynulovať",
-            "offset": "Potiahnutím kdekoľvek v šedej ploche nižšie upravíte posun obrázkov, alebo zadajte hodnotu posunu v metroch.",
             "minimap": {
-                "description": "Náhľad mapy",
                 "tooltip": "Zobraziť oddialenú mapu pre ľahšie lokalizovanie práve zobrazenej oblasti.",
                 "key": "/"
-            }
+            },
+            "fix_misalignment": "Upraviť posun obrázkov",
+            "offset": "Potiahnutím kdekoľvek v šedej ploche nižšie upravíte posun obrázkov, alebo zadajte hodnotu posunu v metroch."
         },
         "map_data": {
             "title": "Mapové údaje",
@@ -595,13 +578,7 @@
             }
         },
         "success": {
-            "edited_osm": "OSM bol upravený!",
             "just_edited": "Práve ste upravili OpenStreetMap!",
-            "view_on_osm": "Zobraziť na OSM",
-            "facebook": "Zdieľaj na Facebooku",
-            "twitter": "Zdieľaj na Twitteri",
-            "google": "Zdieľaj na Google+",
-            "help_html": "Vaše zmeny by sa mali objaviť na \"Základnej\" vrstve v priebehu niekoľkých minút. Ostatným vrstvám a niektorým objektom to môže trvať dlhšie.",
             "help_link_text": "Podrobnosti",
             "help_link_url": "https://wiki.openstreetmap.org/wiki/FAQ#I_have_just_made_some_changes_to_the_map._How_do_I_get_to_see_my_changes.3F"
         },
@@ -612,8 +589,7 @@
         "splash": {
             "welcome": "Vitajte v iD editore pre OpenStreetMap",
             "text": "iD je prívetivý ale silný nástroj pre prispievanie do najlepšej slobodnej mapy sveta. Toto je verzia {version}. Pre viac informácií navštívte {website} alebo nahlasujte chyby na {github}.",
-            "walkthrough": "Začni prehliadku",
-            "start": "Upravuj"
+            "walkthrough": "Začni prehliadku"
         },
         "source_switch": {
             "live": "pripojený",
@@ -641,22 +617,11 @@
             "untagged_area_tooltip": "Vyberte typ objektu, ktorý popisuje, čo je táto plocha.",
             "untagged_relation": "Neoznačená relácia",
             "untagged_relation_tooltip": "Vyberte typ objektu, ktorý popisuje, čo je táto relácia.",
-            "many_deletions": "Chystáte sa vymazať {n} objektov. Ste si naozaj istý, že to chcete urobiť? Týmto ich vymažete z mapy na openstreetmap.org, ktorú používajú ďalší používatelia.",
             "tag_suggests_area": "Označenie {tag} predpokladá, že objekt by mal byť plochou a nie čiarou.",
             "deprecated_tags": "Neschválené označenie: {tags}"
         },
-        "zoom": {
-            "in": "Priblížiť",
-            "out": "Oddialiť"
-        },
         "cannot_zoom": "V tomto móde nemožno viac oddialiť.",
         "full_screen": "Prepni na plnú obrazovku",
-        "gpx": {
-            "local_layer": "Lokálny súbor",
-            "drag_drop": "Pretiahnite a pustite .gpx, .geojson or .kml súbor na stránku, alebo kliknite na tlačítko napravo pre výber",
-            "zoom": "Priblížiť na vrstvu",
-            "browse": "Vybrať súbor"
-        },
         "mapillary_images": {
             "tooltip": "Fotografie ulíc z Mapillary",
             "title": "Vrstva fotografií (Mapillary)"
@@ -670,12 +635,7 @@
         },
         "help": {
             "title": "Nápoveda",
-            "key": "H",
-            "help": "# Nápoveda\n\nToto je editor pre [OpenStreetMap](http://www.openstreetmap.org/), slobodnú a upravovateľnú mapu sveta. Môžete ho používať na pridávanie a aktualizovanie údajov vo vašom okolí a vylepšiť tak mapu sveta s otvoreným kódom a dátami pre všetkých.\n\nÚpravy, ktoré v tejto mape spravíte, budú viditeľné pre každého, kto používa OpenStreetMap. Na to, aby ste mohli upravovať, sa budete musieť prihlásiť [prihlásiť](https://www.openstreetmap.org/login).\n\n[iD editor](http://ideditor.com/) je kolaboratívny projekt so [zdrojovým kódom dostupným na GitHub](https://github.com/openstreetmap/iD).\n",
-            "gps": "# GPS\n\nzozbierané GPS údaje sú najcennejší zdroj dát pre OpenStreetMap. Tento editor\npodporuje stopy z lokálnych \".gpx\" súborov na vašom počítači. Tento typ GPS stôp\nmôžete zachytiť pomocou rôznych aplikácií pre smartfóny ako aj GPS\nprístrojmi.\n\nPre informácie, ako robiť GPS prieskum, si prečítajte\n[Mapovanie so smartfónom, GPS alebo papierom](http://learnosm.org/en/mobile-mapping/).\n\nPre použitie GPX stopy pre mapovanie, pretiahnite a pustite GPX súbor na mapový\neditor. Po rozpoznaní, bude pridaná na mapu ako jasná fialová\nčiara. Kliknite na ponuku \"Mapové údaje\" na pravej strane pre zapnutie,\nvypnutie alebo priblíženie na túto novú GPX vrstvu.\n\nGPX stopa nie je priamo nahraná na OpenStreetMap. Najlepší spôsob ako\nju využiť je, použiť ju ako predlohu pre zakreslovanie nových objektov\na potom ju [nahrať na OpenStreetMap](http://www.openstreetmap.org/trace/create)\npre ďalších uživateľov.\n",
-            "imagery": "# Snímky povrchu\n\nLetecké snímky sú dôležitým zdrojom pre mapovanie. Kombinácia leteckých fotografií, satelitných snímok a voľne skompilovaných zdrojov je v editore dostupná vpravo pod ponukou \"Nastavenia pozadia\".\n\nŠtandardne je v editore predvolená satelitná vrstva z [Bing Maps](http://www.bing.com/maps/), ale ako posuniete a priblížite mapu na nové geografické miesta, dostupnými sa stanú nové zdroje. Niektoré krajiny ako Spojené Štáty, Francúzsko, a Dánsko majú pre niektoré oblasti dostupné veľmi kvalitné snímky.\n\nSnímky môžu byť niekedy posunuté voči mapovým dátam, kvôli chybe na strane poskytovateľa snímkov. Ak uvidíte veľa ciest posunutých voči pozadiu, neposúvajte ich hneď všetky, aby ste ich zarovnali s pozadím. Namiesto toho môžete upraviť snímky, aby odpovedali existujúcim dátam tým, že kliknete na \"Oprav zarovnanie\" naspodku Nastavenia pozadia.\n",
-            "addresses": "# Adresy\n\nAdresy sú jedny z najužitočnejších informácií na mape.\n\nHoci sú adresy často znázorňované ako časti ulíc, v OpenStreetMap sú zaznamenávané ako atribúty budov a miest pozdĺž ulíc.\n\nInformáciu o adrese môžete pridať ku miestam znázornených ako obrysy budov, ale aj ku tým, ktoré boli zmapované ako jediný bod. Najvhodnejším zdrojom adresných údajov je miestny prieskum alebo znalosť lokality. Tak ako pri iných objektoch, kopírovanie z komerčných zdrojov ako Google Mapy je prísne zakázané.\n",
-            "inspector": "# Používanie Inšpektora\n\nInšpektor je sekcia na ľavej strane stránky, ktorá vám umožní\nupravovať detaily vybraného objektu.\n\n### Voľba typu objektu\n\nPo tom ako pridáte bod, čiaru alebo plochu, môžete vybrať aký je to typ objektu.\nNapríklad či je to diaľnica alebo obytná ulica, či supermarket alebo kaviareň.\nInšpektor zobrazí tlačítka pre bežné typy objektov a ďalšie môžete nájsť zadaním\ntoho, čo hľadáte do vyhľadávacieho poľa.\n\nKliknite na \"i\" v pravom dolnom rohu tlačítka pre výber typu objektu, ak sa chcete o ňom dozvedieť viac. Kliknutím na tlačítko vyberiete tento typ objektu.\n\n### Používanie formulárov a upravovanie označenia\n\nPo tom ako zvolíte typ objektu, alebo keď vyberiete objekt, ktorý už má\npridelený typ, inšpektor zobrazí polia s detailmi o objekte ako jeho\nmeno a adresa.\n\nPod poliami, ktoré vidíte, môžete kliknúť na \"Pridať pole\" a pridať ďalšie detaily\nako odkaz na Wikipédiu, prístup pre vozičkárov a ďalšie.\n\nNaspodku inšpektora kliknite na \"Dodatočné označenia\" pre pridanie ľubovoľných\noznačení pre daný element. [Taginfo](http://taginfo.openstreetmap.org/) je\nvýborný zdroj pre zistenie populárnych kombinácií označení.\n\nZmeny, ktoré spravíte v inšpektorovi, sú automaticky aplikované na mapu.\nVrátiť späť ich môžete kedykoľvek kliknutím na tlačítko \"Vrátiť\".\n"
+            "key": "H"
         },
         "intro": {
             "done": "hotovo",
@@ -853,7 +813,6 @@
             },
             "areas": {
                 "title": "Plochy",
-                "add_playground": "*Plochy* sa používajú na zobrazovanie hraníc objektov ako jazerá, budovy alebo rezidenčné zóny.{br}Môžu byť tiež použité na detailnejšie mapovanie objektov, ktoré by ste nomálne označili iba bodom. **Kliknite na {button} Plocha a pridajte novú plochu.** ",
                 "start_playground": "Poďme pridať do mapy ihrisko tým, že nakreslíme plochu. Plochy sa kreslia tak, že pridávate *uzly* pozdĺž vonkajšej hrany objektu. **Kliknite alebo stlačte medzerník pre umiestnenie počiatočného uzla na jeden z rohov ihriska.**",
                 "continue_playground": "Pokračujte v kreslení plochy pridávaním ďalších uzlov pozdĺž hrany ihriska. Je poriadku ak spojíte plochu s existujúcimi chodníkmi.{br}Tip: Podržaním klávesu \"{alt}\" zabránite uzlom v spájaní s ďalšími objektami. **Pokračujte v kreslní plochy inhriska.**",
                 "finish_playground": "Dokončite plochu tým, že stlačíte enter alebo kliknete na prvý alebo posledný uzol. **Dokončite kreslenie plochy ihriska.**",
@@ -1004,7 +963,6 @@
                     "add_point": "\"Pridať bod\" mód",
                     "add_line": "\"Pridať čiaru\" mód",
                     "add_area": "\"Pridať plochu\" mód",
-                    "place_point": "Umiestniť bod",
                     "disable_snap": "Podržanie zruší prichytávanie k bodu",
                     "stop_line": "Dokončiť kreslenie čiary alebo plochy"
                 },
@@ -1094,31 +1052,24 @@
                     "label": "Povolený vstup",
                     "options": {
                         "designated": {
-                            "description": "Povolenie vstupu je riadené dopravnými značkami alebo miestnymi zákonmi",
                             "title": "Vyznačené"
                         },
                         "destination": {
-                            "description": "Vstup povolený iba dosiahnutie cieľa",
                             "title": "Prejazd zakázaný"
                         },
                         "dismount": {
-                            "description": "Vstup povolený, ale jazdci musia zosadnúť",
                             "title": "Zosadnutie z vozidla"
                         },
                         "no": {
-                            "description": "Verejnosti vstup zakázaný",
                             "title": "Zakázané"
                         },
                         "permissive": {
-                            "description": "Vstup povolený pokiaľ majiteľ povolenie neodvolá",
                             "title": "Povolený"
                         },
                         "private": {
-                            "description": "Vstup možný iba s povolením vlastníka na individuálnom základe",
                             "title": "Súkromné"
                         },
                         "yes": {
-                            "description": "Vstup povolený zo zákona",
                             "title": "Povolené"
                         }
                     },
@@ -1212,6 +1163,9 @@
                 },
                 "aeroway": {
                     "label": "Typ"
+                },
+                "agrarian": {
+                    "label": "Produkty"
                 },
                 "amenity": {
                     "label": "Typ"
@@ -1319,36 +1273,8 @@
                     "label": "Kapacita",
                     "placeholder": "50, 100, 200..."
                 },
-                "cardinal_direction": {
-                    "label": "Smer",
-                    "options": {
-                        "E": "Východ",
-                        "ENE": "Východo-severovýchod",
-                        "ESE": "Východo-juhovýchod",
-                        "N": "Sever",
-                        "NE": "Severtovýchod",
-                        "NNE": "Severo-severovýchod",
-                        "NNW": "Severo-severozápad",
-                        "NW": "Severozápad",
-                        "S": "Juh",
-                        "SE": "Juhovýchod",
-                        "SSE": "Juho-juhovýchod",
-                        "SSW": "Juho-juhozápad",
-                        "SW": "Juhozápad",
-                        "W": "Západ",
-                        "WNW": "Západo-severozápad",
-                        "WSW": "Západo-juhozápad"
-                    }
-                },
                 "castle_type": {
                     "label": "Typ"
-                },
-                "clock_direction": {
-                    "label": "Smer",
-                    "options": {
-                        "anticlockwise": "Proti smeru hodinových ručičiek",
-                        "clockwise": "V smere hodinových ručičiek"
-                    }
                 },
                 "clothes": {
                     "label": "Typ oblečenia"
@@ -1460,8 +1386,44 @@
                 "diaper": {
                     "label": "Obsahuje miesto na výmenu plienok"
                 },
+                "direction_cardinal": {
+                    "label": "Svetové strany",
+                    "options": {
+                        "E": "Východ",
+                        "ENE": "Východ-severovýchod",
+                        "ESE": "Východ-juhovýchod",
+                        "N": "Sever",
+                        "NE": "Severovýchod",
+                        "NNE": "Sever-severovýchod",
+                        "NNW": "Sever-severozápad",
+                        "NW": "Severozápad",
+                        "S": "Juh",
+                        "SE": "Juhovýchod",
+                        "SSE": "Juh-juhovýchod",
+                        "SSW": "Juh-juhozápad",
+                        "SW": "Juhozápad",
+                        "W": "Západ",
+                        "WNW": "Západ-severozápad",
+                        "WSW": "Západ-juhozápad"
+                    }
+                },
+                "direction_clock": {
+                    "label": "Smer",
+                    "options": {
+                        "anticlockwise": "Proti smeru hodinových ručičiek",
+                        "clockwise": "V smere hodinových ručičiek"
+                    }
+                },
+                "direction_vertex": {
+                    "options": {
+                        "forward": "Dopredu"
+                    }
+                },
                 "display": {
                     "label": "Ciferník"
+                },
+                "distance": {
+                    "label": "Celková vzdialenosť"
                 },
                 "dock": {
                     "label": "Typ"
@@ -1582,6 +1544,9 @@
                 "hashtags": {
                     "placeholder": "#príklad"
                 },
+                "healthcare/speciality": {
+                    "label": "Špeciality"
+                },
                 "height": {
                     "label": "Výška (metrov)"
                 },
@@ -1597,6 +1562,31 @@
                 "hoops": {
                     "label": "Koše",
                     "placeholder": "1, 2, 4..."
+                },
+                "horse_dressage": {
+                    "label": "Drezúra koní",
+                    "options": {
+                        "equestrian": "Áno",
+                        "undefined": "Nie"
+                    }
+                },
+                "horse_riding": {
+                    "label": "Jazda na koni",
+                    "options": {
+                        "horse_riding": "Áno",
+                        "undefined": "Nie"
+                    }
+                },
+                "horse_scale": {
+                    "label": "Obtiažnosť pri jazde na koni",
+                    "placeholder": "Obtiažne, nebezpečné"
+                },
+                "horse_stables": {
+                    "label": "Stajňa",
+                    "options": {
+                        "stables": "Áno",
+                        "undefined": "Nie"
+                    }
                 },
                 "iata": {
                     "label": "IATA"
@@ -1617,11 +1607,17 @@
                 "indoor": {
                     "label": "Vnútri"
                 },
+                "industrial": {
+                    "label": "Typ"
+                },
                 "information": {
                     "label": "Typ"
                 },
                 "inscription": {
                     "label": "Nápis"
+                },
+                "intermittent": {
+                    "label": "Striedavý"
                 },
                 "internet_access": {
                     "label": "Prístup k Internetu",
@@ -1734,15 +1730,14 @@
                     "label": "Povolená rýchlosť",
                     "placeholder": "40, 50, 60..."
                 },
+                "maxspeed/advisory": {
+                    "label": "Doporučená rýchlosť"
+                },
                 "maxstay": {
                     "label": "Maximálna dĺžka parkovania"
                 },
                 "maxweight": {
                     "label": "Maximálna hmotnosť"
-                },
-                "milestone_position": {
-                    "label": "Pozícia mílnika",
-                    "placeholder": "Vzdialenosť na jedno desatinné miesto (123.4)"
                 },
                 "mtb/scale": {
                     "label": "Obtiažnosť pre horské bicykle",
@@ -1833,6 +1828,7 @@
                     "label": "Jednosmerná",
                     "options": {
                         "no": "Nie",
+                        "reversible": "Obojstranný",
                         "undefined": "Pravdepodobne nie",
                         "yes": "Áno"
                     }
@@ -1857,13 +1853,6 @@
                 "par": {
                     "label": "Par",
                     "placeholder": "3, 4, 5..."
-                },
-                "parallel_direction": {
-                    "label": "Smer",
-                    "options": {
-                        "backward": "Dozadu",
-                        "forward": "Dopredu"
-                    }
                 },
                 "park_ride": {
                     "label": "Odstavné parkovisko"
@@ -1935,6 +1924,15 @@
                     "label": "Elektrický výkon",
                     "placeholder": "500 MW, 1000 MW, 2000 MW..."
                 },
+                "playground/baby": {
+                    "label": "Detská sedačka"
+                },
+                "playground/max_age": {
+                    "label": "Najvyšší vek"
+                },
+                "playground/min_age": {
+                    "label": "Najnižší vek"
+                },
                 "population": {
                     "label": "Populácia"
                 },
@@ -1955,13 +1953,6 @@
                 },
                 "recycling_accepts": {
                     "label": "Prijíma"
-                },
-                "recycling_type": {
-                    "label": "Typ recyklácie",
-                    "options": {
-                        "centre": "Recyklačné centrum",
-                        "container": "Kontajner"
-                    }
                 },
                 "ref": {
                     "label": "Referenčný kód"
@@ -2141,12 +2132,18 @@
                     }
                 },
                 "structure": {
-                    "label": "Štruktúra",
+                    "label": "Cestná stavba",
                     "options": {
                         "bridge": "Most",
                         "cutting": "Výkop",
                         "embankment": "Násyp",
                         "ford": "Brod",
+                        "tunnel": "Tunel"
+                    },
+                    "placeholder": "Neznáme"
+                },
+                "structure_waterway": {
+                    "options": {
                         "tunnel": "Tunel"
                     },
                     "placeholder": "Neznáme"
@@ -2180,6 +2177,11 @@
                 "surveillance/zone": {
                     "label": "Monitorovaná zóna"
                 },
+                "switch": {
+                    "options": {
+                        "circuit_breaker": "Istič"
+                    }
+                },
                 "tactile_paving": {
                     "label": "Taktilné značenie"
                 },
@@ -2209,6 +2211,9 @@
                 },
                 "tourism": {
                     "label": "Typ"
+                },
+                "tourism_attraction": {
+                    "label": "Turizmus"
                 },
                 "tower/construction": {
                     "label": "Konštrukcia veže",
@@ -2246,6 +2251,16 @@
                     },
                     "placeholder": "Výborná, dobrá, zlá..."
                 },
+                "transformer": {
+                    "options": {
+                        "auto": "Auto-transformátor",
+                        "auxiliary": "Pomocný",
+                        "generator": "Generátor",
+                        "phase_angle_regulator": "Fázový regulátor",
+                        "traction": "Pohon",
+                        "yes": "Neznáme"
+                    }
+                },
                 "trees": {
                     "label": "Stromy"
                 },
@@ -2253,8 +2268,18 @@
                     "label": "Typ",
                     "placeholder": "Prednastavené"
                 },
+                "usage_rail": {
+                    "label": "Použitý typ",
+                    "options": {
+                        "branch": "Vetva",
+                        "industrial": "Priemyselné",
+                        "main": "Hlavný",
+                        "military": "Armádne",
+                        "tourism": "Cestovný ruch"
+                    }
+                },
                 "vending": {
-                    "label": "Typ tovaru"
+                    "label": "Druhy tovaru"
                 },
                 "visibility": {
                     "label": "Viditeľnosť",
@@ -2263,6 +2288,34 @@
                         "house": "Do 5m (16 stôp)",
                         "street": "5 až 20m (16 až 65 stôp)"
                     }
+                },
+                "volcano/status": {
+                    "label": "Stav sopky",
+                    "options": {
+                        "active": "Aktívny",
+                        "dormant": "Nečinná",
+                        "extinct": "Vyhasnutá"
+                    }
+                },
+                "volcano/type": {
+                    "label": "Typ sopky",
+                    "options": {
+                        "scoria": "Škvára",
+                        "shield": "Štít",
+                        "stratovolcano": "Stratovulkán"
+                    }
+                },
+                "voltage": {
+                    "label": "Napätie"
+                },
+                "voltage/primary": {
+                    "label": "Primárne napätie"
+                },
+                "voltage/secondary": {
+                    "label": "Sekundárne napätie"
+                },
+                "voltage/tertiary": {
+                    "label": "Terciárne napätie"
                 },
                 "wall": {
                     "label": "Typ"
@@ -2286,11 +2339,17 @@
                 "wheelchair": {
                     "label": "Prístup pre vozičkárov"
                 },
+                "wholesale": {
+                    "label": "Veľkoobchod"
+                },
                 "width": {
                     "label": "Šírka (metrov)"
                 },
                 "wikipedia": {
                     "label": "Wikipédia"
+                },
+                "windings": {
+                    "label": "Vinutia"
                 }
             },
             "presets": {
@@ -2346,8 +2405,7 @@
                     "terms": "lanovy vlek"
                 },
                 "aerialway/station": {
-                    "name": "Stanica lanovky",
-                    "terms": "lanovkova stanica,lanovková stanica"
+                    "name": "Stanica lanovky"
                 },
                 "aerialway/t-bar": {
                     "name": "Vlek s dvojmiestnou kotvou",
@@ -2439,10 +2497,6 @@
                     "name": "Stojan s náradím na opravu bicyklov",
                     "terms": "stojan s naradim na opravu bicyklov,bicykel,oprava,naradie,náradie"
                 },
-                "amenity/biergarten": {
-                    "name": "Záhradná piváreň",
-                    "terms": "zahradna pivaren,pivnica,hostinec,krčma,krcma,vonkajšie posedenie,vonkajsie posedenie"
-                },
                 "amenity/boat_rental": {
                     "name": "Prenájom lodí",
                     "terms": "prenajom lodi,požičovňa lodí,pozicovna lodi,prenájom člnov,prenajom clnov,pozivocna clnov,požičovňa člnov, čln,cln,člny,clny,lode,skútre,skutre,vodné skútre,vodne skutre"
@@ -2450,10 +2504,6 @@
                 "amenity/bureau_de_change": {
                     "name": "Zmenáreň",
                     "terms": "zmenaren,valuty,cudzia mena, výmena peňazí,vymena penazi"
-                },
-                "amenity/bus_station": {
-                    "name": "Autobusová zastávka",
-                    "terms": "autobusova zastavka,zastávka,zastavka,stanica,autobus,mhd"
                 },
                 "amenity/cafe": {
                     "name": "Kaviareň",
@@ -2545,10 +2595,6 @@
                 "amenity/fast_food": {
                     "name": "Rýchle občerstvenie",
                     "terms": "rychle obcerstvenie,rýchle občerstvenie,fastfood, fast food"
-                },
-                "amenity/ferry_terminal": {
-                    "name": "Stanica trajektu",
-                    "terms": "trajekt,kompa,lod,autotrajekt"
                 },
                 "amenity/fire_station": {
                     "name": "Požiarna stanica",
@@ -2705,10 +2751,6 @@
                     "name": "Stanica horskej služby",
                     "terms": "stanica horskej sluzby,sprava narodneho parku, správa národného parku,narodny park,národný park"
                 },
-                "amenity/recycling": {
-                    "name": "Recyklácia",
-                    "terms": "recyklacia, zber, recyklovanie"
-                },
                 "amenity/recycling_centre": {
                     "name": "Recyklačné centrum",
                     "terms": "recyklacne centrum"
@@ -2729,8 +2771,7 @@
                     "terms": "Skolsky areal,skola,druzina"
                 },
                 "amenity/scrapyard": {
-                    "name": "Vrakovisko",
-                    "terms": "vrakovisko,smetisko,šrotovisko,srotovisko"
+                    "name": "Vrakovisko"
                 },
                 "amenity/shelter": {
                     "name": "Prístrešok",
@@ -2860,7 +2901,7 @@
                 },
                 "area/highway": {
                     "name": "Plocha cesty",
-                    "terms": "plocha cesty, "
+                    "terms": "plocha cesty,"
                 },
                 "barrier": {
                     "name": "Bariéra",
@@ -3219,10 +3260,6 @@
                     "name": "Lešenárstvo",
                     "terms": "lesenarstvo,lešenie,lesenie"
                 },
-                "craft/sculpter": {
-                    "name": "Sochár",
-                    "terms": "sochar"
-                },
                 "craft/shoemaker": {
                     "name": "Obuvník",
                     "terms": "buvnik"
@@ -3230,10 +3267,6 @@
                 "craft/stonemason": {
                     "name": "Kamenárstvo",
                     "terms": "kamenarstvo,kamenár,kamenar"
-                },
-                "craft/sweep": {
-                    "name": "Kominárstvo",
-                    "terms": "kominarstvo,kominár,kominar"
                 },
                 "craft/tailor": {
                     "name": "Krajčír"
@@ -3351,10 +3384,6 @@
                     "name": "Jazdecká trať",
                     "terms": "jazdecká cesta, chodník pre kone,jazdecká trasa,jazdecka cesta,chodnik pre kone,jazdecka trasa,jazdecka trat"
                 },
-                "highway/bus_stop": {
-                    "name": "Autobusová zastávka",
-                    "terms": "Autobusova zastavka,nástupište,nastupiste,stanica"
-                },
                 "highway/corridor": {
                     "name": "Chodba v budove",
                     "terms": "chodba,hala"
@@ -3403,10 +3432,6 @@
                     "name": "Cestička",
                     "terms": "cesticka,chodnik,chodník,pešina,pesina"
                 },
-                "highway/pedestrian": {
-                    "name": "Pešia zóna",
-                    "terms": "pesia zona,namestie,námestie"
-                },
                 "highway/primary": {
                     "name": "Cesta 1. triedy",
                     "terms": "cesta prvej triedy,hlavná cesta,hlavna cesta"
@@ -3453,7 +3478,7 @@
                 },
                 "highway/service/emergency_access": {
                     "name": "Núdzový vstup",
-                    "terms": "Nudzovy pristup,naliehavý,naliehavy,stav núzde,stav nudze,Nudzovy vstup "
+                    "terms": "Nudzovy pristup,naliehavý,naliehavy,stav núzde,stav nudze,Nudzovy vstup"
                 },
                 "highway/service/parking_aisle": {
                     "name": "Parkovacia ulička",
@@ -3589,10 +3614,6 @@
                 "landuse/forest": {
                     "name": "Les",
                     "terms": "hora,stromy"
-                },
-                "landuse/garages": {
-                    "name": "Garáže",
-                    "terms": "garaze,parkovanie,kryte parkovanie,kryté parkovanie"
                 },
                 "landuse/grass": {
                     "name": "Tráva",
@@ -3971,21 +3992,8 @@
                     "name": "Úrad",
                     "terms": "urad"
                 },
-                "office/accountant": {
-                    "name": "Účtovník",
-                    "terms": "uctovnik"
-                },
                 "office/administrative": {
-                    "name": "Administratívny úrad",
-                    "terms": "administrativny urad"
-                },
-                "office/architect": {
-                    "name": "Architekt",
-                    "terms": "Architekti"
-                },
-                "office/company": {
-                    "name": "Firma",
-                    "terms": "firmy,spoločnosť,spolocnost"
+                    "name": "Administratívny úrad"
                 },
                 "office/educational_institution": {
                     "name": "Vzdelávací inštitút",
@@ -4011,17 +4019,9 @@
                     "name": "Poistenie",
                     "terms": "poistenie"
                 },
-                "office/it": {
-                    "name": "IT služby",
-                    "terms": "IT, it sluzby,pocitace,počítače"
-                },
                 "office/lawyer": {
                     "name": "Právna kancelária",
                     "terms": "pravna kancelaria"
-                },
-                "office/newspaper": {
-                    "name": "Noviny",
-                    "terms": "noviny"
                 },
                 "office/ngo": {
                     "name": "Nezisková organizácia",
@@ -4041,10 +4041,6 @@
                 "office/telecommunication": {
                     "name": "Telekomunikácie",
                     "terms": "telekomunikacie,mobilny operator,mobilný operátor,operator,operátor"
-                },
-                "office/therapist": {
-                    "name": "Terapeut",
-                    "terms": "terapeut"
                 },
                 "office/travel_agent": {
                     "name": "Cestovná agentúra"
@@ -4137,14 +4133,6 @@
                     "name": "Transformátor",
                     "terms": "Rozvodna stanica,Rozvodná stanica,transformator,trasformátor"
                 },
-                "public_transport/platform": {
-                    "name": "Nástupište",
-                    "terms": "nastupiste,zastávka,zastavka"
-                },
-                "public_transport/stop_position": {
-                    "name": "Miesto zastavenia",
-                    "terms": "zastávka,zastavka"
-                },
                 "railway": {
                     "name": "Železnica"
                 },
@@ -4160,10 +4148,6 @@
                     "name": "Lanová dráha",
                     "terms": "lanova zeleznica,lanova draha"
                 },
-                "railway/halt": {
-                    "name": "Železničná zastávka",
-                    "terms": "zeleznicna zastavka,zastavka,zástavka,vlak,vlaková zástavka,vlakova zastavka,stanica"
-                },
                 "railway/monorail": {
                     "name": "Jednokoľajnicová dráha",
                     "terms": "jednokolajnicova draha,jednokolajka,monorail"
@@ -4172,17 +4156,9 @@
                     "name": "Úzkorozchodná železnica",
                     "terms": "uzkorozchodna zeleznica,uzkokolajka,úzkoľajka"
                 },
-                "railway/platform": {
-                    "name": "Železničné nástupište",
-                    "terms": "zeleznicne nastupiste,nástupište,nastupiste,perón,peron"
-                },
                 "railway/rail": {
                     "name": "Železničná trať",
                     "terms": "zeleznicna trat,trat,trať,železnica,zeleznica"
-                },
-                "railway/station": {
-                    "name": "Železničná stanica",
-                    "terms": "zeleznicna stanica,stanica,zástavka,zastavka"
                 },
                 "railway/subway": {
                     "name": "Metro",
@@ -4446,10 +4422,6 @@
                     "name": "Zlatníctvo",
                     "terms": "zlatnictvo,šperky,sperky,zlato,striebro"
                 },
-                "shop/kiosk": {
-                    "name": "Novinový stánok",
-                    "terms": "novinovy stanok,noviny,casopisy,časopisy"
-                },
                 "shop/kitchen": {
                     "name": "Kuchynské štúdio",
                     "terms": "kuchynske studio,kuchyna,uchyňa,kuchyne,kuchyňe,kuchynský kút,kuchynsky kut,kuchynské kúty,kuchynske kuty"
@@ -4680,10 +4652,6 @@
                     "name": "Parkovisko pre karavany",
                     "terms": "parkovisko pre karavany,karavany,parkovisko,tabor,tábor"
                 },
-                "tourism/chalet": {
-                    "name": "Koliba",
-                    "terms": "salas,salaš,chata"
-                },
                 "tourism/gallery": {
                     "name": "Umelecká galéria"
                 },
@@ -4702,6 +4670,12 @@
                 "tourism/information": {
                     "name": "Informácie",
                     "terms": "informacie,turisticke informacie,turistické informácie"
+                },
+                "tourism/information/board": {
+                    "name": "Informačná tabuľa"
+                },
+                "tourism/information/map": {
+                    "name": "Mapa"
                 },
                 "tourism/motel": {
                     "name": "Motel",
@@ -4769,18 +4743,6 @@
                 "type/restriction/no_u_turn": {
                     "name": "Zákaz otáčania",
                     "terms": "zakaz otacania"
-                },
-                "type/restriction/only_left_turn": {
-                    "name": "Prikázaný smer jazdy vľavo",
-                    "terms": "Prikazany smer jazdy vlavo"
-                },
-                "type/restriction/only_right_turn": {
-                    "name": "Prikázaný smer jazdy vpravo",
-                    "terms": "prikazany smer jazdy vpravo"
-                },
-                "type/restriction/only_straight_on": {
-                    "name": "Prikázaný smer jazdy priamo",
-                    "terms": "prikazany smer jazdy priamo"
                 },
                 "type/route": {
                     "name": "Trasa",
@@ -4904,14 +4866,12 @@
                 "attribution": {
                     "text": "Podmienky & pripomienky"
                 },
-                "description": "Prémiové satelitné zábery DigitalGlobe.",
                 "name": "DigitalGlobe prémiové zábery"
             },
             "DigitalGlobe-Standard": {
                 "attribution": {
                     "text": "Podmienky & pripomienky"
                 },
-                "description": "Štandardné satelitné zábery DigitalGlobe.",
                 "name": "DigitalGlobe štandardné zábery"
             },
             "EsriWorldImagery": {
@@ -4978,40 +4938,24 @@
                 "name": "OSM Inspector: Označenia"
             },
             "Waymarked_Trails-Cycling": {
-                "attribution": {
-                    "text": "© Sarah Hoffmann, CC by-SA 3.0, mapové údaje OpenStreetMap prispievatelia, ODbL 1.0"
-                },
                 "name": "Waymarked Trails: Cyklistika"
             },
             "Waymarked_Trails-Hiking": {
-                "attribution": {
-                    "text": "© Sarah Hoffmann, CC by-SA 3.0, mapové údaje OpenStreetMap prispievatelia, ODbL 1.0"
-                },
                 "name": "Waymarked Trails: Turistika"
             },
             "Waymarked_Trails-MTB": {
-                "attribution": {
-                    "text": "© Sarah Hoffmann, CC by-SA 3.0, mapové údaje OpenStreetMap prispievatelia, ODbL 1.0"
-                },
                 "name": "Waymarked Trails: Horské bicykle"
             },
             "Waymarked_Trails-Skating": {
-                "attribution": {
-                    "text": "© Sarah Hoffmann, CC by-SA 3.0, mapové údaje OpenStreetMap prispievatelia, ODbL 1.0"
-                },
                 "name": "Waymarked Trails: Skating"
             },
             "Waymarked_Trails-Winter_Sports": {
-                "attribution": {
-                    "text": "© Sarah Hoffmann, CC by-SA 3.0, mapové údaje OpenStreetMap prispievatelia, ODbL 1.0"
-                },
                 "name": "Waymarked Trails: Zimné športy"
             },
             "basemap.at": {
                 "attribution": {
                     "text": "basemap.at"
                 },
-                "description": "Základná mapa Rakúska, odvodená z vládnych dát.",
                 "name": "basemap.at"
             },
             "basemap.at-orthofoto": {
@@ -5072,9 +5016,6 @@
                 "name": "skobbler"
             },
             "stamen-terrain-background": {
-                "attribution": {
-                    "text": "Mapové dlaždice od Stamen Design, pod CC BY 3.0"
-                },
                 "name": "Stamen terén"
             },
             "tf-cycle": {

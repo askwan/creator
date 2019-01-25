@@ -6,6 +6,7 @@ export function actionChangePreset(entityId, oldPreset, newPreset) {
 
         if (oldPreset) tags = oldPreset.removeTags(tags, geometry);
         if (newPreset) tags = newPreset.applyTags(tags, geometry);
+
         return graph.replace(entity.update({tags: tags}));
     };
 }

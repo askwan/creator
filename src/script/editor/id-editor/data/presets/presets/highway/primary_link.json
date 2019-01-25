@@ -1,9 +1,10 @@
 {
-    "icon": "highway-primary-link",
+    "icon": "iD-highway-primary-link",
     "fields": [
         "name",
         "oneway",
         "maxspeed",
+        "maxspeed/advisory",
         "lanes",
         "surface",
         "maxheight",
@@ -19,9 +20,11 @@
         "highway": "primary_link"
     },
     "terms": [
-        "ramp",
         "on ramp",
-        "off ramp"
+        "off ramp",
+        "ramp",
+        "road",
+        "street"
     ],
     "name": "Primary Link"
 }

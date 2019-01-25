@@ -1,9 +1,11 @@
-/* power */
+/* power and pipeline */
 .preset-icon .icon.tag-man_made-pipeline,
 .preset-icon .icon.tag-power {
     color: #939393;
     fill: #939393;
 }
+
+/* power */
 
 path.stroke.tag-power {
     stroke: #939393;
@@ -13,6 +15,21 @@ path.casing.tag-power {
     stroke: none;
 }
 
+/* pipeline */
+
+path.stroke.tag-man_made-pipeline {
+    stroke: #CBD0D8;
+    stroke-linecap: butt;
+    stroke-width: 3;
+    stroke-dasharray: 80, 1.25;
+}
+path.casing.tag-man_made-pipeline {
+    stroke: #666;
+    stroke-width: 4.5;
+}
+.low-zoom path.stroke.tag-man_made-pipeline {
+    stroke-dasharray: 40, 1;
+}
 
 /* boundaries */
 path.stroke.tag-boundary {
@@ -55,8 +72,10 @@ path.stroke.tag-natural-tree_row {
 
 
 /* barriers */
-path.stroke.tag-barrier {
+path.stroke.tag-barrier:not(.tag-barrier-hedge) {
     stroke: #ddd;
+}
+path.stroke.tag-barrier {
     stroke-width: 3px;
     stroke-linecap: round;
     stroke-dasharray: 15, 5, 1, 5;
@@ -71,7 +90,7 @@ path.stroke.tag-barrier {
 /* bridges */
 path.casing.tag-bridge {
     stroke-opacity: 0.6;
-    stroke: #000;
+    stroke: #000 !important;
     stroke-linecap: butt;
     stroke-dasharray: none;
 }
@@ -145,10 +164,14 @@ path.casing.tag-highway-bridleway.tag-bridge {
 
 
 /* tunnels */
-path.stroke.tag-tunnel {
+path.stroke.tag-tunnel,
+path.line.stroke.tag-location-underground,
+path.line.stroke.tag-location-underwater {
     stroke-opacity: 0.3;
 }
-path.casing.tag-tunnel {
+path.casing.tag-tunnel,
+path.line.casing.tag-location-underground,
+path.line.stroke.tag-location-underwater {
     stroke-opacity: 0.5;
     stroke-linecap: butt;
     stroke-dasharray: none;
@@ -211,17 +234,144 @@ path.casing.tag-status {
 
 
 /* Buildings */
-path.stroke.tag-building,
-path.stroke.tag-amenity-shelter {
+path.stroke.tag-building {
     stroke: rgb(224, 110, 95);
 }
-path.fill.tag-building,
-path.fill.tag-amenity-shelter {
+path.fill.tag-building {
     stroke: rgba(224, 110, 95, 0.3);
     fill: rgba(224, 110, 95, 0.3);
 }
-.preset-icon-fill-area.tag-building,
-.preset-icon-fill-area.tag-amenity-shelter {
+.preset-icon-fill-area.tag-parking-multi-storey,
+.preset-icon-fill-area.tag-building {
     border-color: rgb(224, 110, 95);
     background-color: rgba(224, 110, 95, 0.3);
+}
+
+
+/* "Special" paths - platforms, piers, crossings */
+.preset-icon .icon.tag-public_transport-platform,
+.preset-icon .icon.tag-railway-platform,
+.preset-icon .icon.tag-man_made-pier,
+.preset-icon .icon.tag-footway.tag-footway-crossing,
+.preset-icon .icon.tag-crossing {
+    color: #988;
+    fill: #dca;
+}
+
+.preset-icon-fill-area.tag-public_transport-platform,
+.preset-icon-fill-area.tag-railway-platform,
+.preset-icon-fill-area.tag-man_made-pier,
+.preset-icon-fill-area.tag-footway.tag-footway-crossing,
+.preset-icon-fill-area.tag-crossing {
+    border-color: #988;
+    background-color: #dca;
+}
+
+path.shadow.tag-public_transport-platform,
+path.shadow.tag-railway-platform,
+path.shadow.tag-man_made-pier,
+path.shadow.tag-footway.tag-footway-crossing,
+path.shadow.tag-crossing {
+    stroke-width: 16;
+}
+path.casing.tag-public_transport-platform,
+path.casing.tag-railway-platform,
+path.casing.tag-man_made-pier,
+path.casing.tag-footway.tag-footway-crossing,
+path.casing.tag-crossing {
+    stroke: #dca;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-dasharray: none;
+}
+path.stroke.tag-public_transport-platform,
+path.stroke.tag-railway-platform,
+path.stroke.tag-man_made-pier,
+path.stroke.tag-footway.tag-footway-crossing,
+path.stroke.tag-crossing {
+    stroke: #988;
+    stroke-width: 3;
+    stroke-linecap: butt;
+    stroke-dasharray: 6, 6;
+}
+
+.low-zoom path.shadow.tag-public_transport-platform,
+.low-zoom path.shadow.tag-railway-platform,
+.low-zoom path.shadow.tag-man_made-pier,
+.low-zoom path.shadow.tag-footway.tag-footway-crossing,
+.low-zoom path.shadow.tag-crossing {
+    stroke-width: 12;
+}
+.low-zoom path.casing.tag-public_transport-platform,
+.low-zoom path.casing.tag-railway-platform,
+.low-zoom path.casing.tag-man_made-pier,
+.low-zoom path.casing.tag-footway.tag-footway-crossing,
+.low-zoom path.casing.tag-crossing {
+    stroke-width: 3;
+}
+.low-zoom path.stroke.tag-public_transport-platform,
+.low-zoom path.stroke.tag-railway-platform,
+.low-zoom path.stroke.tag-man_made-pier,
+.low-zoom path.stroke.tag-footway.tag-footway-crossing,
+.low-zoom path.stroke.tag-crossing {
+    stroke-width: 1;
+    stroke-linecap: butt;
+    stroke-dasharray: 3, 3;
+}
+
+g.midpoint.tag-public_transport-platform .fill,
+g.midpoint.tag-railway-platform .fill,
+g.midpoint.tag-man_made-pier .fill,
+g.midpoint.tag-footway.tag-footway-crossing .fill,
+g.midpoint.tag-crossing .fill {
+    fill: #fff;
+    stroke: #333;
+    stroke-opacity: .8;
+    opacity: .8;
+}
+
+/* marked crossings, zebras */
+.preset-icon .icon.tag-crossing.tag-crossing-marked,
+.preset-icon .icon.tag-crossing.tag-crossing-zebra {
+    color: #444;
+    fill: #dca;
+}
+path.casing.tag-crossing.tag-crossing-marked,
+path.casing.tag-crossing.tag-crossing-zebra {
+    stroke: #dca;
+}
+path.stroke.tag-crossing.tag-crossing-marked,
+path.stroke.tag-crossing.tag-crossing-zebra {
+    stroke: #444;
+    stroke-dasharray: 6, 4;
+}
+.low-zoom path.stroke.tag-crossing.tag-crossing-marked,
+.low-zoom path.stroke.tag-crossing.tag-crossing-zebra {
+    stroke-dasharray: 3, 2;
+}
+
+/* Attractions */
+path.shadow.tag-attraction-summer_toboggan {
+	stroke-width: 16;
+}
+path.casing.tag-attraction-summer_toboggan {
+	stroke-width: 7;
+}
+path.stroke.tag-attraction-summer_toboggan {
+	stroke-width: 5;
+}
+.low-zoom path.shadow.tag-attraction-summer_toboggan {
+    stroke-width: 12;
+}
+.low-zoom path.casing.tag-attraction-summer_toboggan {
+    stroke-width: 5;
+}
+.low-zoom path.stroke.tag-attraction-summer_toboggan {
+	stroke-width: 3;
+}
+path.stroke.tag-attraction-summer_toboggan {
+    stroke: #9e9e9e;
+}
+path.casing.tag-attraction-summer_toboggan {
+    stroke: #666;
 }

@@ -1,8 +1,9 @@
 import { t } from '../util/locale';
-import { actionAddEntity,actionChangePreset } from '../actions';
+import { actionAddEntity } from '../actions';
 import { behaviorDraw } from '../behavior';
 import { modeBrowse, modeSelect } from './index';
 import { osmNode } from '../osm';
+import { actionAddMidpoint } from '../actions';
 
 
 export function modeAddPoint(context) {
@@ -25,6 +26,7 @@ export function modeAddPoint(context) {
 
     function add(loc) {
         var node = osmNode({ loc: loc });
+
         context.perform(
             actionAddEntity(node),
             t('operations.add.annotation.point')
@@ -33,12 +35,20 @@ export function modeAddPoint(context) {
         context.enter(
             modeSelect(context, [node.id]).newFeature(true)
         );
-        // context.selectEle(node.id);
     }
 
 
-    function addWay(loc) {
-        add(loc);
+    function addWay(loc, edge) {
+        var node =  osmNode();
+
+        context.perform(
+            actionAddMidpoint({loc: loc, edge: edge}, node),
+            t('operations.add.annotation.vertex')
+        );
+
+        context.enter(
+            modeSelect(context, [node.id]).newFeature(true)
+        );
     }
 
 

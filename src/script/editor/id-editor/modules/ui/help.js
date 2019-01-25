@@ -15,7 +15,6 @@ import { uiMapData } from './map_data';
 import { uiShortcuts } from './shortcuts';
 import { uiTooltipHtml } from './tooltipHtml';
 import { tooltip } from '../util/tooltip';
-
 import { icon } from './intro/helper';
 
 export function uiHelp(context) {
@@ -148,6 +147,17 @@ export function uiHelp(context) {
             'boundary',
             'boundary_add'
         ]],
+        ['notes', [
+            'intro',
+            'add_note_h',
+            'add_note',
+            'move_note',
+            'update_note_h',
+            'update_note',
+            'save_note_h',
+            'save_note'
+        ]],
+
         ['imagery', [
             'intro',
             'sources_h',
@@ -211,6 +221,9 @@ export function uiHelp(context) {
         'help.relations.turn_restriction_h': 3,
         'help.relations.route_h': 3,
         'help.relations.boundary_h': 3,
+        'help.notes.add_note_h': 3,
+        'help.notes.update_note_h': 3,
+        'help.notes.save_note_h': 3,
         'help.imagery.sources_h': 3,
         'help.imagery.offsets_h': 3,
         'help.streetlevel.using_h': 3,
@@ -218,25 +231,26 @@ export function uiHelp(context) {
     };
 
     var replacements = {
-        point: icon('#icon-point', 'pre-text'),
-        line: icon('#icon-line', 'pre-text'),
-        area: icon('#icon-area', 'pre-text'),
-        plus: icon('#icon-plus', 'pre-text'),
-        minus: icon('#icon-minus', 'pre-text'),
-        orthogonalize: icon('#operation-orthogonalize', 'pre-text'),
-        disconnect: icon('#operation-disconnect', 'pre-text'),
-        layers: icon('#icon-layers', 'pre-text'),
-        data: icon('#icon-data', 'pre-text'),
-        inspect: icon('#icon-inspect', 'pre-text'),
-        move: icon('#operation-move', 'pre-text'),
-        merge: icon('#operation-merge', 'pre-text'),
-        delete: icon('#operation-delete', 'pre-text'),
-        close: icon('#icon-close', 'pre-text'),
-        undo: icon(textDirection === 'rtl' ? '#icon-redo' : '#icon-undo', 'pre-text'),
-        redo: icon(textDirection === 'rtl' ? '#icon-undo' : '#icon-redo', 'pre-text'),
-        save: icon('#icon-save', 'pre-text'),
-        leftclick: icon('#walkthrough-mouse', 'pre-text mouseclick', 'left'),
-        rightclick: icon('#walkthrough-mouse', 'pre-text mouseclick', 'right'),
+        point: icon('#iD-icon-point', 'pre-text'),
+        line: icon('#iD-icon-line', 'pre-text'),
+        area: icon('#iD-icon-area', 'pre-text'),
+        note: icon('#iD-icon-note', 'pre-text add-note'),
+        plus: icon('#iD-icon-plus', 'pre-text'),
+        minus: icon('#iD-icon-minus', 'pre-text'),
+        orthogonalize: icon('#iD-operation-orthogonalize', 'pre-text'),
+        disconnect: icon('#iD-operation-disconnect', 'pre-text'),
+        layers: icon('#iD-icon-layers', 'pre-text'),
+        data: icon('#iD-icon-data', 'pre-text'),
+        inspect: icon('#iD-icon-inspect', 'pre-text'),
+        move: icon('#iD-operation-move', 'pre-text'),
+        merge: icon('#iD-operation-merge', 'pre-text'),
+        delete: icon('#iD-operation-delete', 'pre-text'),
+        close: icon('#iD-icon-close', 'pre-text'),
+        undo: icon(textDirection === 'rtl' ? '#iD-icon-redo' : '#iD-icon-undo', 'pre-text'),
+        redo: icon(textDirection === 'rtl' ? '#iD-icon-undo' : '#iD-icon-redo', 'pre-text'),
+        save: icon('#iD-icon-save', 'pre-text'),
+        leftclick: icon('#iD-walkthrough-mouse', 'pre-text mouseclick', 'left'),
+        rightclick: icon('#iD-walkthrough-mouse', 'pre-text mouseclick', 'right'),
         shift: uiCmd.display('⇧'),
         alt: uiCmd.display('⌥'),
         return: uiCmd.display('↵'),
@@ -304,7 +318,7 @@ export function uiHelp(context) {
 
         function clickHelp(d, i) {
             var rtl = (textDirection === 'rtl');
-            pane.property('scrollTop', 0);
+            content.property('scrollTop', 0);
             doctitle.html(d.title);
 
             body.html(d.html);
@@ -334,7 +348,7 @@ export function uiHelp(context) {
                     nextLink
                         .append('span')
                         .text(docs[i + 1].title)
-                        .call(svgIcon((rtl ? '#icon-backward' : '#icon-forward'), 'inline'));
+                        .call(svgIcon((rtl ? '#iD-icon-backward' : '#iD-icon-forward'), 'inline'));
                 }
             }
 
@@ -349,7 +363,7 @@ export function uiHelp(context) {
                         });
 
                     prevLink
-                        .call(svgIcon((rtl ? '#icon-forward' : '#icon-backward'), 'inline'))
+                        .call(svgIcon((rtl ? '#iD-icon-forward' : '#iD-icon-backward'), 'inline'))
                         .append('span')
                         .text(docs[i - 1].title);
                 }
@@ -370,20 +384,41 @@ export function uiHelp(context) {
 
 
         var pane = selection.append('div')
-            .attr('class', 'help-wrap map-overlay fillL col6 content hide');
+            .attr('class', 'help-wrap map-pane fillL hide');
+
         var tooltipBehavior = tooltip()
             .placement((textDirection === 'rtl') ? 'right' : 'left')
             .html(true)
             .title(uiTooltipHtml(t('help.title'), key));
+
         var button = selection.append('button')
             .attr('tabindex', -1)
             .on('click', togglePane)
-            .call(svgIcon('#icon-help', 'light'))
+            .call(svgIcon('#iD-icon-help', 'light'))
             .call(tooltipBehavior);
+
         var shown = false;
 
 
-        var toc = pane
+        var heading = pane
+            .append('div')
+            .attr('class', 'pane-heading');
+
+        var doctitle = heading
+            .append('h2')
+            .text(t('help.title'));
+
+        heading
+            .append('button')
+            .on('click', function() { uiHelp.hidePane(); })
+            .call(svgIcon('#iD-icon-close'));
+
+
+        var content = pane
+            .append('div')
+            .attr('class', 'pane-content');
+
+        var toc = content
             .append('ul')
             .attr('class', 'toc');
 
@@ -420,26 +455,22 @@ export function uiHelp(context) {
             .append('svg')
             .attr('class', 'logo logo-walkthrough')
             .append('use')
-            .attr('xlink:href', '#logo-walkthrough');
+            .attr('xlink:href', '#iD-logo-walkthrough');
 
         walkthrough
             .append('div')
             .text(t('splash.walkthrough'));
 
 
-        var content = pane
+        var helpContent = content
             .append('div')
             .attr('class', 'left-content');
 
-        var doctitle = content
-            .append('h2')
-            .text(t('help.title'));
-
-        var body = content
+        var body = helpContent
             .append('div')
             .attr('class', 'body');
 
-        var nav = content
+        var nav = helpContent
             .append('div')
             .attr('class', 'nav');
 

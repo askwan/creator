@@ -122,7 +122,7 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        uids:"",
+        uids:id,
         sdomains:sdomain.id
       };
       this.loading = true;

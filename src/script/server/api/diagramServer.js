@@ -32,7 +32,7 @@ class DiagramServer extends Base {
       loadParentField:true,
       loadParents:true,
       loadConnector:true,
-      uid:option.userId,
+      uids:option.userId,
       token:'',
     }
     return this.query(options)

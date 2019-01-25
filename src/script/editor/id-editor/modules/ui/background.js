@@ -21,6 +21,7 @@ import { uiDisclosure } from './disclosure';
 import { uiHelp } from './help';
 import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
+import { uiSettingsCustomBackground } from './settings/custom_background';
 import { uiTooltipHtml } from './tooltipHtml';
 import { utilCallWhenIdle } from '../util';
 import { tooltip } from '../util/tooltip';
@@ -40,6 +41,9 @@ export function uiBackground(context) {
 
     var backgroundDisplayOptions = uiBackgroundDisplayOptions(context);
     var backgroundOffset = uiBackgroundOffset(context);
+
+    var settingsCustomBackground = uiSettingsCustomBackground(context)
+        .on('change', customChanged);
 
 
     function setTooltips(selection) {
@@ -100,21 +104,21 @@ export function uiBackground(context) {
     }
 
 
-    function editCustom() {
-        d3_event.preventDefault();
-        var example = 'https://{switch:a,b,c}.tile.openstreetmap.org/{zoom}/{x}/{y}.png';
-        var template = window.prompt(
-            t('background.custom_prompt', { example: example }),
-            _customSource.template() || example
-        );
-
-        if (template) {
-            context.storage('background-custom-template', template);
-            _customSource.template(template);
+    function customChanged(d) {
+        if (d && d.template) {
+            _customSource.template(d.template);
             chooseBackground(_customSource);
         } else {
-            _backgroundList.call(updateLayerSelections);
+            _customSource.template('');
+            chooseBackground(context.background().findSource('none'));
         }
+    }
+
+
+    function editCustom() {
+        d3_event.preventDefault();
+        context.container()
+            .call(settingsCustomBackground);
     }
 
 
@@ -147,11 +151,11 @@ export function uiBackground(context) {
             .append('button')
             .attr('class', 'layer-browse')
             .call(tooltip()
-                .title(t('background.custom_button'))
+                .title(t('settings.custom_background.tooltip'))
                 .placement((textDirection === 'rtl') ? 'right' : 'left')
             )
             .on('click', editCustom)
-            .call(svgIcon('#icon-search'));
+            .call(svgIcon('#iD-icon-more'));
 
         enter.filter(function(d) { return d.best(); })
             .append('div')
@@ -245,7 +249,7 @@ export function uiBackground(context) {
             .append('a')
             .attr('target', '_blank')
             .attr('tabindex', -1)
-            .call(svgIcon('#icon-out-link', 'inline'))
+            .call(svgIcon('#iD-icon-out-link', 'inline'))
             .attr('href', 'https://github.com/openstreetmap/iD/blob/master/FAQ.md#how-can-i-report-an-issue-with-background-imagery')
             .append('span')
             .text(t('background.imagery_source_faq'));
@@ -336,7 +340,7 @@ export function uiBackground(context) {
 
         var pane = selection
             .append('div')
-            .attr('class', 'fillL map-overlay col3 content hide');
+            .attr('class', 'fillL map-pane hide');
 
         var paneTooltip = tooltip()
             .placement((textDirection === 'rtl') ? 'right' : 'left')
@@ -347,15 +351,30 @@ export function uiBackground(context) {
             .append('button')
             .attr('tabindex', -1)
             .on('click', togglePane)
-            .call(svgIcon('#icon-layers', 'light'))
+            .call(svgIcon('#iD-icon-layers', 'light'))
             .call(paneTooltip);
 
-        pane
+
+        var heading = pane
+            .append('div')
+            .attr('class', 'pane-heading');
+
+        heading
             .append('h2')
             .text(t('background.title'));
 
+        heading
+            .append('button')
+            .on('click', function() { uiBackground.hidePane(); })
+            .call(svgIcon('#iD-icon-close'));
+
+
+        var content = pane
+            .append('div')
+            .attr('class', 'pane-content');
+
         // background list
-        pane
+        content
             .append('div')
             .attr('class', 'background-background-list-container')
             .call(uiDisclosure(context, 'background_list', true)
@@ -364,7 +383,7 @@ export function uiBackground(context) {
             );
 
         // overlay list
-        pane
+        content
             .append('div')
             .attr('class', 'background-overlay-list-container')
             .call(uiDisclosure(context, 'overlay_list', true)
@@ -373,12 +392,12 @@ export function uiBackground(context) {
             );
 
         // display options
-        _displayOptionsContainer = pane
+        _displayOptionsContainer = content
             .append('div')
             .attr('class', 'background-display-options');
 
         // offset controls
-        _offsetContainer = pane
+        _offsetContainer = content
             .append('div')
             .attr('class', 'background-offset');
 

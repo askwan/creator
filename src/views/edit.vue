@@ -22,11 +22,10 @@
       'map-content': MapContent
     },
     computed:{},
-    mounted(){
-      this.getDiagram();
-      this.getModels();
+    async mounted(){
+      // await this.getModels();
       this.getRelationType();
-      this.getStyle();
+      // await this.getDiagram();
     }, 
     beforeRouteLeave(to,from,next){
       let idEdit = getEditor();
@@ -49,39 +48,48 @@
     methods:{
       async getDiagram(){
         this.loading = true;
-        let options = {};
-        options.loadField = true;
-        options.loadModel = true;
-        options.loadForm = true;
-        options.loadParentField = true;
-        options.loadParents = true;
-        options.loadConnector = true;
-        options.token = '';
-        let user = JSON.parse(sessionStorage.getItem('user'));
-        // let a = await diagramServer.queryByUserid({userId:user.id});
-        // console.log(a,"a");
-        let list = await diagramServer.query(options);
-        try {
-          State.getDiagram(list);
-          let otIds = [];
-          for(let id in State.otypes){
-            otIds.push(id);
+        return new Promise(async (resolve,reject)=>{
+
+          let options = {};
+          options.loadField = true;
+          options.loadModel = true;
+          options.loadForm = true;
+          options.loadParentField = true;
+          options.loadParents = true;
+          options.loadConnector = true;
+          options.token = '';
+          let user = JSON.parse(sessionStorage.getItem('user'));
+          let list = await diagramServer.queryByUserid({userId:user.id});
+          // console.log(a,"a");
+          // let list = await diagramServer.query(options);
+          // console.log(list,'diagram')
+          try {
+            State.getDiagram(list);
+            let otIds = [];
+            for(let id in State.otypes){
+              otIds.push(id);
+            }
+            let str = otIds.join(',');
+            this.loading = false;
+            vm.$emit(operate.DiagramReady);
+            console.log('diagramReady');
+            resolve()
+          } catch (err) {
+            console.log(err)
+            vm.$emit(operate.notice,{
+              type:'error',
+              title:'网络错误',
+              message:err.message
+            });
+            reject();
           }
-          let str = otIds.join(',');
-          this.loading = false;
-          vm.$emit(operate.DiagramReady);
-        } catch (err) {
-          console.log(err)
-          vm.$emit(operate.notice,{
-            type:'error',
-            title:'网络错误',
-            message:err.message
-          })
-        }
+
+        })
 
       },
-      getModels(){
-        modelServer.getModel().then(res=>{
+      async getModels(){
+        return new Promise((resolve,reject)=>{
+          modelServer.getModel().then(res=>{
           State.ModelList = res.data.list
         })
         .catch(error=>{
@@ -89,38 +97,57 @@
             type:'error',
             title:'网络错误',
             message:error.message
-          })
+          });
+          reject()
+        })
         })
       },
       getRelationType(){
-        let p1 = dictServer.getDict('relation');
-        let p2 = dictServer.getDict('modelLanguage');
-        let p3 = dictServer.getDict('form');
+          this.loading = true;
+          let user = JSON.parse(sessionStorage.getItem('user'));
+          let p1 = dictServer.getDict('relation');
+          let p2 = dictServer.getDict('modelLanguage');
+          let p3 = dictServer.getDict('form');
+          let p4 = styleServer.getStyles({orderType: "ID",descOrAsc: true,});
+          let p5 = diagramServer.queryByUserid({userId:user.id});
+          let p6 = modelServer.getModel();
 
-        Promise.all([p1,p2,p3]).then(list=>{
-          if(list[0].status==200){
-            State.relationType = list[0].data;
-          }
-          if(list[1].status ==200){
-            State.modelLanguage = list[1].data;
-          }
-          if(list[2].status == 200){
-            State.formType = list[2].data;
-          }
-          
-        }).catch(err=>{
-          vm.$emit(operate.notice,{
-            type:'error',
-            title:'网络错误',
-            message:err.message
+          Promise.all([p1,p2,p3,p4,p5,p6]).then(list=>{
+            if(list[0].status==200){
+              State.relationType = list[0].data;
+            }
+            if(list[1].status ==200){
+              State.modelLanguage = list[1].data;
+            }
+            if(list[2].status == 200){
+              State.formType = list[2].data;
+            }
+            if(list[3].status == 200) {
+              State.styleList = list[3].data.list;
+            }
+            
+            State.getDiagram(list[4]);
+            let otIds = [];
+            for(let id in State.otypes){
+              otIds.push(id);
+            }
+            let str = otIds.join(',');
+
+            if(list[5].status == 200) {
+              State.ModelList = list[5].data.list;
+            }
+            this.loading = false;
+            vm.$emit(operate.DiagramReady);
+            
+          }).catch(err=>{
+            vm.$emit(operate.notice,{
+              type:'error',
+              title:'网络错误',
+              message:err.message
+            })
           })
-        })
 
-      },
-      getStyle(){
-        styleServer.getStyles({orderType: "ID",descOrAsc: true,}).then(res=>{
-          State.styleList = res.data.list;
-        })
+
       }
     }
   }

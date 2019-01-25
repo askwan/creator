@@ -2,8 +2,7 @@ import { t } from '../util/locale';
 import {
     actionAddEntity,
     actionAddMidpoint,
-    actionAddVertex,
-    actionChangePreset
+    actionAddVertex
 } from '../actions';
 
 import { behaviorAddWay } from '../behavior';
@@ -28,9 +27,9 @@ export function modeAddLine(context) {
 
 
     function start(loc) {
-        var startGraph = context.graph(),
-            node = osmNode({ loc: loc }),
-            way = osmWay();
+        var startGraph = context.graph();
+        var node = osmNode({ loc: loc });
+        var way = osmWay();
 
         context.perform(
             actionAddEntity(node),
@@ -38,62 +37,34 @@ export function modeAddLine(context) {
             actionAddVertex(way.id, node.id)
         );
 
-        // var currentPreset=context.presets().item(context.currentId());
-        // context.perform(
-        //     actionAddEntity(node),
-        //     actionAddEntity(way),
-        //     actionAddVertex(way.id, node.id),
-        //     actionChangePreset(way.id, null,currentPreset)
-        // );
-        // context.selectEle(way.id);
-
         context.enter(modeDrawLine(context, way.id, startGraph));
     }
 
 
     function startFromWay(loc, edge) {
-        var startGraph = context.graph(),
-            node = osmNode({ loc: loc }),
-            way = osmWay();
+        var startGraph = context.graph();
+        var node = osmNode({ loc: loc });
+        var way = osmWay();
 
-        // context.perform(
-        //     actionAddEntity(node),
-        //     actionAddEntity(way),
-        //     actionAddVertex(way.id, node.id),
-        //     actionAddMidpoint({ loc: loc, edge: edge }, node)
-        // );
-
-        var currentPreset=context.presets().item(context.currentId());
         context.perform(
             actionAddEntity(node),
             actionAddEntity(way),
             actionAddVertex(way.id, node.id),
-            actionChangePreset(way.id, null,currentPreset)
+            actionAddMidpoint({ loc: loc, edge: edge }, node)
         );
-        // context.selectEle(way.id);
 
         context.enter(modeDrawLine(context, way.id, startGraph));
     }
 
 
     function startFromNode(node) {
-        var startGraph = context.graph(),
-            way = osmWay();
+        var startGraph = context.graph();
+        var way = osmWay();
 
-        // context.perform(
-        //     actionAddEntity(way),
-        //     actionAddVertex(way.id, node.id)
-        // );
-
-
-        var currentPreset=context.presets().item(context.currentId());
         context.perform(
-            // actionAddEntity(node),
             actionAddEntity(way),
-            actionAddVertex(way.id, node.id),
-            actionChangePreset(way.id, null,currentPreset)
+            actionAddVertex(way.id, node.id)
         );
-        // context.selectEle(way.id);
 
         context.enter(modeDrawLine(context, way.id, startGraph));
     }

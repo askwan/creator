@@ -1,5 +1,8 @@
 {
-    "icon": "poi-fountain",
+    "icon": "temaki-fountain",
+    "fields": [
+        "name"
+    ],
     "geometry": [
         "point",
         "area"

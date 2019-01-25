@@ -91,7 +91,7 @@ export function uiFieldWikipedia(field, context) {
             .append('input')
             .attr('type', 'text')
             .attr('class', 'wiki-title')
-            .attr('id', 'preset-input-' + field.id)
+            .attr('id', 'preset-input-' + field.safeid)
             .call(utilNoAuto)
             .merge(title);
 
@@ -108,7 +108,7 @@ export function uiFieldWikipedia(field, context) {
             .append('button')
             .attr('class', 'button-input-action wiki-link minor')
             .attr('tabindex', -1)
-            .call(svgIcon('#icon-out-link'))
+            .call(svgIcon('#iD-icon-out-link'))
             .merge(link);
 
         link

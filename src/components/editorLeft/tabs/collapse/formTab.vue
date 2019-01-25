@@ -82,10 +82,10 @@
 							<el-input type="number" placeholder="X轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].x"></el-input>
 						</el-form-item>
 						<el-form-item label="y轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
-							<el-input type="number" placeholder="Y轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].y"></el-input>
+							<el-input type="number" placeholder="Y轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].z"></el-input>
 						</el-form-item>
 						<el-form-item label="z轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
-							<el-input type="number" placeholder="Z轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].z"></el-input>
+							<el-input type="number" placeholder="Z轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].y"></el-input>
 						</el-form-item>
 						<el-form-item label="海拔：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
 							<el-input type="number" placeholder="地面高度（m）" @change="modifyFormFn(item,index)" v-model="item.style[0].h"></el-input>

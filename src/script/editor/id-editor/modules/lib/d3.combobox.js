@@ -211,6 +211,9 @@ export function d3combobox() {
             idx = -1;
             if (!v) return;
 
+            // Don't autocomplete if user is typing a number - #4935
+            if (!isNaN(parseFloat(v)) && isFinite(v)) return;
+
             var best = -1;
             var suggestion, compare;
 
@@ -268,10 +271,9 @@ export function d3combobox() {
             var rect = node.getBoundingClientRect();
 
             wrapper
-                .style('left', (rect.left + 5-300) + 'px')
+                .style('left', (rect.left + 5) + 'px')
                 .style('width', (rect.width - 10) + 'px')
-                .style('top', rect.height + rect.top - 90+ 'px')
-                .style('z-index',500);
+                .style('top', rect.height + rect.top + 'px');
         }
 
         function select(d, i) {

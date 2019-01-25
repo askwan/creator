@@ -54,3 +54,14 @@ body{
   display: none !important;
 }
 
+.map-3d{
+  .tool{
+    .btn{
+      .show-num{
+        .el-input__inner{
+          padding: 0;
+        }
+      }
+    }
+  }
+}

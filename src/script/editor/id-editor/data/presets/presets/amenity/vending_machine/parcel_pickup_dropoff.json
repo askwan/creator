@@ -1,6 +1,7 @@
 {
-    "icon": "poi-vending-machine",
+    "icon": "temaki-vending_machine",
     "fields": [
+        "vending",
         "operator",
         "payment_multi",
         "currency_multi"
@@ -9,8 +10,8 @@
         "point"
     ],
     "terms": [
-        "parcel",
         "mail",
+        "parcel",
         "pickup"
     ],
     "tags": {
@@ -21,5 +22,5 @@
         "key": "vending",
         "value": "parcel_pickup;parcel_mail_in"
     },
-    "name": "Parcel Pickup/Dropoff Vending Machine"
+    "name": "Parcel Pickup/Dropoff Locker"
 }

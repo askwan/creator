@@ -5,7 +5,7 @@ import osm from '../../psde/form/osm'
 function createOsmNode (geom, tags, org,_t) {
   org = org || {}
   _t = _t || 'vertex';
-  let nid = 'n' + geom.id;
+  let nid = 'n' + geom.uuid;
   // console.log(geom,'geom');
   let node = new osmNode({
     id: nid,
@@ -153,19 +153,6 @@ function transformObject (context,object){
         form.geom = new osm.OsmRelation();
         form.geom.setOsmRelation(context,entity);
       } 
-      // if(form.geotype==21){
-      //   form.geom = new osm.OsmNode(entity);
-      // }else if(form.geotype==22){
-      //   form.geom = new osm.OsmWay();
-      //   form.geom.setOsmWay(context,entity);
-      // }else if(form.geotype == 23){
-      //   form.geom = new osm.OsmWay();
-      //   console.log(entity,'entity')
-      //   form.geom.setOsmWay(context,entity);
-      // }else if(form.geotype==24){
-      //   form.geom = new osm.OsmRelation();
-      //   form.geom.setOsmRelation(context,entity);
-      // }
       form.geom.clearId();
     }
   });

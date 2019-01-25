@@ -90,7 +90,7 @@ function filterValues(allowUpperCase) {
     return function(d) {
         if (d.value.match(/[;,]/) !== null) return false;  // exclude some punctuation
         if (!allowUpperCase && d.value.match(/[A-Z*]/) !== null) return false;  // exclude uppercase letters
-        return parseFloat(d.fraction) > 0.0 || d.in_wiki;
+        return parseFloat(d.fraction) > 0.0;
     };
 }
 
@@ -182,7 +182,9 @@ export default {
     init: function() {
         inflight = {};
         taginfoCache = {};
-        popularKeys = {};
+        popularKeys = {
+            postal_code: true   // #5377
+        };
 
         // Fetch popular keys.  We'll exclude these from `values`
         // lookups because they stress taginfo, and they aren't likely
@@ -205,7 +207,6 @@ export default {
 
 
     keys: function(params, callback) {
-         return ;
         var doRequest = params.debounce ? debouncedRequest : request;
         params = clean(setSort(params));
         params = _extend({ rp: 10, sortname: 'count_all', sortorder: 'desc', page: 1 }, params);
@@ -225,7 +226,6 @@ export default {
 
 
     multikeys: function(params, callback) {
-        return ;
         var doRequest = params.debounce ? debouncedRequest : request;
         params = clean(setSort(params));
         params = _extend({ rp: 25, sortname: 'count_all', sortorder: 'desc', page: 1 }, params);
@@ -266,7 +266,7 @@ export default {
                 // A few OSM keys expect values to contain uppercase values (see #3377).
                 // This is not an exhaustive list (e.g. `name` also has uppercase values)
                 // but these are the fields where taginfo value lookup is most useful.
-                var re = /network|taxon|genus|species|brand|grape_variety|rating|:output|_hours|_times/;
+                var re = /network|taxon|genus|species|brand|grape_variety|royal_cypher|listed_status|booth|rating|stars|:output|_hours|_times/;
                 var allowUpperCase = (params.key.match(re) !== null);
                 var f = filterValues(allowUpperCase);
 

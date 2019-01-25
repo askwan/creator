@@ -1,5 +1,5 @@
 {
-    "icon": "restriction-only-straight-on",
+    "icon": "iD-restriction-only-straight-on",
     "fields": [
         "except"
     ],
@@ -10,5 +10,5 @@
         "type": "restriction",
         "restriction": "only_straight_on"
     },
-    "name": "No Turns"
+    "name": "Only Straight On"
 }

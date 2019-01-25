@@ -164,8 +164,6 @@
             "localized_translation_language": "选择语言",
             "localized_translation_name": "名称"
         },
-        "zoom_in_edit": "放大编辑",
-        "logout": "退出",
         "loading_auth": "连接OpenStreetMap...",
         "status": {
             "error": "无法连接到API。",
@@ -210,7 +208,6 @@
         "background": {
             "title": "背景",
             "description": "设置背景",
-            "percent_brightness": "{opacity}% 亮度",
             "reset": "重置"
         },
         "restore": {
@@ -223,16 +220,12 @@
             "unsaved_changes": "您有未保存的更改"
         },
         "success": {
-            "edited_osm": "编辑OSM！",
-            "just_edited": "你正在编辑的OpenStreetMap！",
-            "view_on_osm": "在OSM上查看",
-            "facebook": "在Facebook上分享"
+            "just_edited": "你正在编辑的OpenStreetMap！"
         },
         "splash": {
             "welcome": "欢迎使用OpenStreetMap编辑器iD",
             "text": "iD编辑器是一个既易用而又功能强大的工具，以助您编辑世界上最好的自由世界地图。这是版本{version}。欲知详情，请浏览{website} 及在{github}上报告程序错误。",
-            "walkthrough": "开始练习",
-            "start": "现在编辑"
+            "walkthrough": "开始练习"
         },
         "source_switch": {
             "live": "运行模式",
@@ -250,10 +243,6 @@
             "untagged_area": "未标记的面",
             "tag_suggests_area": "{tag}这个标签建议使用在面上，但是他不是一个面",
             "deprecated_tags": "已过时标签：{tags}"
-        },
-        "zoom": {
-            "in": "放大",
-            "out": "缩小"
         },
         "cannot_zoom": "在当前模式下无法进一步缩小。",
         "help": {
@@ -296,27 +285,21 @@
                 "access": {
                     "options": {
                         "designated": {
-                            "description": "只限标志指定或特定本地法律容许人士进入",
                             "title": "特定的"
                         },
                         "destination": {
-                            "description": "只限前往目的地人士进入",
                             "title": "目的地"
                         },
                         "no": {
-                            "description": "禁止一般公众进入",
                             "title": "禁止的"
                         },
                         "permissive": {
-                            "description": "容许进入，直至拥有者撇回许可",
                             "title": "获许可进入"
                         },
                         "private": {
-                            "description": "须拥有者个别批准，方可进入",
                             "title": "私人"
                         },
                         "yes": {
-                            "description": "按法律及路权，有权使用",
                             "title": "允许的"
                         }
                     },
@@ -361,16 +344,6 @@
                 "capacity": {
                     "label": "容量",
                     "placeholder": "50, 100, 200..."
-                },
-                "cardinal_direction": {
-                    "label": "方向"
-                },
-                "clock_direction": {
-                    "label": "方向",
-                    "options": {
-                        "anticlockwise": "逆时针",
-                        "clockwise": "顺时针"
-                    }
                 },
                 "collection_times": {
                     "label": "收集时间"
@@ -497,7 +470,6 @@
                     "label": "类型"
                 },
                 "phone": {
-                    "label": "手机",
                     "placeholder": "+31 42 123 4567"
                 },
                 "place": {
@@ -770,9 +742,6 @@
                 },
                 "highway/bridleway": {
                     "name": "马道"
-                },
-                "highway/bus_stop": {
-                    "name": "公交车站"
                 },
                 "highway/cycleway": {
                     "name": "自行车道"
@@ -1107,14 +1076,8 @@
                 "railway/monorail": {
                     "name": "单轨铁路"
                 },
-                "railway/platform": {
-                    "name": "站台"
-                },
                 "railway/rail": {
                     "name": "铁轨"
-                },
-                "railway/station": {
-                    "name": "火车站"
                 },
                 "railway/subway": {
                     "name": "地铁"
@@ -1280,9 +1243,6 @@
                 },
                 "tourism/caravan_site": {
                     "name": "房车营地"
-                },
-                "tourism/chalet": {
-                    "name": "木屋"
                 },
                 "tourism/guest_house": {
                     "name": "宾馆"

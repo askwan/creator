@@ -1,6 +1,7 @@
 {
-    "icon": "pitch",
+    "icon": "maki-skateboard",
     "fields": [
+        "name",
         "surface",
         "lit"
     ],

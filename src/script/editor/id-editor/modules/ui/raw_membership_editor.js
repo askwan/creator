@@ -24,7 +24,7 @@ import { osmEntity, osmRelation } from '../osm';
 import { services } from '../services';
 import { svgIcon } from '../svg';
 import { uiDisclosure } from './disclosure';
-import { utilDisplayName, utilNoAuto } from '../util';
+import { utilDisplayName, utilNoAuto, utilHighlightEntity } from '../util';
 
 
 export function uiRawMembershipEditor(context) {
@@ -35,14 +35,12 @@ export function uiRawMembershipEditor(context) {
 
     function selectRelation(d) {
         d3_event.preventDefault();
-        console.log(d,'selectRelation')
         context.enter(modeSelect(context, [d.relation.id]));
     }
 
 
     function changeRole(d) {
         var role = d3_select(this).property('value');
-        console.log(d,role,'change')
         context.perform(
             actionChangeMember(d.relation.id, _extend({}, d.member, { role: role }), d.index),
             t('operations.change_role.annotation')
@@ -54,7 +52,7 @@ export function uiRawMembershipEditor(context) {
         _showBlank = false;
 
         var member = { id: _entityID, type: context.entity(_entityID).type, role: role };
-console.log(d,role,member,'addMembership')
+
         if (d.relation) {
             context.perform(
                 actionAddMember(d.relation.id, member),
@@ -63,7 +61,6 @@ console.log(d,role,member,'addMembership')
 
         } else {
             var relation = osmRelation();
-            console.log(relation,'relation')
             context.perform(
                 actionAddEntity(relation),
                 actionAddMember(relation.id, member),
@@ -176,6 +173,16 @@ console.log(d,role,member,'addMembership')
                 .append('li')
                 .attr('class', 'member-row member-row-normal form-field');
 
+            enter.each(function(d){
+                // highlight the relation in the map while hovering on the list item
+                d3_select(this).on('mouseover', function() {
+                    utilHighlightEntity(d.relation.id, true, context);
+                });
+                d3_select(this).on('mouseout', function() {
+                    utilHighlightEntity(d.relation.id, false, context);
+                });
+            });
+
             var label = enter
                 .append('label')
                 .attr('class', 'form-label')
@@ -211,7 +218,7 @@ console.log(d,role,member,'addMembership')
                 .attr('tabindex', -1)
                 .attr('class', 'remove button-input-action member-delete minor')
                 .on('click', deleteMembership)
-                .call(svgIcon('#operation-delete'));
+                .call(svgIcon('#iD-operation-delete'));
 
             if (taginfo) {
                 enter.each(bindTypeahead);
@@ -248,7 +255,7 @@ console.log(d,role,member,'addMembership')
                 .attr('tabindex', -1)
                 .attr('class', 'remove button-input-action member-delete minor')
                 .on('click', deleteMembership)
-                .call(svgIcon('#operation-delete'));
+                .call(svgIcon('#iD-operation-delete'));
 
             newrow = newrow
                 .merge(enter);
@@ -271,7 +278,7 @@ console.log(d,role,member,'addMembership')
                 .merge(addrel);
 
             addrel
-                .call(svgIcon('#icon-plus', 'light'))
+                .call(svgIcon('#iD-icon-plus', 'light'))
                 .on('click', function() {
                     _showBlank = true;
                     content(wrap);
@@ -280,7 +287,6 @@ console.log(d,role,member,'addMembership')
 
 
             function onAccept(d) {
-                console.log(d,role,'onAccept')
                 var role = list.selectAll('.member-row-new .member-role').property('value');
                 addMembership(d, role);
             }

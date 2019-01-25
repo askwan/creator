@@ -39,7 +39,7 @@ export function uiFieldLocalized(field, context) {
         input = input.enter()
             .append('input')
             .attr('type', 'text')
-            .attr('id', 'preset-input-' + field.id)
+            .attr('id', 'preset-input-' + field.safeid)
             .attr('class', 'localized-main')
             .attr('placeholder', field.placeholder())
             .call(utilNoAuto)
@@ -67,7 +67,7 @@ export function uiFieldLocalized(field, context) {
             .append('button')
             .attr('class', 'button-input-action localized-add minor')
             .attr('tabindex', -1)
-            .call(svgIcon('#icon-plus'))
+            .call(svgIcon('#iD-icon-plus'))
             .call(tooltip()
                 .title(t('translate.translate'))
                 .placement('left'))
@@ -208,7 +208,7 @@ export function uiFieldLocalized(field, context) {
                             .style('max-height','0px')
                             .remove();
                     })
-                    .call(svgIcon('#operation-delete'));
+                    .call(svgIcon('#iD-operation-delete'));
 
                 wrap
                     .append('input')

@@ -1,6 +1,7 @@
 {
-    "icon": "basketball",
+    "icon": "maki-volleyball",
     "fields": [
+        "name",
         "surface",
         "lit"
     ],

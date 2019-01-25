@@ -186,22 +186,7 @@ State.managerHeight = function(editor,sobject){
     if(minHeightAttr.value!=0) context.features().disable(name);
     this.heights[name] = [sobject];
   }
-  
-  // console.log(this.heights,'heights')
 
-  // if(heightAttr){
-  //   if(this.heights[String(heightAttr.value)]){
-  //     if(!this.heights[String(heightAttr.value)].find(el=>el.id==sobject.id)){
-  //       this.heights[String(heightAttr.value)].push(sobject);
-  //     }
-  //   }else{
-  //     context.features().setHeightFeature(heightAttr);
-  //     context.features().disable(heightAttr.value);
-  //     this.heights[String(heightAttr.value)] = [sobject];
-  //   }
-  // }else{
-  //   this.heights['0'].push(sobject);
-  // }
   return sobject;
 }
 

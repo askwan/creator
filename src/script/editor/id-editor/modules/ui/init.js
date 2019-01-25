@@ -10,7 +10,6 @@ import { tooltip } from '../util/tooltip';
 
 import { behaviorHash } from '../behavior';
 import { modeBrowse } from '../modes';
-import { services } from '../services';
 import { svgDefs, svgIcon } from '../svg';
 import { utilGetDimensions } from '../util/dimensions';
 
@@ -29,6 +28,7 @@ import { uiMapData } from './map_data';
 import { uiMapInMap } from './map_in_map';
 import { uiModes } from './modes';
 import { uiNotice } from './notice';
+import { uiPhotoviewer } from './photoviewer';
 import { uiRestore } from './restore';
 import { uiSave } from './save';
 import { uiScale } from './scale';
@@ -37,6 +37,7 @@ import { uiSidebar } from './sidebar';
 import { uiSpinner } from './spinner';
 import { uiSplash } from './splash';
 import { uiStatus } from './status';
+import { uiTooltipHtml } from './tooltipHtml';
 import { uiUndoRedo } from './undo_redo';
 import { uiVersion } from './version';
 import { uiZoom } from './zoom';
@@ -44,7 +45,9 @@ import { uiCmd } from './cmd';
 
 
 export function uiInit(context) {
-    var uiInitCounter = 0;
+    var _initCounter = 0;
+    var _initCallback;
+    var _needWidth = {};
 
 
     function render(container) {
@@ -53,38 +56,22 @@ export function uiInit(context) {
 
         var map = context.map();
 
-        var hash = behaviorHash(context);
-        hash();
-
-        if (!hash.hadHash) {
-            map.centerZoom([103.6249284647,34.7472541716], 9);
-            // map.centerZoom([120.754, 31.628],9);
-        }
-
         container
             .append('svg')
             .attr('id', 'defs')
             .call(svgDefs(context));
 
-      /*   ui.sidebar = uiSidebar(context);
-        // console.log(d3_select("#property-root").nodes());
-        setTimeout(()=>{
-            d3_select("#property-root").append("div")
-                .attr("id","sidebar")
-                .call(ui.sidebar);
-        },200) */
-            
-        //  container
+        // container
         //     .append('div')
         //     .attr('id', 'sidebar')
-        //     .attr('class', 'col4')
-        //     .call(ui.sidebar); 
+        //     .call(ui.sidebar);
 
         var content = container
             .append('div')
             .attr('id', 'content')
             .attr('class', 'active');
 
+        // Top toolbar
         var bar = content
             .append('div')
             .attr('id', 'bar')
@@ -96,77 +83,98 @@ export function uiInit(context) {
             .attr('dir', 'ltr')
             .call(map);
 
-        content
-            .call(uiMapInMap(context))
-            .call(uiInfo(context))
-            .call(uiNotice(context));
+        // Leading area button group (Sidebar toggle)
+        /*var leadingArea = bar
+            .append('div')
+            .attr('class', 'tool-group leading-area');
 
+        var sidebarButton = leadingArea
+            .append('div')
+            .append('button')
+            .attr('class', 'sidebar-toggle')
+            .attr('tabindex', -1)
+            .on('click', ui.sidebar.toggle)
+            .call(tooltip()
+                .placement('bottom')
+                .html(true)
+                .title(uiTooltipHtml(t('sidebar.tooltip'), t('sidebar.key')))
+            );
+
+        var iconSuffix = textDirection === 'rtl' ? 'right' : 'left';
+        sidebarButton
+            .call(svgIcon('#iD-icon-sidebar-' + iconSuffix));
+
+        leadingArea
+            .append('div')
+            .attr('class', 'full-screen bar-group')
+            .call(uiFullScreen(context));*/
+
+
+        // Center area button group (Point/Line/Area/Note mode buttons)
         bar
             .append('div')
-            .attr('class', 'spacer col4')
-            .style('width','0px');
-
-         var limiter = bar.append('div')
-            .attr('class', 'limiter');
-
-        limiter
+            .attr('class', 'tool-group center-area')
             .append('div')
-            .attr('class', 'button-wrap joined col3')
-            .call(uiModes(context), limiter);
+            .attr('class', 'modes joined')
+            .call(uiModes(context), bar);
 
-        limiter
+
+        // Trailing area button group (Undo/Redo save buttons)
+        var trailingArea = bar
             .append('div')
-            .attr('class', 'button-wrap joined col1')
+            .attr('class', 'tool-group trailing-area');
+
+        trailingArea
+            .append('div')
+            .attr('class', 'joined')
             .call(uiUndoRedo(context));
 
-        limiter
+        trailingArea
             .append('div')
-            .attr('class', 'button-wrap col1')
+            .attr('class', 'save-wrap')
             .call(uiSave(context));
 
-        bar
-            .append('div')
-            .attr('class', 'full-screen')
-            .call(uiFullScreen(context));
 
+        // For now, just put spinner at the end of the #bar
         bar
             .append('div')
             .attr('class', 'spinner')
             .call(uiSpinner(context));
 
 
-        //右边栏控制按钮
+        // Map controls (appended to #bar, but absolutely positioned)
         var controls = bar
             .append('div')
             .attr('class', 'map-controls');
 
-           	// controls
-            //    .append('div')
-            //    .attr('class', 'map-control zoombuttons')
-            //    .call(uiZoom(context));
+        // controls
+        //     .append('div')
+        //     .attr('class', 'map-control zoombuttons')
+        //     .call(uiZoom(context));
 
-           	/*controls
-               .append('div')
-               .attr('class', 'map-control geolocate-control')
-               .call(uiGeolocate(context));
+        // controls
+        //     .append('div')
+        //     .attr('class', 'map-control geolocate-control')
+        //     .call(uiGeolocate(context));
 
-           	controls
-               .append('div')
-               .attr('class', 'map-control background-control')
-               .call(uiBackground(context));*/
+        // controls
+        //     .append('div')
+        //     .attr('class', 'map-control background-control')
+        //     .call(uiBackground(context));
 
-        	controls
-	            .append('div')
-	            .attr('class', 'map-control map-data-control')
-	            .style('display','none')
-	            .call(uiMapData(context));
+        controls
+            .append('div')
+            .attr('class', 'map-control map-data-control')
+            .style('display','none')
+            .call(uiMapData(context));
 
-           	/*controls
-               .append('div')
-               .attr('class', 'map-control help-control')
-               .call(uiHelp(context));*/
+        // controls
+        //     .append('div')
+        //     .attr('class', 'map-control help-control')
+        //     .call(uiHelp(context));
 
 
+        // Add attribution and footer
         var about = content
             .append('div')
             .attr('id', 'about');
@@ -177,10 +185,10 @@ export function uiInit(context) {
         //     .attr('dir', 'ltr')
         //     .call(uiAttribution(context));
 
-        about
-            .append('div')
-            .attr('class', 'api-status')
-            .call(uiStatus(context));
+        // about
+        //     .append('div')
+        //     .attr('class', 'api-status')
+        //     .call(uiStatus(context));
 
 
         var footer = about
@@ -203,21 +211,21 @@ export function uiInit(context) {
             .attr('id', 'scale-block')
             .call(uiScale(context));
 
-        /* var aboutList = footerWrap
-            .append('div')
-            .attr('id', 'info-block')
-            .append('ul')
-            .attr('id', 'about-list'); */
+        // var aboutList = footerWrap
+        //     .append('div')
+        //     .attr('id', 'info-block')
+        //     .append('ul')
+        //     .attr('id', 'about-list');
 
         // if (!context.embed()) {
         //     aboutList
         //         .call(uiAccount(context));
         // }
 
-      /*   aboutList
-            .append('li')
-            .attr('class', 'version')
-            .call(uiVersion(context)); */
+        // aboutList
+        //     .append('li')
+        //     .attr('class', 'version')
+        //     .call(uiVersion(context));
 
         // var issueLinks = aboutList
         //     .append('li');
@@ -227,7 +235,7 @@ export function uiInit(context) {
         //     .attr('target', '_blank')
         //     .attr('tabindex', -1)
         //     .attr('href', 'https://github.com/openstreetmap/iD/issues')
-        //     .call(svgIcon('#icon-bug', 'light'))
+        //     .call(svgIcon('#iD-icon-bug', 'light'))
         //     .call(tooltip().title(t('report_a_bug')).placement('top'));
 
         // issueLinks
@@ -235,7 +243,7 @@ export function uiInit(context) {
         //     .attr('target', '_blank')
         //     .attr('tabindex', -1)
         //     .attr('href', 'https://github.com/openstreetmap/iD/blob/master/CONTRIBUTING.md#translating')
-        //     .call(svgIcon('#icon-translate', 'light'))
+        //     .call(svgIcon('#iD-icon-translate', 'light'))
         //     .call(tooltip().title(t('help_translate')).placement('top'));
 
         // aboutList
@@ -251,23 +259,33 @@ export function uiInit(context) {
         //     .call(uiContributors(context));
 
 
-        var photoviewer = content
+        // Setup map dimensions and move map to initial center/zoom.
+        // This should happen after #content and toolbars exist.
+        ui.onResize();
+
+        var hash = behaviorHash(context);
+        hash();
+        if (!hash.hadHash) {
+            map.centerZoom([0, 0], 2);
+        }
+
+
+        // Add absolutely-positioned elements that sit on top of the map
+        // This should happen after the map is ready (center/zoom)
+        content
+            .call(uiMapInMap(context))
+            .call(uiInfo(context))
+            .call(uiNotice(context));
+
+        content
             .append('div')
             .attr('id', 'photoviewer')
             .classed('al', true)       // 'al'=left,  'ar'=right
-            .classed('hide', true);
+            .classed('hide', true)
+            .call(ui.photoviewer);
 
-        photoviewer
-            .append('button')
-            .attr('class', 'thumb-hide')
-            .on('click', function () {
-                if (services.mapillary) { services.mapillary.hideViewer(); }
-                if (services.openstreetcam) { services.openstreetcam.hideViewer(); }
-            })
-            .append('div')
-            .call(svgIcon('#icon-close'));
- 
 
+        // Bind events
         // window.onbeforeunload = function() {
         //     return context.save();
         // };
@@ -276,49 +294,29 @@ export function uiInit(context) {
             context.history().unlock();
         };
 
-        var mapDimensions = map.dimensions();
-
-
-        function onResize() {
-            mapDimensions = utilGetDimensions(content, true);
-            map.dimensions(mapDimensions);
-        }
-
         d3_select(window)
-            .on('resize.editor', onResize);
-
-        onResize();
-
-        function pan(d) {
-            return function() {
-                d3_event.preventDefault();
-                context.pan(d, 100);
-            };
-        }
+            .on('resize.editor', ui.onResize);
 
 
-        // pan amount
-        var pa = 80;
-
+        var panPixels = 80;
         var keybinding = d3_keybinding('main')
             .on('⌫', function() { d3_event.preventDefault(); })
-            .on('←', pan([pa, 0]))
-            .on('↑', pan([0, pa]))
-            .on('→', pan([-pa, 0]))
-            .on('↓', pan([0, -pa]))
-            .on(['⇧←', uiCmd('⌘←')], pan([mapDimensions[0], 0]))
-            .on(['⇧↑', uiCmd('⌘↑')], pan([0, mapDimensions[1]]))
-            .on(['⇧→', uiCmd('⌘→')], pan([-mapDimensions[0], 0]))
-            .on(['⇧↓', uiCmd('⌘↓')], pan([0, -mapDimensions[1]]));
+            .on(t('sidebar.key'), ui.sidebar.toggle)
+            .on('←', pan([panPixels, 0]))
+            .on('↑', pan([0, panPixels]))
+            .on('→', pan([-panPixels, 0]))
+            .on('↓', pan([0, -panPixels]))
+            .on(['⇧←', uiCmd('⌘←')], pan([map.dimensions()[0], 0]))
+            .on(['⇧↑', uiCmd('⌘↑')], pan([0, map.dimensions()[1]]))
+            .on(['⇧→', uiCmd('⌘→')], pan([-map.dimensions()[0], 0]))
+            .on(['⇧↓', uiCmd('⌘↓')], pan([0, -map.dimensions()[1]]));
 
         d3_select(document)
             .call(keybinding);
 
         context.enter(modeBrowse(context));
 
-         //初始化闪屏或恢复编辑数据，当前禁用改功能，
-
-        //  if (!uiInitCounter++) {
+        // if (!_initCounter++) {
         //     if (!hash.startWalkthrough) {
         //         context.container()
         //             .call(uiSplash(context))
@@ -327,10 +325,10 @@ export function uiInit(context) {
 
         //     context.container()
         //         .call(uiShortcuts(context));
-        // } 
+        // }
 
-        var osm = context.connection(),
-            auth = uiLoading(context).message(t('loading_auth')).blocking(true);
+        var osm = context.connection();
+        var auth = uiLoading(context).message(t('loading_auth')).blocking(true);
 
         if (osm && auth) {
             osm
@@ -343,22 +341,29 @@ export function uiInit(context) {
                 });
         }
 
-        uiInitCounter++;
+        _initCounter++;
 
-        /* if (hash.startWalkthrough) {
+        if (hash.startWalkthrough) {
             hash.startWalkthrough = false;
             context.container().call(uiIntro(context));
-        } */
+        }
+
+
+        function pan(d) {
+            return function() {
+                d3_event.preventDefault();
+                context.pan(d, 100);
+            };
+        }
     }
 
 
-    var renderCallback;
-
     function ui(node, callback) {
-        renderCallback = callback;
+        _initCallback = callback;
         var container = d3_select(node);
         context.container(container);
         context.loadLocale(function(err) {
+            console.log(err)
             if (!err) {
                 render(container);
             }
@@ -375,13 +380,58 @@ export function uiInit(context) {
             if (!err) {
                 context.container().selectAll('*').remove();
                 render(context.container());
-                if (renderCallback) renderCallback();
+                if (_initCallback) _initCallback();
             }
         });
     };
 
 
     ui.sidebar = uiSidebar(context);
+
+    ui.photoviewer = uiPhotoviewer(context);
+
+    ui.onResize = function(withPan) {
+        var map = context.map();
+        var content = d3_select('#content');
+        var mapDimensions = utilGetDimensions(content, true);
+
+        if (withPan !== undefined) {
+            map.redrawEnable(false);
+            map.pan(withPan);
+            map.redrawEnable(true);
+        }
+        map.dimensions(mapDimensions);
+
+        ui.photoviewer.onMapResize();
+
+        // check if header or footer have overflowed
+        ui.checkOverflow('#bar');
+        ui.checkOverflow('#footer');
+    };
+
+
+    // Call checkOverflow when resizing or whenever the contents change.
+    ui.checkOverflow = function(selector, reset) {
+        if (reset) {
+            delete _needWidth[selector];
+        }
+
+        var element = d3_select(selector);
+        var scrollWidth = element.property('scrollWidth');
+        var clientWidth = element.property('clientWidth');
+        var needed = _needWidth[selector] || scrollWidth;
+
+        if (scrollWidth > clientWidth) {    // overflow happening
+            element.classed('narrow', true);
+            if (!_needWidth[selector]) {
+                _needWidth[selector] = scrollWidth;
+            }
+
+        } else if (scrollWidth >= needed) {
+            element.classed('narrow', false);
+        }
+    };
+
 
     return ui;
 }

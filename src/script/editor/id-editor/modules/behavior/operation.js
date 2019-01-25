@@ -9,7 +9,8 @@ import { uiFlash } from '../ui';
 
 /* Creates a keybinding behavior for an operation */
 export function behaviorOperation() {
-    var _operation, keybinding;
+    var keybinding;
+    var _operation;
 
     var behavior = function () {
         if (_operation && _operation.available()) {
@@ -22,7 +23,7 @@ export function behaviorOperation() {
                 if (disabled) {
                     flash = uiFlash()
                         .duration(4000)
-                        .iconName('#operation-' + _operation.id)
+                        .iconName('#iD-operation-' + _operation.id)
                         .iconClass('operation disabled')
                         .text(_operation.tooltip);
 
@@ -31,7 +32,7 @@ export function behaviorOperation() {
                 } else {
                     flash = uiFlash()
                         .duration(2000)
-                        .iconName('#operation-' + _operation.id)
+                        .iconName('#iD-operation-' + _operation.id)
                         .iconClass('operation')
                         .text(_operation.annotation() || _operation.title);
 

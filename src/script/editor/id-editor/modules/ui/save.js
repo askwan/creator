@@ -1,6 +1,5 @@
 import { interpolateRgb as d3_interpolateRgb } from 'd3-interpolate';
 
-
 import {
     event as d3_event,
     select as d3_select
@@ -27,19 +26,11 @@ export function uiSave(context) {
     }
 
 
-    function editable() {
-        var mode = context.mode();
-        return context.editable() && mode && mode.id !== 'save';
-    }
-
-
     function save() {
         d3_event.preventDefault();
         // if (!context.inIntro() && !saving() && history.hasChanges()) {
         //     context.enter(modeSave(context));
-        // };
-
-        //保存数据
+        // }
         context.saveObjects(context);
     }
 
@@ -72,16 +63,14 @@ export function uiSave(context) {
                 );
 
             var background = getBackground(numChanges);
-// console.log(numChanges,'numchanges')
-            // button
-                // .classed('disabled', !editable())
-                // .classed('has-count', numChanges > 0)
-                // .style('background', background);
 
-            // button.select('span.count')
-            //     .text(numChanges)
-            //     .style('background', background)
-            //     .style('border-color', background);
+            button
+                .classed('disabled', numChanges === 0)
+                .classed('has-count', numChanges > 0)
+                .style('background', background);
+
+            button.select('span.count')
+                .text(numChanges);
         }
 
 
@@ -92,22 +81,24 @@ export function uiSave(context) {
 
         var button = selection
             .append('button')
-            .attr('class', 'save col12')
-            .classed('disabled',!editable())
+            .attr('class', 'save')
             .attr('tabindex', -1)
+            .style('width','90px')
             .on('click', save)
             .call(tooltipBehavior);
 
         button
-            .call(svgIcon('#icon-save', 'pre-text'))
+            .call(svgIcon('#iD-icon-save'));
+
+        button
             .append('span')
             .attr('class', 'label')
             .text(t('save.title'));
 
-        button
-            .append('span')
-            .attr('class', 'count')
-            .text('0');
+        // button
+        //     .append('span')
+        //     .attr('class', 'count')
+        //     .text('0');
 
         updateCount();
 

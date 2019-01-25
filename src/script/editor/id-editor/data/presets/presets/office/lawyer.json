@@ -1,5 +1,5 @@
 {
-    "icon": "suitcase",
+    "icon": "fas-balance-scale",
     "fields": [
         "name",
         "address",

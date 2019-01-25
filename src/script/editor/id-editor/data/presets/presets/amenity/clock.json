@@ -1,11 +1,12 @@
 {
-    "icon": "poi-clock",
+    "icon": "temaki-clock",
     "fields": [
         "name",
         "support",
         "display",
         "visibility",
-        "date"
+        "date",
+        "faces"
     ],
     "geometry": [
         "point",

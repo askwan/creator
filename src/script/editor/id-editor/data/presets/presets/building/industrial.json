@@ -1,9 +1,10 @@
 {
-    "icon": "industry",
+    "icon": "maki-industry",
     "fields": [
         "name",
         "address",
-        "levels"
+        "levels",
+        "height"
     ],
     "geometry": [
         "area"

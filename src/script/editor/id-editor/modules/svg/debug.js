@@ -1,25 +1,18 @@
+import _values from 'lodash-es/values';
+
 import { select as d3_select } from 'd3-selection';
 
-import { geoPolygonIntersectsPolygon } from '../geo';
 import { data, dataImperial, dataDriveLeft } from '../../data';
 import { svgPath } from './index';
 
 
 export function svgDebug(projection, context) {
 
-    function multipolygons(imagery) {
-        return imagery.map(function(data) {
-            return {
-                type: 'MultiPolygon',
-                coordinates: [ data.polygon ]
-            };
-        });
-    }
-
     function drawDebug(selection) {
         var showsTile = context.getDebug('tile');
         var showsCollision = context.getDebug('collision');
         var showsImagery = context.getDebug('imagery');
+        var showsCommunity = context.getDebug('community');
         var showsImperial = context.getDebug('imperial');
         var showsDriveLeft = context.getDebug('driveLeft');
         var showsTouchTargets = context.getDebug('target');
@@ -33,6 +26,9 @@ export function svgDebug(projection, context) {
         }
         if (showsImagery) {
             debugData.push({ class: 'orange', label: 'imagery' });
+        }
+        if (showsCommunity) {
+            debugData.push({ class: 'blue', label: 'community' });
         }
         if (showsImperial) {
             debugData.push({ class: 'cyan', label: 'imperial' });
@@ -71,7 +67,7 @@ export function svgDebug(projection, context) {
 
 
         var layer = selection.selectAll('.layer-debug')
-            .data(showsImagery || showsImperial || showsDriveLeft ? [0] : []);
+            .data(showsImagery || showsCommunity || showsImperial || showsDriveLeft ? [0] : []);
 
         layer.exit()
             .remove();
@@ -83,16 +79,11 @@ export function svgDebug(projection, context) {
 
 
         var extent = context.map().extent();
-        var dataImagery = data.imagery || [];
-        var availableImagery = showsImagery && multipolygons(dataImagery.filter(function(source) {
-            if (!source.polygon) return false;
-            return source.polygon.some(function(polygon) {
-                return geoPolygonIntersectsPolygon(polygon, extent, true);
-            });
-        }));
+        var matchImagery = (showsImagery && data.imagery.query.bbox(extent.rectangle(), true)) || [];
+        var features = matchImagery.map(function(d) { return data.imagery.features[d.id]; });
 
         var imagery = layer.selectAll('path.debug-imagery')
-            .data(showsImagery ? availableImagery : []);
+            .data(features);
 
         imagery.exit()
             .remove();
@@ -100,6 +91,17 @@ export function svgDebug(projection, context) {
         imagery.enter()
             .append('path')
             .attr('class', 'debug-imagery debug orange');
+
+
+        var community = layer.selectAll('path.debug-community')
+            .data(showsCommunity ? _values(data.community.features) : []);
+
+        community.exit()
+            .remove();
+
+        community.enter()
+            .append('path')
+            .attr('class', 'debug-community debug blue');
 
 
         var imperial = layer

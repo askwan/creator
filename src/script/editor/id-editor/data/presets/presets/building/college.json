@@ -1,9 +1,10 @@
 {
-    "icon": "building",
+    "icon": "maki-building",
     "fields": [
         "name",
         "address",
-        "levels"
+        "levels",
+        "height"
     ],
     "geometry": [
         "area"

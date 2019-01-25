@@ -69,8 +69,8 @@ export function rendererFeatures(context,otype) {
 
     function update() {
         if (!window.mocha) {
-            var q = utilStringQs(window.location.hash.substring(1));
-            var disabled = features.disabled();
+            // var q = utilStringQs(window.location.hash.substring(1));
+            // var disabled = features.disabled();
             // if (disabled.length) {
             //     q.disable_features = disabled.join(',');
             // } else {
@@ -123,7 +123,6 @@ export function rendererFeatures(context,otype) {
         return (
             !!entity.tags['building:part'] ||
             (!!entity.tags.building && entity.tags.building !== 'no') ||
-            entity.tags.amenity === 'shelter' ||
             entity.tags.parking === 'multi-storey' ||
             entity.tags.parking === 'sheds' ||
             entity.tags.parking === 'carports' ||
@@ -138,7 +137,13 @@ export function rendererFeatures(context,otype) {
     });
 
     defineFeature('boundaries', function isBoundary(entity) {
-        return !!entity.tags.boundary;
+        return (
+            !!entity.tags.boundary
+        ) && !(
+            traffic_roads[entity.tags.highway] ||
+            service_roads[entity.tags.highway] ||
+            paths[entity.tags.highway]
+        );
     });
 
     defineFeature('water', function isWater(entity) {
@@ -152,10 +157,6 @@ export function rendererFeatures(context,otype) {
             entity.tags.landuse === 'reservoir' ||
             entity.tags.landuse === 'salt_pond'
         );
-    });
-
-    defineFeature('area',function(entity,b,geometry){
-        return geometry=='area';
     });
 
     defineFeature('rail', function isRail(entity) {
@@ -196,7 +197,6 @@ export function rendererFeatures(context,otype) {
     defineFeature('others', function isOther(entity, resolver, geometry) {
         return (geometry === 'line' || geometry === 'area');
     });
-    
 
     for(let key in otype){
         defineFeature(key,function (entity){
@@ -498,12 +498,13 @@ export function rendererFeatures(context,otype) {
     };
 
 
-    features.init = function(otype) {
+    features.init = function() {
         // var storage = context.storage('disabled-features');
         // if (storage) {
         //     var storageDisabled = storage.replace(/;/g, ',').split(',');
         //     storageDisabled.forEach(features.disable);
         // }
+
         // var q = utilStringQs(window.location.hash.substring(1));
         // if (q.disable_features) {
         //     var hashDisabled = q.disable_features.replace(/;/g, ',').split(',');
@@ -512,14 +513,8 @@ export function rendererFeatures(context,otype) {
     };
 
     features.setFeature = function(sobject){
-        // defineFeature(sobject.id,function(entity){
-        //     let forms = sobject.forms;
-        //     let aim = forms.find(el=>el.geom==entity.id);
-        //     if(aim) return true;
-        // });
         defineFeature(sobject.id,function(entity){
             if(entity.orgData&&entity.orgData.id){
-                // console.log(entity.orgData,'orgData')
                 return entity.orgData.parents.find(el=>el.id==sobject.id)||entity.orgData.id==sobject.id;
             }
         })
@@ -527,7 +522,6 @@ export function rendererFeatures(context,otype) {
 
     features.setHeightFeature = function(minHeight,height){
         let name = minHeight.value+"_"+height.value;
-        // console.log(name)
         defineFeature(name,function(entity){
             let orgData = entity.orgData||{attributes:[]};
             let _height = orgData.attributes.find(el=>el.name=='height')||{value:0,name:'height'};

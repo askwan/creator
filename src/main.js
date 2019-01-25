@@ -6,18 +6,18 @@ import router from './router'
 
 import ElementUI from 'element-ui';
 
-import "@/script/editor/id-editor/css/00_reset.css";
-import "@/script/editor/id-editor/css/20_map.css";
-import "@/script/editor/id-editor/css/25_areas.css";
-import "@/script/editor/id-editor/css/30_highways.css";
-import "@/script/editor/id-editor/css/35_aeroways.css";
-import "@/script/editor/id-editor/css/40_railways.css";
-import "@/script/editor/id-editor/css/45_waterways.css";
-import "@/script/editor/id-editor/css/50_misc.css";
-import "@/script/editor/id-editor/css/55_cursors.css";
-import "@/script/editor/id-editor/css/60_photos.css";
-import "@/script/editor/id-editor/css/70_fills.css";
-import "@/script/editor/id-editor/css/80_app.css";
+// import "@/script/editor/id-editor/css/00_reset.css";
+// import "@/script/editor/id-editor/css/20_map.css";
+// import "@/script/editor/id-editor/css/25_areas.css";
+// import "@/script/editor/id-editor/css/30_highways.css";
+// import "@/script/editor/id-editor/css/35_aeroways.css";
+// import "@/script/editor/id-editor/css/40_railways.css";
+// import "@/script/editor/id-editor/css/45_waterways.css";
+// import "@/script/editor/id-editor/css/50_misc.css";
+// import "@/script/editor/id-editor/css/55_cursors.css";
+// import "@/script/editor/id-editor/css/60_photos.css";
+// import "@/script/editor/id-editor/css/70_fills.css";
+// import "@/script/editor/id-editor/css/80_app.css";
 
 
 

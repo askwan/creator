@@ -1,9 +1,10 @@
 {
-    "icon": "poi-ruins",
+    "icon": "temaki-ruins",
     "fields": [
         "name",
         "address",
-        "levels"
+        "levels",
+        "height"
     ],
     "geometry": [
         "area"

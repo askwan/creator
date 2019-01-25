@@ -52,18 +52,27 @@ export default class SObject extends DObject {
           if (el.style.length==0) {
             el.style = [];
             el.style[0] = {
-              scale: "",
-              smallPX: "",
-              x: "",
-              y: "",
-              z: "",
-              h:""
+              scale: 1,
+              smallPX: 0,
+              x: 0,
+              y: 0,
+              z: 0,
+              h:0
             };
           }
         } else {
         }
         if(typeof el.style == "string" && el.style != "") {
           el.style = JSON.parse(el.style);
+          if(el.style[0] && typeof el.style[0] == 'object'){
+            let style = el.style[0];
+            style.scale = style.scale || 1;
+            style.smallPX = style.smallPX || 0;
+            style.x = style.x || 0;
+            style.y = style.y || 0;
+            style.z = style.z || 0;
+            style.h = style.h || 0;
+          }
         }
         return el
       });

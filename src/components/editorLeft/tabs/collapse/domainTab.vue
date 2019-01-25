@@ -50,13 +50,15 @@
       },
       changeTrs(val){
         let idEdit = getEditor();
+        if(!this.objectDetail.trs) this.objectDetail.trs = {};
         this.objectDetail.trs.id = val;
         idEdit.updateObject(this.objectDetail);
       },
       changeSrs(val){
         let idEdit = getEditor();
+        if(!this.objectDetail.srs) this.objectDetail.srs = {};
         this.objectDetail.srs.id = val;
-        idEdit.updateObject(this.objectDetail)
+        idEdit.updateObject(this.objectDetail);
       }
     }
   }

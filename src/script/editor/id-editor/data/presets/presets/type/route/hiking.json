@@ -1,10 +1,14 @@
 {
-    "icon": "route-foot",
+    "icon": "iD-route-foot",
     "fields": [
         "name",
         "ref_route",
         "operator",
-        "network_foot"
+        "network_foot",
+        "description",
+        "distance",
+        "to", 
+        "from"
     ],
     "geometry": [
         "relation"

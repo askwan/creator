@@ -1,9 +1,10 @@
 {
-    "icon": "farm",
+    "icon": "maki-farm",
     "fields": [
         "name",
         "address",
-        "levels"
+        "levels",
+        "height"
     ],
     "geometry": [
         "area"

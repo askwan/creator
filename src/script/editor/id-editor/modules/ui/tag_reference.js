@@ -99,7 +99,7 @@ export function uiTagReference(tag) {
                 .attr('target', '_blank')
                 .attr('tabindex', -1)
                 .attr('href', 'https://wiki.openstreetmap.org/wiki/' + docs.title)
-                .call(svgIcon('#icon-out-link', 'inline'))
+                .call(svgIcon('#iD-icon-out-link', 'inline'))
                 .append('span')
                 .text(t('inspector.reference'));
 
@@ -110,7 +110,7 @@ export function uiTagReference(tag) {
                     .attr('class', 'tag-reference-comment-link')
                     .attr('target', '_blank')
                     .attr('tabindex', -1)
-                    .call(svgIcon('#icon-out-link', 'inline'))
+                    .call(svgIcon('#iD-icon-out-link', 'inline'))
                     .attr('href', t('commit.about_changeset_comments_link'))
                     .append('span')
                     .text(t('commit.about_changeset_comments'));
@@ -151,28 +151,29 @@ export function uiTagReference(tag) {
 
 
     tagReference.button = function(selection) {
-        // _button = selection.selectAll('.tag-reference-button')
-        //     .data([0]);
+        _button = selection.selectAll('.tag-reference-button')
+            .data([0]);
 
-        // _button = _button.enter()
-        //     .append('button')
-        //     .attr('class', 'tag-reference-button')
-        //     .attr('tabindex', -1)
-        //     .call(svgIcon('#icon-inspect'))
-        //     .merge(_button);
+        _button = _button.enter()
+            .append('button')
+            .attr('class', 'tag-reference-button')
+            .attr('title', t('icons.information'))
+            .attr('tabindex', -1)
+            .call(svgIcon('#iD-icon-inspect'))
+            .merge(_button);
 
-        // _button
-        //     .on('click', function () {
-        //         d3_event.stopPropagation();
-        //         d3_event.preventDefault();
-        //         if (_showing) {
-        //             hide();
-        //         } else if (_loaded) {
-        //             done();
-        //         } else {
-        //             load(tag);
-        //         }
-        //     });
+        _button
+            .on('click', function () {
+                d3_event.stopPropagation();
+                d3_event.preventDefault();
+                if (_showing) {
+                    hide();
+                } else if (_loaded) {
+                    done();
+                } else {
+                    load(tag);
+                }
+            });
     };
 
 

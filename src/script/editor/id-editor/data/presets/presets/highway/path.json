@@ -1,5 +1,5 @@
 {
-    "icon": "highway-path",
+    "icon": "iD-highway-path",
     "fields": [
         "name",
         "surface",
@@ -12,6 +12,7 @@
         "mtb/scale",
         "mtb/scale/uphill",
         "mtb/scale/imba",
+        "horse_scale",
         "ref"
     ],
     "geometry": [

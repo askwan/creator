@@ -18,6 +18,7 @@ export { actionDiscardTags } from './discard_tags';
 export { actionDisconnect } from './disconnect';
 export { actionJoin } from './join';
 export { actionMerge } from './merge';
+export { actionMergeNodes } from './merge_nodes';
 export { actionMergePolygon } from './merge_polygon';
 export { actionMergeRemoteChanges } from './merge_remote_changes';
 export { actionMove } from './move';
@@ -32,5 +33,6 @@ export { actionSplit } from './split';
 export { actionStraighten } from './straighten';
 export { actionUnrestrictTurn } from './unrestrict_turn';
 export { actionReflect } from './reflect.js';
-export { actionUpdateOrgData } from './update_orgdata.js';
+export { actionDetachNode } from './detach_node';
+export { actionUpdateOrgData } from './update_orgdata';
 export { actionClose } from './close.js'

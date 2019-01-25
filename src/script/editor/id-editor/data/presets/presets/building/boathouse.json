@@ -1,8 +1,9 @@
 {
-    "icon": "harbor",
+    "icon": "maki-harbor",
     "fields": [
         "name",
         "levels",
+        "height",
         "address"
     ],
     "geometry": [

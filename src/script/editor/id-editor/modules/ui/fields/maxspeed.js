@@ -33,13 +33,13 @@ export function uiFieldMaxspeed(field, context) {
             .container(context.container())
             .data(['km/h', 'mph'].map(comboValues));
 
-        input = selection.selectAll('#preset-input-' + field.id)
+        input = selection.selectAll('#preset-input-' + field.safeid)
             .data([0]);
 
         input = input.enter()
             .append('input')
             .attr('type', 'text')
-            .attr('id', 'preset-input-' + field.id)
+            .attr('id', 'preset-input-' + field.safeid)
             .attr('placeholder', field.placeholder())
             .call(utilNoAuto)
             .call(combobox)
@@ -49,8 +49,14 @@ export function uiFieldMaxspeed(field, context) {
             .on('change', change)
             .on('blur', change);
 
-        var childNodes = context.graph().childNodes(context.entity(entity.id)),
+        var loc;
+        if (entity.type === 'node') {
+            loc = entity.loc;
+        }
+        else {
+            var childNodes = context.graph().childNodes(context.entity(entity.id));
             loc = childNodes[~~(childNodes.length/2)].loc;
+        }
 
         isImperial = _some(dataImperial.features, function(f) {
             return _some(f.geometry.coordinates, function(d) {

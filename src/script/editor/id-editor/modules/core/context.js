@@ -9,7 +9,6 @@ import _isString from 'lodash-es/isString';
 import { dispatch as d3_dispatch } from 'd3-dispatch';
 import { json as d3_json } from 'd3-request';
 import { select as d3_select } from 'd3-selection';
-import {State} from '@/script/editor/utils/store'
 
 import {
     t,
@@ -44,12 +43,7 @@ import {
     utilRebind
 } from '../util';
 
-
-//compair
-
-
-
-
+import {State} from '@/script/editor/utils/store.js'
 
 
 export var areaKeys = {};
@@ -58,12 +52,10 @@ export function setAreaKeys(value) {
     areaKeys = value;
 }
 
-var currentId = '';
-
 
 export function coreContext() {
     var context = {};
-    context.version = '2.7.1';
+    context.version = '2.12.2';
 
     // create a special translation that contains the keys in place of the strings
     var tkeys = _cloneDeep(dataEn);
@@ -85,7 +77,7 @@ export function coreContext() {
     addTranslation('en', dataEn);
     setLocale('en');
 
-    var dispatch = d3_dispatch('enter', 'exit', 'change','selectEle','saveObjects');
+    var dispatch = d3_dispatch('enter', 'exit', 'change','selectEntity','saveObjects');
 
     // https://github.com/openstreetmap/iD/issues/772
     // http://mathiasbynens.be/notes/localstorage-pattern#comment-9
@@ -129,7 +121,7 @@ export function coreContext() {
         return context;
     };
 
-    context.loadTiles = utilCallWhenIdle(function(projection, dimensions, callback) {
+    context.loadTiles = utilCallWhenIdle(function(projection, callback) {
         var cid;
         function done(err, result) {
             if (connection.getConnectionId() !== cid) {
@@ -141,11 +133,11 @@ export function coreContext() {
         }
         if (connection && context.editable()) {
             cid = connection.getConnectionId();
-            connection.loadTiles(projection, dimensions, done,context);
+            connection.loadTiles(projection, done, context);
         }
     });
 
-    context.loadEntity = function(entityId, callback) {
+    context.loadEntity = function(entityID, callback) {
         var cid;
         function done(err, result) {
             if (connection.getConnectionId() !== cid) {
@@ -157,24 +149,24 @@ export function coreContext() {
         }
         if (connection) {
             cid = connection.getConnectionId();
-            connection.loadEntity(entityId, done);
+            connection.loadEntity(entityID, done);
         }
     };
 
-    context.zoomToEntity = function(entityId, zoomTo) {
+    context.zoomToEntity = function(entityID, zoomTo) {
         if (zoomTo !== false) {
-            this.loadEntity(entityId, function(err, result) {
+            this.loadEntity(entityID, function(err, result) {
                 if (err) return;
-                var entity = _find(result.data, function(e) { return e.id === entityId; });
+                var entity = _find(result.data, function(e) { return e.id === entityID; });
                 if (entity) { map.zoomTo(entity); }
             });
         }
 
         map.on('drawn.zoomToEntity', function() {
-            if (!context.hasEntity(entityId)) return;
+            if (!context.hasEntity(entityID)) return;
             map.on('drawn.zoomToEntity', null);
             context.on('enter.zoomToEntity', null);
-            context.enter(modeSelect(context, [entityId]));
+            context.enter(modeSelect(context, [entityID]));
         });
 
         context.on('enter.zoomToEntity', function() {
@@ -195,11 +187,9 @@ export function coreContext() {
         return context;
     };
 
-    context.aimZoomTo = function(){
-        return 16;
-    }
-
-
+    // setTimeout(() => {
+    //     history.clearSaved();
+    // }, 1000);
     /* History */
     var inIntro = false;
     context.inIntro = function(_) {
@@ -215,6 +205,13 @@ export function coreContext() {
         var canSave;
         if (mode && mode.id === 'save') {
             canSave = false;
+
+            // Attempt to prevent user from creating duplicate changes - see #5200
+            // if (services.osm && services.osm.isChangesetInflight()) {
+            //     history.clearSaved();
+            //     return;
+            // }
+
         } else {
             canSave = context.selectedIDs().every(function(id) {
                 var entity = context.hasEntity(id);
@@ -245,13 +242,6 @@ export function coreContext() {
         return context.entity(id).geometry(history.graph());
     };
 
-    
-    context.currentId = function(id){
-        if(!arguments.length) return currentId;
-        currentId = id;
-        return context;
-    }
-
 
     /* Modes */
     var mode;
@@ -276,18 +266,17 @@ export function coreContext() {
             return [];
         }
     };
+
     context.activeID = function() {
         return mode && mode.activeID && mode.activeID();
     };
 
-    context.selectEle = function(ele){
-        dispatch.call('selectEle',this,ele);
+    var _selectedNoteID;
+    context.selectedNoteID = function(noteID) {
+        if (!arguments.length) return _selectedNoteID;
+        _selectedNoteID = noteID;
+        return context;
     };
-
-    context.saveObjects = function(_){
-        dispatch.call('saveObjects',this,_);
-    }
-
 
 
     /* Behaviors */
@@ -346,6 +335,7 @@ export function coreContext() {
         tile: false,        // tile boundaries
         collision: false,   // label collision bounding boxes
         imagery: false,     // imagery bounding polygons
+        community: false,   // community bounding polygons
         imperial: false,    // imperial (not metric) bounding polygons
         driveLeft: false,   // driveLeft bounding polygons
         target: false       // touch targets
@@ -418,7 +408,6 @@ export function coreContext() {
     };
 
     context.loadLocale = function(callback) {
-
         if (locale && locale !== 'en' && dataLocales.hasOwnProperty(locale)) {
             localePath = localePath || context.asset('locales/' + locale + '.json');
             d3_json(localePath, function(err, result) {
@@ -491,7 +480,6 @@ export function coreContext() {
     context.redo = withDebouncedSave(history.redo);
 
     ui = uiInit(context);
-
     connection = services.osm;
     background = rendererBackground(context);
     features = rendererFeatures(context,State.otypes);
@@ -513,23 +501,24 @@ export function coreContext() {
         }
     });
 
-    // map.on('move',_debounce(askwan,500));
-
-    // function askwan(){
-    //     let zoom = context.map().zoom();
-    //     if(zoom<16) return
-    //     if(zoom<19){
-    //         context.features().disable('area')
-    //     }else{
-    //         context.features().enable('area')
-    //     }
-    // }
-
     background.init();
     features.init();
-
     presets.init();
     areaKeys = presets.areaKeys();
+
+
+    /**
+     * add function
+     */
+    context.selectEntity = function(ids){
+        // dispatch.call('selectEntity',this,ids.map(el=>context.entity(el)));
+        let ele = ids.length == 0 ? null : ids[0];
+        dispatch.call('selectEntity',this,ele)
+    };
+
+    context.saveObjects = function(_){
+        dispatch.call('saveObjects',this,_);
+    }
 
     context.getRelations = function(wayId){
         let relations = context.graph().transients;
@@ -559,7 +548,6 @@ export function coreContext() {
         Object.assign(loadOptions,_)
     }
 
-    
 
     return utilRebind(context, dispatch, 'on');
 }

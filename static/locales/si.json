@@ -176,12 +176,6 @@
                 "connected_to_hidden": "මෙය සෙගවුන ලක්ෂණයකට සම්බන්ද බැවින් දෙකට බෙදිය නොහැක."
             },
             "restriction": {
-                "help": {
-                    "select": "මාර්ග කොටස තේරීම සදහා එය මත ක්ලික් කරන්න",
-                    "toggle": "හැරවීම් තහනම වෙනස් කිරීම සදහා ක්ලික් කරන්න",
-                    "toggle_on": "\"{restriction}\" හරවීම් තහනම එකතු කිරීම සදහා ක්ලික් කරන්න",
-                    "toggle_off": "\"{restriction}\" හැරවීම් තහනම ඉවත් කිරීම සදහා ක්ලික් කරන්න"
-                },
                 "annotation": {
                     "create": "හැරවීම තහනමක් එක කරන ලදී",
                     "delete": "හැරවීම් තහනම ඉවත් කිරන ලදී"
@@ -203,8 +197,6 @@
             "localized_translation_language": "භාෂාවක් තෝරාගන්න",
             "localized_translation_name": "නම"
         },
-        "zoom_in_edit": "සංස්කරණය කිරීම සදහා සමීප කරන්න ",
-        "logout": "ඉවත් වන්න ",
         "loading_auth": "OpenStreetMap වෙත සම්බන්ද වෙමින්...",
         "feature_info": {
             "hidden_warning": "සෙගවුන ලක්ෂණ {count} ක්",
@@ -271,10 +263,8 @@
         "background": {
             "title": "පසුබිම",
             "description": "පසුබිම් සැකසුම්",
-            "percent_brightness": "දීප්තිමත් බාවය {opacity} % ",
             "none": "කිසිවක් නැත",
             "custom": "රිසි පරදී සැකසු",
-            "custom_button": "පසුතලය රිසි පරිදි සැකසීම සදහා",
             "reset": "යළි පිහිටුවනවා"
         },
         "map_data": {
@@ -360,19 +350,13 @@
             }
         },
         "success": {
-            "edited_osm": "OSM සංස්කරණය කරන ලදී!",
-            "just_edited": "ඔබ මේ මොහොතේ OpenStreetMap සංස්කරණය කරන ලදී",
-            "view_on_osm": "OSM මත දක්වන්න",
-            "facebook": "Facebook හි බෙදාහරින්න",
-            "twitter": "Twitter හි බෙදා හරින්න",
-            "google": "Google+ හි බෙදා හරින්න"
+            "just_edited": "ඔබ මේ මොහොතේ OpenStreetMap සංස්කරණය කරන ලදී"
         },
         "confirm": {
             "cancel": "අහෝසි කරන්න"
         },
         "splash": {
-            "welcome": "iD OpenStreetMap සංස්කරණ වේදසටහන වෙත සාදරයෙන් පිළිගනිමු",
-            "start": "දෙන සංස්කරණය කරන්න"
+            "welcome": "iD OpenStreetMap සංස්කරණ වේදසටහන වෙත සාදරයෙන් පිළිගනිමු"
         },
         "source_switch": {
             "live": "සජීවී"
@@ -387,10 +371,6 @@
             "untagged_line": "සටහනක් නොයෙදූ රේකාවක්",
             "untagged_area": "සටහනක් නොයෙදූ ප්‍රදේශයක්",
             "deprecated_tags": "{tags} : බාවිතයෙන් ඉවත් කර ඇත"
-        },
-        "zoom": {
-            "in": "විශාලනය වැඩි කරන්න",
-            "out": "විශාලනය අඩු කරන්න"
         },
         "help": {
             "title": "සහය"
@@ -536,9 +516,6 @@
                     "label": "වර්ගය"
                 },
                 "tracktype": {
-                    "label": "වර්ගය"
-                },
-                "vending": {
                     "label": "වර්ගය"
                 },
                 "water": {

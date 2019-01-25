@@ -48,7 +48,6 @@ class SObject {
         // console.log('没有找到', this.data)
       }
     }
-
   }
   recursionLayer(type, id) {
     if (type.type == 2) {

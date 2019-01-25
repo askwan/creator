@@ -1,6 +1,7 @@
 {
-    "icon": "cricket",
+    "icon": "maki-cricket",
     "fields": [
+        "name",
         "surface",
         "lit"
     ],

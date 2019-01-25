@@ -126,12 +126,7 @@ class OsmRelation extends OsmEntity {
   }
   setOsmRelation (context, relation) {
     this.tags = {
-      tags:{
-        type:{
-          key:'type',
-          value:relation.tags.type
-        }
-      }
+      type:relation.tags.type
     }
     this.id = relation.id;
     this.uuid = relation.uuid;

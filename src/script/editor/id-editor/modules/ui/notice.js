@@ -17,8 +17,7 @@ export function uiNotice(context) {
             .append('button')
             .attr('class', 'zoom-to notice fillD')
             .on('click', function() {
-                // context.map().zoomEase(context.minEditableZoom());
-                context.map().zoomEase(context.aimZoomTo());
+                context.map().zoomEase(context.minEditableZoom());
             })
             .on('wheel', function() {   // let wheel events pass through #4482
                 var e2 = new WheelEvent(d3_event.type, d3_event);
@@ -26,7 +25,7 @@ export function uiNotice(context) {
             });
 
         button
-            .call(svgIcon('#icon-plus', 'pre-text'))
+            .call(svgIcon('#iD-icon-plus', 'pre-text'))
             .append('span')
             .attr('class', 'label')
             .text(t('zoom_in_edit'));

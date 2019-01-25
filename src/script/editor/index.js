@@ -1,5 +1,20 @@
 import * as iD from './id-editor/modules';
 
+console.log(iD,'id')
+import './id-editor/css/00_reset.css'
+import './id-editor/css/20_map.css'
+import './id-editor/css/25_areas.css'
+import './id-editor/css/30_highways.css'
+import './id-editor/css/35_aeroways.css'
+import './id-editor/css/40_railways.css'
+import './id-editor/css/45_waterways.css'
+import './id-editor/css/50_misc.css'
+import './id-editor/css/55_cursors.css'
+import './id-editor/css/60_photos.css'
+import './id-editor/css/65_data.css'
+import './id-editor/css/70_fills.css'
+import './id-editor/css/80_app.css'
+
 import psde from './psde';
 import {objectServer} from '@/script/server'
 
@@ -58,7 +73,7 @@ export default class Editor {
     });
   }
   listen(){
-    this.idContext.on('selectEle',ele=>{
+    this.idContext.on('selectEntity',ele=>{
       if(!ele) {
         this.currentEntity = null;
         dispatch.call('currentObject',this,{object:null,entityId:null});
@@ -66,8 +81,12 @@ export default class Editor {
       }
       if(ele){
         let entity = this.idContext.entity(ele);
+        console.log(entity)
         this.currentEntity = entity;
       }
+
+      // this.changeLoc({entityId:'n1086762917686247425',lat:114.28745136686429,lng:9.714856337064521})
+
       if(this.currentSobject&&this.currentForm) {
         let _form = this.currentSobject.forms.find(el=>el.id==this.currentForm.id);
         if(_form){
@@ -403,7 +422,7 @@ export default class Editor {
     State.sobjects[newSobject.id] = newSobject;
     this.idContext.features().setFeature(newSobject);
     this.updateAndHistory(newSobject);
-    this.idContext.selectEle(newSobject.forms[0].geom)
+    this.idContext.selectEntity(newSobject.forms[0].geom)
     // dispatch.call('currentObject',this,{object:newSobject,entityId:newSobject.forms[0].geom});
     dispatch.call('notice',this,{
       message:`克隆对象：${newSobject.id}成功`,
@@ -472,7 +491,32 @@ export default class Editor {
     return {x,y,z}
   }
 
+  changeLoc(option){
+    let entity = this.idContext.entity(option.entityId);
+    let lng =  entity.loc[0]+option.lng;
+    let lat =  entity.loc[1]+option.lat;
+    this.idContext.perform(iD.actionMoveNode(option.entityId,[lng,lat]));
+    let sobject = this.getSObjectByOsmEntity(option.entityId);
+    sobject.geoBox.maxx = lng;
+    sobject.geoBox.minx = lng;
+    sobject.geoBox.miny = lat;
+    sobject.geoBox.maxy = lat;
+    // console.log(sobject,option);
+    let form = sobject.forms.find(el=>el.geomref==entity.id);
+    if(option.scale){
+      form.style[0].scale = Math.floor(option.scale.x*100)/100;
+    }
+    if(option.top){
+      form.style[0].h = Math.floor(option.top*100)/100;
+    }
+    if(option.rotateZ){
+      form.style[0].y = Math.floor(180*option.rotateZ/Math.PI)
+    };
+    this.modifyObjectForm(sobject,form);
+    
+    // dispatch.call('currentObject',this,{object:sobject,entityId:entity.id});
 
+  }
 
 
 

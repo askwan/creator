@@ -21,31 +21,34 @@
         sliderHeight:0
       }
     },
-    props:{},
+    props:['show'],
     components:{},
     computed:{},
     watch: {
-
+      show(bool){
+        if(!bool) return
+        this.heightList = [];
+        Object.keys(State.heights).forEach(el=>{
+          let arr = el.split("_");
+          arr.forEach(en=>{
+            if(this.heightList.find(ev=>ev==en)===undefined){
+              this.heightList.push(Number(en));
+            }
+          })
+          
+        })
+        this.heightList = this.heightList.sort((a,b)=>b-a);
+        let maxHeight = this.heightList[0];
+        let minHeight = this.heightList[this.heightList.length-1];
+        this.section = State.section;
+        this.max = Number(maxHeight);
+        this.min = Number(minHeight);
+      }
     },
     mounted(){
-      this.heightList = [];
-      Object.keys(State.heights).forEach(el=>{
-        let arr = el.split("_");
-        arr.forEach(en=>{
-          if(this.heightList.find(ev=>ev==en)===undefined){
-            this.heightList.push(Number(en));
-          }
-        })
-        
-      })
-      this.heightList = this.heightList.sort((a,b)=>b-a);
-      let maxHeight = this.heightList[0];
-      let minHeight = this.heightList[this.heightList.length-1];
-      this.section = State.section;
-      this.max = Number(maxHeight);
-      this.min = Number(minHeight);
       
-      // console.log(State.heights)
+      
+      // console.log(State.heights,'state')
     },
     methods:{
       changeSection(){

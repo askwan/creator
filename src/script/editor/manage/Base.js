@@ -63,7 +63,7 @@ export default class ManageBase extends Evented {
     this.State.sobjects[newSobject.id] = newSobject;
     this.context.features().setFeature(newSobject);
     this.updateAndHistory(newSobject);
-    this.context.selectEle(newSobject.forms[0].geom)
+    this.context.selectEntity(newSobject.forms[0].geom)
   }
   copyEntity(ele){
     let entity = this.context.entity(ele);

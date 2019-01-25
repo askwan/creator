@@ -1,6 +1,7 @@
 {
-    "icon": "poi-vending-machine",
+    "icon": "temaki-vending_machine",
     "fields": [
+        "vending",
         "operator",
         "fee",
         "payment_multi",

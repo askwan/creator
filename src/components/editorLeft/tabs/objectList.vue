@@ -134,7 +134,7 @@
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
           otIds:this.parentIds,
-          uids:"",
+          uids:id,
           sdomains:sdomain.id
         };
         this.objectList = [];
@@ -162,7 +162,7 @@
         let sdomain = JSON.parse(sessionStorage.getItem('sdomain'));
         let obj = {
           otIds:ids,
-          uids:"",
+          // uids:"",
           sdomains:sdomain.id
         };
         this.loading = true;

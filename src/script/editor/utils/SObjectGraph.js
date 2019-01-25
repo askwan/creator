@@ -43,12 +43,12 @@ class SObjectGraph {
     }
     if(form.type>30){
       form.style = [{
-        scale: "",
-        smallPX: "",
-        x: "",
-        y: "",
-        z: "",
-        h:""
+        scale: 1,
+        smallPX: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        h:0
       }];
     }
     return form

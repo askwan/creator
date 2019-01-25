@@ -1,5 +1,5 @@
 {
-    "icon": "monument",
+    "icon": "maki-monument",
     "fields": [
         "name",
         "memorial",
@@ -9,6 +9,15 @@
         "point",
         "vertex",
         "area"
+    ],
+    "terms": [
+        "dedicatory",
+        "epitaph",
+        "remember",
+        "remembrance",
+        "memory",
+        "monument",
+        "stolperstein"
     ],
     "tags": {
         "historic": "memorial"

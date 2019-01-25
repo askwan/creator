@@ -7,7 +7,7 @@ class ObjectServer extends Base {
     this.url = psdeUrl+'object'
   }
   query(option={}){
-    let user = sessionStorage.getItem('user');
+    let user = sessionStorage.getItem('user')||"{}";
     user = JSON.parse(user);
     option = Object.assign({uids:`'${user.id}'`},option);
     return new Promise((resolve,reject)=>{

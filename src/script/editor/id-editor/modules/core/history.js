@@ -104,7 +104,6 @@ export function coreHistory(context) {
     function change(previous) {
         var difference = coreDifference(previous, history.graph());
         dispatch.call('change', this, difference);
-        // console.log(previous);
         return difference;
     }
 
@@ -130,6 +129,7 @@ export function coreHistory(context) {
         merge: function(entities, extent) {
             _stack[0].graph.rebase(entities, _map(_stack, 'graph'), false);
             _tree.rebase(entities, false);
+
             dispatch.call('change', this, undefined, extent);
         },
 
