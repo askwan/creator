@@ -11,7 +11,7 @@
         </el-tooltip>
     </ul>
     <transition name="slider" v-for="(bar,i) in menuList" :key="i" >
-      <div class="right shadow" :style="{'z-index':bar.zindex}" :class="{animate:bar.isShow &&bar.haveMenu}">
+      <div class="right shadow" :style="{'z-index':bar.zindex,top:bar.id==5?'0px':'50px'}" :class="{animate:bar.isShow &&bar.haveMenu}">
         <div class="right-header flex-between pd-right-mini pd-left-mini">
           <span class="font-16 pd-left-mini">{{bar.title}}</span>
           <i class="el-icon-close font-18 pointer-danger" @click="bar.isShow=false"></i>
@@ -134,7 +134,7 @@
           this.componentId = 'mapboxmode';
           this.showRight = true;
           this.currentObj = obj.object;
-          vm.$emit(operate.hiddenOtypes);
+          // vm.$emit(operate.hiddenOtypes);
         });
         vm.$on(operate.currentEntity,entityId=>{
           // this.entity = editor.idContext(entityId);
@@ -161,9 +161,9 @@
             if(data.object) {
               this.currentObj = data.object;
               console.log(data.object)
-              State.viewObject = editor.copySObject(data.object);
+              // State.viewObject = editor.copySObject(data.object);
 
-              vm.$emit(operate.hiddenOtypes);
+              // vm.$emit(operate.hiddenOtypes);
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){
               this.entity = context.entity(data.entityId);
@@ -195,6 +195,9 @@
               loading.close();
               vm.$emit('saveReady');
             }
+          });
+          editor.on('previewModel',()=>{
+            vm.$emit(operate.hiddenOtypes);
           })
         });
         window.onbeforeunload = function(event){

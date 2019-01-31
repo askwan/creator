@@ -4,13 +4,12 @@
     <div class="tool" v-show="showList">
       <div class="slide" v-show="shows=='scale'">
         <el-slider
-          v-model="scaleNum"
+          v-model="showScaleNum"
           :show-tooltip="false"
           :show-input="false"
-          :step="1"
+          :step="0.01"
           :min="1"
-          :max="200"
-          @input="changeSlider"
+          :max="300"
           @change="changeSliderEnd"
         ></el-slider>
       </div>
@@ -19,8 +18,7 @@
         <span @click="change('translate')" :class="{sel:shows=='translate'}">平移</span>
         <span @click="change('rotate')" :class="{sel:shows=='rotate'}">旋转</span>
         <span @click="change('scale')" :class="{sel:shows=='scale'}">缩放</span>
-        <!-- <el-input type='number' min="0.01" max="100" v-model="sNum" class="show-num" @change="inputChange"></el-input> -->
-        <span v-show="shows=='scale'" class="show-num">{{sNum}}</span>
+        <span v-show="shows=='scale'" class="show-num">{{scaleNum}}</span>
       </div>
     </div>
   </div>
@@ -37,8 +35,8 @@ export default {
     return {
       shows: "translate",
       showList: false,
-      scaleNum: 100,
-      sNum: 0
+      scaleNum: 0,
+      showScaleNum: -1
     };
   },
   props: {
@@ -50,13 +48,6 @@ export default {
     width() {
       return window.innerWidth * 0.4 + "px";
     }
-    // sNum() {
-    //   if (this.scaleNum > 100) {
-    //     return this.scaleNum - 100;
-    //   } else if (this.scaleNum <= 100) {
-    //     return this.scaleNum / 100;
-    //   }
-    // }
   },
   watch: {
     show(val) {
@@ -64,11 +55,15 @@ export default {
         this.getSobj();
       }
     },
-    scaleNum() {
-      if (this.scaleNum > 100) {
-        this.sNum = this.scaleNum - 100;
-      } else if (this.scaleNum <= 100) {
-        this.sNum = this.scaleNum / 100;
+    //滑竿变化  改变输入框值
+    showScaleNum(val) {
+      if (val > 100) {
+        this.scaleNum = ((val - 100) / 8 + 1).toFixed(2);
+      } else if (val <= 100) {
+        this.scaleNum = (val / 100).toFixed(2);
+      }
+      if (map) {
+        map.changeSlider(this.scaleNum);
       }
     }
   },
@@ -99,18 +94,16 @@ export default {
     });
   },
   methods: {
+    //显示值改变
     inputChange(val) {
       if (val > 1) {
-        this.scaleNum = val + 100;
+        this.showScaleNum = (val - 1) * 8 + 100;
       } else if (val <= 1) {
-        this.scaleNum = val * 100;
+        this.showScaleNum = val * 100;
       }
     },
-    changeSlider(val) {
-      if (map) {
-        map.changeSlider(this.sNum);
-      }
-    },
+   
+    //滑竿改变结束
     changeSliderEnd(val) {
       if (map) {
         map.changeSliderEnd();
@@ -129,16 +122,7 @@ export default {
       };
       map = new MapboxGL(obj);
 
-      // this.getSobj();
       this.getData();
-      // map.on('changeLoc',obj=>{
-      // obj = {
-      //   entityId:'n1086762917686247425',
-      //   lat:114.2869953716,
-      //   lng:9.714908723
-      // }
-      // getEditor().changeLoc(obj)
-      // })
     },
     getSobj() {
       let obj = getEditor().currentSobject;
@@ -146,19 +130,16 @@ export default {
         map.start(State.viewObject);
         this.showList = map.getModelSobject();
       }
+      // map.changed = false;
     },
     getData() {
       vm.$on(operate.hiddenOtypes, () => {
-        if (this.show) {
+        if (this.show ) {
           map.start(State.viewObject);
           this.showList = map.getModelSobject();
         }
+        // map.changed = false;
       });
-
-      // vm.$on(operate.heightManager, e => {
-      //   console.log(e, 6666666);
-      // });
-      // console.log(State.otypes, 323);
     }
   }
 };
@@ -178,7 +159,7 @@ export default {
     bottom: 10px;
     overflow: hidden;
     padding: 0 10px;
-    width: 300px;
+    width: 80%;
     .btn {
       line-height: 26px;
       & > span {

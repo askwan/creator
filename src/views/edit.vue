@@ -125,7 +125,6 @@
             if(list[3].status == 200) {
               State.styleList = list[3].data.list;
             }
-            
             State.getDiagram(list[4]);
             let otIds = [];
             for(let id in State.otypes){

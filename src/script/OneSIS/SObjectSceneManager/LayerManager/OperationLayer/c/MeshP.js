@@ -43,29 +43,29 @@ meshObj.gizmoTranslate = {
       [0.125, 1, 1]
     ]
   ],
-  YZ: [
-    [new THREE.Mesh(new THREE.PlaneBufferGeometry(0.295, 0.295), cMaterial.matCyanTransparent.clone()), [0, 0.15, 0.15],
-      [0, Math.PI / 2, 0]
-    ],
-    [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineCyan.clone()), [0, 0.18, 0.3],
-      [0, 0, Math.PI / 2],
-      [0.125, 1, 1]
-    ],
-    [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineCyan.clone()), [0, 0.3, 0.18],
-      [0, -Math.PI / 2, 0],
-      [0.125, 1, 1]
-    ]
-  ],
-  XZ: [
-    [new THREE.Mesh(new THREE.PlaneBufferGeometry(0.295, 0.295), cMaterial.matMagentaTransparent.clone()), [0.15, 0, 0.15],
-      [-Math.PI / 2, 0, 0]
-    ],
-    [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineMagenta.clone()), [0.18, 0, 0.3], null, [0.125, 1, 1]],
-    [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineMagenta.clone()), [0.3, 0, 0.18],
-      [0, -Math.PI / 2, 0],
-      [0.125, 1, 1]
-    ]
-  ]
+  // YZ: [
+  //   [new THREE.Mesh(new THREE.PlaneBufferGeometry(0.295, 0.295), cMaterial.matCyanTransparent.clone()), [0, 0.15, 0.15],
+  //     [0, Math.PI / 2, 0]
+  //   ],
+  //   [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineCyan.clone()), [0, 0.18, 0.3],
+  //     [0, 0, Math.PI / 2],
+  //     [0.125, 1, 1]
+  //   ],
+  //   [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineCyan.clone()), [0, 0.3, 0.18],
+  //     [0, -Math.PI / 2, 0],
+  //     [0.125, 1, 1]
+  //   ]
+  // ],
+  // XZ: [
+  //   [new THREE.Mesh(new THREE.PlaneBufferGeometry(0.295, 0.295), cMaterial.matMagentaTransparent.clone()), [0.15, 0, 0.15],
+  //     [-Math.PI / 2, 0, 0]
+  //   ],
+  //   [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineMagenta.clone()), [0.18, 0, 0.3], null, [0.125, 1, 1]],
+  //   [new THREE.Line(cGeometry.lineGeometry, cMaterial.matLineMagenta.clone()), [0.3, 0, 0.18],
+  //     [0, -Math.PI / 2, 0],
+  //     [0.125, 1, 1]
+  //   ]
+  // ]
 };
 
 
@@ -138,7 +138,7 @@ meshObj.gizmoRotate = {
   //   [new THREE.Mesh(new THREE.OctahedronBufferGeometry(0.04, 0), cMaterial.matGreen.clone()), [0, 0, 0.99], null, [5, 2, 2]],
   // ],
   Z: [
-    [new THREE.Line(cGeometry.CircleGeometry(1, 0.5), cMaterial.matLineBlue.clone()), null, [0, Math.PI / 2, 0]],
+    [new THREE.Line(cGeometry.CircleGeometry(1, 0.5), cMaterial.matRed.clone()), null, [0, Math.PI / 2, 0]],
     [new THREE.Mesh(new THREE.OctahedronBufferGeometry(0.04, 0), cMaterial.matRed.clone()), [0.99, 0, 0], null, [2, 5, 2]],
   ],
   E: [

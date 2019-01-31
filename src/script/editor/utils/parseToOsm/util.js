@@ -35,7 +35,7 @@ function createOsmWay (geom,tags,org,collection){
     nodes.push(node.id);
   });
 
-  let _way = createWay(nodes,geom.id,tags,org);
+  let _way = createWay(nodes,geom.uuid,tags,org);
   _way.uuid = geom.uuid;
   collection.push(_way);
   return {
@@ -97,7 +97,7 @@ function createOsmRelation (geom,tags,org,collection){
       collection = obj.lists;
     }
   })
-  let relation = createRelation(members,geom.id,tags,org);
+  let relation = createRelation(members,geom.uuid,tags,org);
   relation.uuid = geom.uuid;
   relation.vid = geom.vid;
   return {
@@ -142,8 +142,8 @@ function getAttributeTag (sobject) {
 function transformObject (context,object){
   let _obj = JSON.parse(JSON.stringify(object));
   _obj.forms.forEach(form=>{
-    if(form.geom){
-      let entity = context.entity(form.geom);
+    if(form.geomref){
+      let entity = context.entity(form.geomref);
       if(entity.type=='node'){
         form.geom = new osm.OsmNode(entity);
       }else if(entity.type=='way'){

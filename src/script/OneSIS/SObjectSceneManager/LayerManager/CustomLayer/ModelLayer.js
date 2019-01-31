@@ -13,9 +13,6 @@ class ModelLayer extends PublicLayer {
 
   }
   add(sobject) {
-    this.g = new THREE.Group()
-    this.group.add(this.g);
-
     let form
     for (let i = 0; i < sobject.forms.length; i++) {
       let f = sobject.forms[i]
@@ -24,9 +21,14 @@ class ModelLayer extends PublicLayer {
       }
 
     }
-    this.g.name = form.geomref
-
     let style = form.style[0]
+
+    this.g = new THREE.Group()
+    this.group.add(this.g);
+
+    this.g.name = form.geomref
+    this.g.geom = form.geom
+
     let loader = new THREE.GLTFLoader();
     loader.load('http://bt1.geosts.ac.cn/api/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file/download/' + form.formref.refid, gltf => {
       gltf.scene.rotation.x += Math.PI / 2
@@ -49,22 +51,23 @@ class ModelLayer extends PublicLayer {
         this.g.scale.x = style.scale ? style.scale : 1
         this.g.scale.y = style.scale ? style.scale : 1
         this.g.scale.z = style.scale ? style.scale : 1
-        this.g.rotation.x += (style.x / 180) * Math.PI
+        this.g.rotation.x = (style.x / 180) * Math.PI
         // this.g.rotation.y += (style.y / 180) * Math.PI
         // this.g.rotation.z += (style.z / 180) * Math.PI
         this.g.position.z = style.h ? style.h : 0
 
 
-        this.g.rotation.y += (style.z / 180) * Math.PI
-        this.g.rotation.z += (style.y / 180) * Math.PI
+        this.g.rotation.y = (style.z / 180) * Math.PI
+        this.g.rotation.z = (style.y / 180) * Math.PI
       }
     }, undefined, (e) => {
       if (this.mesh) {
         this.g.remove(this.mesh);
       }
       this.mesh = ''
-      console.error('模型错误', e);
+      console.log('模型错误,不是2.0', e);
     });
+
 
   }
 }

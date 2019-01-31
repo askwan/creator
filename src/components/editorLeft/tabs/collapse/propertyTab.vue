@@ -71,7 +71,7 @@
       idEdit = getEditor();
 			this.transformObj(this.objectDetail);
 			if(this.objectDetail.realTime){
-				this.time = new Date(this.objectDetail.realTime*1000);
+				this.time = new Date(this.objectDetail.realTime);
 			}
 			// setTimeout(() => {
 			// 	this.$refs.selectStyle.focus();
@@ -86,7 +86,7 @@
 			objectDetail(val) {
 				this.transformObj(val);
 				if(val.realTime){
-					this.time = new Date(val.realTime*1000);
+					this.time = new Date(val.realTime);
 				}else{
 					this.time = ''
 				}
@@ -109,7 +109,7 @@
 					if (findIndex > -1) {
 						this.objectDetail.attributes.splice(findIndex , 1);
             this.objectDetail.modifyAttr(this.objectDetail.attributes);
-            console.log('delete')
+            // console.log('delete')
 						idEdit.modifySobject(this.objectDetail);
 					}
 					
@@ -320,6 +320,7 @@
 						}
 					});
 				}
+				console.log(item,index,'fdsfs');
 				idEdit.modifyAttr(attr,this.objectDetail);
 			},
 			addProperty() {

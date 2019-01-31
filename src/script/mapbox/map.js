@@ -26,7 +26,7 @@ function createMapboxMap(container, options, callback) {
   let map = createMap(container, options);
   if (!map) return null;
   // psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
-  axios.get(psdeBaseUrl + '/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/stylePreview/sourceLayers').then(function (res) {
+  axios.get(psdeBaseUrl + '/dae/geoservice/geoservice/rest/v0.1.0/datastore/slave/geoservice/stylePreview/sourceLayers').then(function (res) {
     for (let i = 0; i < res.data.length; i++) {
       let layer = res.data[i]
       try {
@@ -78,7 +78,7 @@ function createMap(container, options) {
           'type': 'vector',
           'tiles': [
             // psdeHost + `/service/query?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
-            psdeBaseUrl + `/dae/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
+            psdeBaseUrl + `/dae/geoservice/geoservice/rest/v0.1.0/datastore/slave/geoservice/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`,
             // "http://192.168.1.133:8088/rest/v0.1.0/datastore/slave/geoservice" + `/vectortile?row={y}&cols={x}&level={z}&code=3857&serviceType=VectorTile${str}`
           ],
           'minzoom': 4,

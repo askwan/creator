@@ -36,6 +36,7 @@ class OperationLayer {
   }
   setLonLat(lonlat) {
     this.lonlat = lonlat
+    MouseFn.setLonLat(lonlat)
   }
   lamplight() {
     let l = new THREE.AmbientLight(0xffffff, 0.4)
@@ -65,9 +66,15 @@ class OperationLayer {
     this.rendererP = new THREE.WebGLRenderer({
       antialias: true
     });
+
     this.rendererP.setPixelRatio(window.devicePixelRatio);
-    this.rendererP.setSize(this.renderer.domElement.width, this.renderer.domElement.height);
-    this.pickingTexture = new THREE.WebGLRenderTarget(this.renderer.domElement.width, this.renderer.domElement.height);
+    let widthHeight = {
+      width: this.renderer.domElement.clientWidth,
+      height: this.renderer.domElement.clientHeight
+    }
+    // let widthHeight=this.renderer.getSize()
+    this.rendererP.setSize(widthHeight.width, widthHeight.height);
+    this.pickingTexture = new THREE.WebGLRenderTarget(widthHeight.width, widthHeight.height);
     this.pickingTexture.texture.minFilter = THREE.LinearFilter;
     this.resetView()
   }
@@ -88,15 +95,10 @@ class OperationLayer {
 
     this.resetView()
   }
-  add() {
-    // this.group.add(this.create())
 
+  add() {
     this.groupP.add(make.addP())
     this.group.add(make.add())
-
-    // console.log(this.group)
-    // console.log(make)
-    // console.log(this.camera)
   }
 
   render(gl, matrix) {
@@ -120,8 +122,14 @@ class OperationLayer {
     this.rendererP.render(this.sceneP, this.camera, this.pickingTexture);
     this.renderer.render(this.scene, this.camera);
 
-    this.rendererP.setSize(this.renderer.domElement.width, this.renderer.domElement.height);
-    this.pickingTexture.setSize(this.renderer.domElement.width, this.renderer.domElement.height);
+    let widthHeight = {
+      width: this.renderer.domElement.clientWidth,
+      height: this.renderer.domElement.clientHeight
+    }
+    // let widthHeight=this.renderer.getSize()
+    this.rendererP.setPixelRatio(window.devicePixelRatio);
+    this.rendererP.setSize(widthHeight.width, widthHeight.height);
+    this.pickingTexture.setSize(widthHeight.width, widthHeight.height);
 
     this.map.triggerRepaint();
   }
@@ -168,20 +176,21 @@ class OperationLayer {
     this.groupP.visible = val
   }
   setZoom(num) {
-    let n=4
-    this.group.children[0].scale.x = (25-num)*n
-    this.group.children[0].scale.y = (25-num)*n
-    this.group.children[0].scale.z = (25-num)*n
-    this.groupP.children[0].scale.x = (25-num)*n
-    this.groupP.children[0].scale.y = (25-num)*n
-    this.groupP.children[0].scale.z = (25-num)*n
+    let n =1.8
+    let big=Math.pow(n,(25 - num))
+    this.group.children[0].scale.x = big
+    this.group.children[0].scale.y = big
+    this.group.children[0].scale.z = big
+    this.groupP.children[0].scale.x = big
+    this.groupP.children[0].scale.y = big
+    this.groupP.children[0].scale.z = big
     // this.group.visible = val
     //   this.groupP.visible = val
   }
-  changeSlider(val,allLayer){
+  changeSlider(val, allLayer) {
     MouseFn.changeSlider(val, this.group, this.groupP, allLayer)
   }
-  changeSliderEnd(allLayer){
+  changeSliderEnd(allLayer) {
     MouseFn.changeSliderEnd(allLayer)
   }
   //按下拖动

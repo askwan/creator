@@ -4210,9 +4210,10 @@ svg.mouseclick use.right {
 ------------------------------------------------------- */
 .notice {
     position: absolute;
-    top: 45px;
+    top: 50%;
     left: 0;
     right: 0;
+    transform: translateY(-50%);
     text-align: center;
 }
 

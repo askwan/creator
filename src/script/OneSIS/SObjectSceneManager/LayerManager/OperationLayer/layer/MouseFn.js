@@ -20,12 +20,16 @@ class MouseFn {
       worldLat: ''
     }
 
+
     this.pitch = ''
     this.bearing = ''
 
     this.idObjNew = ''
+    this.lonlat = []
   }
-
+  setLonLat(lonlat) {
+    this.lonlat = lonlat
+  }
   setPitchAndBearing(pitch, bearing) {
     this.pitch = pitch
     this.bearing = bearing
@@ -45,20 +49,25 @@ class MouseFn {
         worldLng: lngLat.x,
         worldLat: lngLat.y
       }
+
     }
   }
   changeLocData(allLayer) {
     let modelGroup = this.getModelGroup(allLayer, 'model')
-    let ll = mercatorProj.Mercator2lonLat(modelGroup.position.x, modelGroup.position.y)
+    let lngLat = mercatorProj.lonLat2Mercator(modelGroup.geom.x, modelGroup.geom.y)
+
+    let ll = mercatorProj.Mercator2lonLat(lngLat.x+ modelGroup.position.x, lngLat.y+ modelGroup.position.y)
+
     let top = modelGroup.position.z
-    let rotateZ = modelGroup.rotation.z
+    let rotateZ = modelGroup.rotation.z % (Math.PI * 2)
     let scale = modelGroup.scale
+
     let obj = {
       id: modelGroup.name,
-      lng: ll.lon,
-      lat: ll.lat,
+      lng: ll.lng ,
+      lat: ll.lat ,
       top: top,
-      rotateZ: rotateZ,
+      rotateZ: Math.floor(180 * rotateZ / Math.PI),
       scale: {
         x: scale.x,
         // y: scale.y,
@@ -67,7 +76,8 @@ class MouseFn {
         z: scale.y,
       }
     }
-    // console.log('松手发', modelGroup, obj)
+    this.lonlat = [obj.lng, obj.lat]
+    // console.log('松手发',this.lonlat, modelGroup, obj)
     EventAll.fire(MapEvent.changeLoc, obj)
   }
   changeSliderEnd(allLayer) {
@@ -103,40 +113,40 @@ class MouseFn {
       }
     }
   }
-  groupFnRotate(Group, name, client, mouseDownClient) {
+  groupFnRotate(Group, name, client, mouseDownClient, c) {
     if (Group) {
       for (let i = 0; i < name.length; i++) {
         let xyz = name[i]
         if (xyz == 'X') {
-          Group.rotation.x += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 50
+          // Group.rotation.x += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 50
         } else if (xyz == 'Y') {
-          Group.rotation.y += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 50
+          // Group.rotation.y += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 50
         } else if (xyz == 'Z') {
-          let x=Group.rotation.x
-          let y=Group.rotation.y
-          let z=Group.rotation.z+ (client.x - mouseDownClient.x) / 50
-          Group.rotation.set(x,y,z)
-          // Group.rotation.set(x,z,y)
+          let x = Group.rotation.x
+          let y = Group.rotation.y
+          // let z=Group.rotation.z+ (client.x - mouseDownClient.x) / 50
+          let z = Group.rotation.z + c
+          // console.log(z)
+          Group.rotation.set(x, y, z)
 
-          
         }
       }
     }
   }
-  groupFnScale(Group, name, client, mouseDownClient) {
-    if (Group) {
-      for (let i = 0; i < name.length; i++) {
-        let xyz = name[i]
-        if (xyz == 'X') {
-          Group.scale.x += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 100
-        } else if (xyz == 'Y') {
-          Group.scale.y += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 100
-        } else if (xyz == 'Z') {
-          Group.scale.z -= (client.y - mouseDownClient.y) / 100
-        }
-      }
-    }
-  }
+  // groupFnScale(Group, name, client, mouseDownClient) {
+  //   if (Group) {
+  //     for (let i = 0; i < name.length; i++) {
+  //       let xyz = name[i]
+  //       if (xyz == 'X') {
+  //         Group.scale.x += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 100
+  //       } else if (xyz == 'Y') {
+  //         Group.scale.y += ((client.y - mouseDownClient.y) + (client.x - mouseDownClient.x)) / 100
+  //       } else if (xyz == 'Z') {
+  //         Group.scale.z -= (client.y - mouseDownClient.y) / 100
+  //       }
+  //     }
+  //   }
+  // }
   changeSlider(val, group, groupP, allLayer) {
     let modelGroup = this.getModelGroup(allLayer, 'model')
     // let operationGroup = this.getGroup(group, 'operation')
@@ -169,11 +179,32 @@ class MouseFn {
         this.groupFnTranslate(operationGroup, name, client, this.mouseDownClient)
         this.groupFnTranslate(operationGroupP, name, client, this.mouseDownClient)
       } else if (this.idObjNew.type == 1) {
-        this.groupFnRotate(modelGroup, name, client, this.mouseDownClient)
-        // this.groupFnRotate(operationGroup, name, client, this.mouseDownClient)
-        // this.groupFnRotate(operationGroupP, name, client, this.mouseDownClient)
+        // console.log(lonlat)
+        let worldLngLat = mercatorProj.lonLat2Mercator(this.lonlat[0], this.lonlat[1])
+        let a = new THREE.Vector3(client.worldLng - worldLngLat.x, client.worldLat - worldLngLat.y, 0);
+        let b = new THREE.Vector3(this.mouseDownClient.worldLng - worldLngLat.x, this.mouseDownClient.worldLat - worldLngLat.y, 0);
+        // let d = new THREE.Vector3( this.mouseDownClientOld.worldLng-worldLngLat.x, this.mouseDownClientOld.worldLat-worldLngLat.y, 0 );
+        let c = a.angleTo(b)
+        let leftOrRight = a.x * b.y - a.y * b.x
+        if (leftOrRight < 0) {
+          c = c
+        } else {
+          c = -c
+        }
+        // console.log(a.x * b.y - a.y * b.x)
+        // let e=a.angleTo(d)
+        // let f=a.multiply(d)
+        // console.log(c,e,f)
+
+        // console.log(mercatorProj.lonLat2Mercator(lonlat[0], lonlat[1]))
+        //   console.log(client)
+        //   console.log( this.mouseDownClient)
+
+        this.groupFnRotate(modelGroup, name, client, this.mouseDownClient, c)
+        this.groupFnRotate(operationGroup, name, client, this.mouseDownClient, c)
+        this.groupFnRotate(operationGroupP, name, client, this.mouseDownClient, c)
       } else if (this.idObjNew.type == 2) {
-        this.groupFnScale(modelGroup, name, client, this.mouseDownClient)
+        // this.groupFnScale(modelGroup, name, client, this.mouseDownClient)
         // this.groupFnScale(operationGroup, name, client, this.mouseDownClient)
         // this.groupFnScale(operationGroupP, name, client, this.mouseDownClient)
       }

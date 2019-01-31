@@ -1,8 +1,8 @@
 <template>
-  <div class='version-box pd-small' v-loading='loading'>
+  <div class='version-box pd-small' v-loading='loading' >
     <div class="pointer-shadow pd-small radius-2 flex-between border-bottom" v-for="(version,i) in versions" :key="i" @click="choseVersion(version,i)">
       <span>
-        <i class="el-icon-success" :class="{'font-blue':sobject.version.vid==version.version.vid}" ></i>
+        <i class="el-icon-success" :class="{'font-blue':sobject.version && sobject.version.vid==version.version.vid}" ></i>
         {{version.version.vtime|getDate}}
       </span>
       <el-button type="text">选择版本</el-button>
@@ -33,12 +33,13 @@
     computed:{},
     mounted(){
       
-      this.getVersion();
+      // this.getVersion();
       this.listenEvent();
     },
     filters:{
       getDate(time){
-        time = time*1000;
+        if(time.length<=11) time = time*1000;
+        time = Number(time)
         let date = new Date(time);
         let year = date.getFullYear();
         let mounth = date.getMonth()+1;

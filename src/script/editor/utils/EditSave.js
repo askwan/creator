@@ -221,11 +221,11 @@ class EditSave {
     return _osmChange
   }
   getSaveSObject(context,idedit){
-    let nowDate = Math.floor(Date.parse(new Date())/1000);
+    let nowDate = Math.floor(Date.parse(new Date()));
     let sobjects = this.formateHistory(context,idedit);
     let resultSobjectList = [];
     let osmCollection = this.getOsmChanges1(context,idedit);
-    console.log(osmCollection,'chage');
+    // console.log(osmCollection,'chage');
     // return
     for(let id in sobjects){
       let sobject = sobjects[id];

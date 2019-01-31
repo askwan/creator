@@ -28,7 +28,8 @@ class MapboxGL {
 
     this.modelSobject = false
     this.mousedownIs = false
-    this.changed=false
+    this.changed = false
+
     this.init(data)
   }
   init(data) {
@@ -126,44 +127,53 @@ class MapboxGL {
     this.OperationLayer.mousedownPick(e)
   }
   start(data) {
-    let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
-    if(!this.changed){
-      this.map.flyTo({
-        center: lonlat,
-        pitch: 45,
-        maxDuration: 100
-      });
-    }
-    for (let i in this.allLayer) {
-      let layer = this.allLayer[i]
-      layer.remove()
-      layer.setLonLat(lonlat)
-    }
-    this.OperationLayer.remove()
-    this.OperationLayer.setLonLat(lonlat)
-    this.OperationLayer.add()
-    this.OperationLayer.setZoom(this.map.getZoom())
-    this.changed = false;
-    this.recursion([data])
+    // let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
+    // if (!this.changed) {
+    
+    // }
+    // this.changed = false;
+    this.recursion([data], null, true)
   }
-  recursion(list, floor) {
+  recursion(list, floor, onece) {
     for (let i = 0; i < list.length; i++) {
       let object = list[i]
       let sobject = new SObject(object)
-      if (sobject.layer == 'modelLayer') {
+      let lonlat = []
+      if (sobject.layer[0] == 'modelLayer') {
         for (let q = 0; q < sobject.forms.length; q++) {
-          if (sobject.forms[q].style.length > 0) {
+          if (sobject.forms[q].type == 50 && sobject.forms[q].style.length > 0) {
             let obj = {
               scale: sobject.forms[q].style[0].scale
             }
             EventAll.fire(MapEvent.setScale, obj)
+            lonlat = [sobject.forms[q].geom.x, sobject.forms[q].geom.y]
           }
         }
         this.modelSobject = true
         this.OperationLayer.setShow(true)
       } else {
+        lonlat = sobject.lonlat
         this.modelSobject = false
         this.OperationLayer.setShow(false)
+      }
+      if (onece) {
+        for (let i in this.allLayer) {
+          let layer = this.allLayer[i]
+          layer.remove()
+          layer.setLonLat(lonlat)
+        }
+        this.map.flyTo({
+          center: lonlat,
+          pitch: 45,
+          maxDuration: 100
+        });
+        if (this.modelSobject) {
+          this.OperationLayer.remove()
+          this.OperationLayer.setLonLat(lonlat)
+          this.OperationLayer.add()
+          this.OperationLayer.setZoom(this.map.getZoom())
+        }
+
       }
       if (!sobject.floor) {
         sobject.floor = floor ? floor : null
@@ -175,7 +185,7 @@ class MapboxGL {
         }
       }
       if (object.children.length > 0) {
-        this.recursion(object.children, sobject.floor)
+        this.recursion(object.children, sobject.floor, false)
       }
     }
   }

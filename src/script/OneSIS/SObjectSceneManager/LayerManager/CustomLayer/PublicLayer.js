@@ -3,7 +3,7 @@ import mercatorProj from './manage/mercatorProj'
 import Point from './Geometry/Point'
 import Line from './Geometry/Line'
 import Polygon from './Geometry/Polygon'
-import Model from './Geometry/Model'
+// import Model from './Geometry/Model'
 
 class PublicLayer {
   constructor() {
@@ -50,26 +50,34 @@ class PublicLayer {
     this.cGeometry.point = new Point()
     this.cGeometry.line = new Line()
     this.cGeometry.polygon = new Polygon()
-    this.cGeometry.model = new Model()
+    // this.cGeometry.model = new Model()
   }
-  add(sobject) {
+  add(sobject, old) {
     if (!this.allSObjectGroup[sobject.id]) {
       this.allSObjectGroup[sobject.id] = new THREE.Group()
       this.allSObjectGroup[sobject.id].name = sobject.id
       this.group.add(this.allSObjectGroup[sobject.id])
-    } else {
 
+    } else {
+      this.group.remove(this.allSObjectGroup[sobject.id])
+      this.allSObjectGroup[sobject.id] = new THREE.Group()
+      this.allSObjectGroup[sobject.id].name = sobject.id
+      this.group.add(this.allSObjectGroup[sobject.id])
     }
+
     let nodes = sobject.nodes
     for (let i in nodes) {
       let node = nodes[i]
       this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
     }
+
     if (!sobject.show) {
       console.log('false');
       this.allSObjectGroup[sobject.id].visible = false
     }
+
   }
+
   remove() {
     this.allSObjectGroup = {}
     this.scene.remove(this.group);

@@ -123,9 +123,6 @@ export default {
     },
     listenEvent() {
       vm.$on('sdomainReady',list=>{
-        console.log(list,'list');
-        
-
         let domain = sessionStorage.getItem("sdomain");
         if (domain) {
           domain = JSON.parse(domain);
