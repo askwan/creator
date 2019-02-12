@@ -288,6 +288,7 @@
 						}
 					});
 				}
+				console.log(item,1111);
 				this.objectDetail.modifyAttr(attr);
 				idEdit.modifySobject(this.objectDetail);
 			},
