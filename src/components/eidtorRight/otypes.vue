@@ -42,18 +42,15 @@
     },
     watch:{
       show(bool){
-        console.log(bool)
         if(bool&&this.isFalse){
           this.getData();
         }
       }
     },
     mounted(){
-      console.log('mounted');
       this.getData();
     },
     activated() {
-      console.log('activated')
     },
     methods:{
       // change(a,b,c){

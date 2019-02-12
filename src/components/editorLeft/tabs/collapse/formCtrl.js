@@ -62,7 +62,7 @@ function getAddFromList (otype) {
     for (let i = 0;i < otype.formStyles.styles.length;i++) {
       let formstyle = otype.formStyles.styles[i]
       let from = getFromByType(formstyle.type)
-      if (from) {
+      if (from&&!result.find(el=>el.value==from.value)) {
         result.push( from )
       }
     }

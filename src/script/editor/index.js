@@ -1,6 +1,6 @@
 import * as iD from './id-editor/modules';
 
-console.log(iD, 'id')
+// console.log(iD, 'id')
 import './id-editor/css/00_reset.css'
 import './id-editor/css/20_map.css'
 import './id-editor/css/25_areas.css'
@@ -242,7 +242,7 @@ export default class Editor {
     } catch (error) {
 
     }
-    // console.log(attr,'2222')
+    console.log(attr,'2222')
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
   }

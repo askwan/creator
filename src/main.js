@@ -19,9 +19,6 @@ import ElementUI from 'element-ui';
 // import "@/script/editor/id-editor/css/70_fills.css";
 // import "@/script/editor/id-editor/css/80_app.css";
 
-
-
-
 import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);

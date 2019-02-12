@@ -8,7 +8,7 @@
     </div>
   
     <div ref="list" class='object-list pd-big' v-loading='loading'>
-      <div v-if="objectList.length>0" v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
+      <div v-show="objectList.length>0" v-for="item in objectList" :key="item.id" class="object-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="selectObj(item)">
         <div class="icon-text flex-center radius-2 mg-right-big">
           <span class="font-14 font-white">{{item.name|splice2}}</span>
         </div>

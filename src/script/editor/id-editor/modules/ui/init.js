@@ -363,7 +363,6 @@ export function uiInit(context) {
         var container = d3_select(node);
         context.container(container);
         context.loadLocale(function(err) {
-            console.log(err)
             if (!err) {
                 render(container);
             }

@@ -3,7 +3,7 @@
 		<div class="top" :class="{notEdit:!ifEdit}">
 			<div class="accordion-top pd-left-small pd-right-small">
 				<el-collapse v-model="accordionName" accordion class="accordion" v-if="topData && topData.length>0">
-					<el-collapse-item v-for="(n,i) in topData" :key="i" :title="getName(n)" :name='i' v-if="n">
+					<el-collapse-item v-for="(n,i) in topData" :key="i" :title="getName(n)" :name='i' v-show="n">
 						<el-form size="mini" label-position="right" label-width="60px" :model="n">
 							<el-form-item label="语言:">
 								<el-input :value="getLanguageName(n.pLanguage)" :disabled="true" class="accordion-input"></el-input>
@@ -61,7 +61,7 @@
 
 									<span class="input-field" v-if="n.initData && n.initData.inTypes && n.initData.inTypes.length>0">--------------------输入字段项--------------------</span>
 
-									<el-form-item v-if="n.initData && n.initData.inTypes && n.initData.inTypes.length>0" v-for="(item,index) in n.initData.inTypes" :title="item.name" :label="item.name+':'" :key="index">
+									<el-form-item v-show="n.initData && n.initData.inTypes && n.initData.inTypes.length>0" v-for="(item,index) in n.initData.inTypes" :title="item.name" :label="item.name+':'" :key="index">
 										<el-input v-model="item.value" type="text" class="accordion-input" @change="change(i)"></el-input>
 									</el-form-item>
 

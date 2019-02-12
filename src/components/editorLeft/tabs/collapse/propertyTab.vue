@@ -320,7 +320,6 @@
 						}
 					});
 				}
-				console.log(item,index,'fdsfs');
 				idEdit.modifyAttr(attr,this.objectDetail);
 			},
 			addProperty() {

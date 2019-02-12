@@ -2,7 +2,7 @@
 	<div class="objtype-info" v-if="objectDetail.id">
 		<div class="objtype-detail">
 			<div class="object-form-type">
-				<span v-for="it in formTypeList" :title="it.label" :key="it.value" @click.prevent.stop="placeTypeChange(it.value)">
+				<span v-for="(it,i) in formTypeList" :title="it.label" :key="i" @click.prevent.stop="placeTypeChange(it.value)">
 					<i class="el-icon-plus"></i>
 					{{it.label}}
 				</span>
@@ -10,7 +10,7 @@
 			<el-collapse v-model="activeNames" @change="handleChange(activeNames)" accordion>
 				<el-collapse-item v-for="(item,index) in formateList" :title="item.name" :name="index" :key="index">
 					<template slot="title">
-						<span v-for="(it,index) in fromlistName" :key="index" v-if="item.type == it.value">{{it.label}}</span>
+						<span v-for="(it,index) in fromlistName" :key="index" v-show="item.type == it.value">{{it.label}}</span>
 						<div class="right-objtype-i" v-show="ifEdit">
 							<i class="el-icon-delete" title="删除" @click.stop="deleteOT(item,index)" v-if="item.sign!='otype'"></i>
 						</div>
@@ -531,9 +531,7 @@
 				return arr;
 			},
 			deleteRelation(obj){
-				console.log(obj,8888)
 				this.formateList.forEach(el=>{
-					console.log(el.relationArr,'ffffffff')
 					let index = el.relationArr.findIndex(ev=>ev._relation==obj.member);
 					if(index>-1) el.relationArr.splice(index,1);
 				})
