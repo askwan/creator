@@ -6,24 +6,28 @@ class Point extends publicFun {
   }
   create(lonlat, sobject, node) {
     let floorObj = new THREE.Group();
-    let obj=this.getDataObj(lonlat, sobject,node)
-    
+    floorObj.name=sobject.name
+    floorObj.sobject=sobject
+    let obj = this.getDataObj(lonlat, sobject, node)
+
     // let color = this.getColors(sobject.data)
 
     let lonlatArr = []
     lonlatArr = this.getPlace(sobject.lonlat, lonlat)
-
+    let vColor = 0xffff00
+    
     let geometry = new THREE.CircleBufferGeometry(0.1, 32);
     let material = new THREE.MeshPhongMaterial({
-      color: 0xffff00
+      color: vColor
     });
     let circle = new THREE.Mesh(geometry, material);
 
     circle.position.x += lonlatArr.x
     circle.position.y += lonlatArr.y
-    circle.position.z += obj.topLength + 0.15
+    circle.position.z += Number(obj.minHeight) + 0.1
     floorObj.add(circle);
     return floorObj
+   
   }
 }
 export default Point

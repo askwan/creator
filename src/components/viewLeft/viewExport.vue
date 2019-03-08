@@ -51,8 +51,9 @@
 			},
 			exportJsonFn(){
 				let boxArray = mapboxMap.getBounds().toArray();
+				let sdomian = JSON.parse(sessionStorage.getItem('sdomain'));
 				let bbox = `BBOX(${this.eastLongitude} ${this.westLongitude} ${this.southLatitude} ${this.northLatitude})`;
-				let url = `${psdeUrl}object/query?token=${localStorage.getItem('token')||''}&geoWkt=${bbox}&loadForm=true`;
+				let url = `${psdeUrl}object/query?token=${localStorage.getItem('token')||''}&geoWkt=${bbox}&loadForm=true&sdomains=${sdomian.id}`;
 				window.open(url)
 			}
 		}

@@ -29,6 +29,7 @@ import MapboxGL from "../script/OneSIS/OneSISGL/MapboxGL";
 import { vm, operate, getEditor } from "@/script/operate";
 import { State } from "@/script/editor/utils/store";
 import { MapEvent, EventAll } from "../script/OneSIS/evented/Event.js";
+import { objectServer} from '@/script/server'
 var map;
 export default {
   data() {
@@ -135,8 +136,13 @@ export default {
     getData() {
       vm.$on(operate.hiddenOtypes, () => {
         if (this.show ) {
-          map.start(State.viewObject);
+          // console.log(getEditor().currentEntity,'entity',State.viewObject)
+          map.start(State.viewObject,getEditor().currentEntity);
           this.showList = map.getModelSobject();
+          // objectServer.query({ids:State.viewObject.id,loadForm:true}).then(res=>{
+          //   console.log(res,'res')
+          // })
+
         }
         // map.changed = false;
       });

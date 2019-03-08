@@ -30,6 +30,9 @@ class MapboxGL {
     this.mousedownIs = false
     this.changed = false
 
+    this.selectData = ''
+
+
     this.init(data)
   }
   init(data) {
@@ -126,20 +129,30 @@ class MapboxGL {
     this.mousedownIs = true
     this.OperationLayer.mousedownPick(e)
   }
-  start(data) {
-    // let lonlat = [(data.geoBox.maxx + data.geoBox.minx) / 2, (data.geoBox.maxy + data.geoBox.miny) / 2]
-    // if (!this.changed) {
-    
-    // }
-    // this.changed = false;
+  start(data, selectData) {
+    this.selectData = selectData
     this.recursion([data], null, true)
   }
   recursion(list, floor, onece) {
     for (let i = 0; i < list.length; i++) {
       let object = list[i]
-      let sobject = new SObject(object)
+      // console.log('-----------------------------')
+      // console.log(object, this.selectData)
+      let sobject
+      if (onece) {
+        sobject = new SObject(object, this.selectData)
+      } else {
+        sobject = new SObject(object)
+      }
+      // console.log(sobject,'end')
       let lonlat = []
-      if (sobject.layer[0] == 'modelLayer') {
+      let have = false
+      for (let t = 0; t < sobject.layer.length; t++) {
+        if (sobject.layer[t] == 'modelLayer') {
+          have = true
+        }
+      }
+      if (have) {
         for (let q = 0; q < sobject.forms.length; q++) {
           if (sobject.forms[q].type == 50 && sobject.forms[q].style.length > 0) {
             let obj = {
@@ -181,6 +194,7 @@ class MapboxGL {
       this.SObjectList.push(sobject)
       if (sobject.layer) {
         for (let q = 0; q < sobject.layer.length; q++) {
+          // console.log(sobject.layer,333333)
           this.allLayer[sobject.layer[q]].add(sobject)
         }
       }

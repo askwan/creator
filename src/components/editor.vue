@@ -160,9 +160,9 @@
           editor.on('currentObject',data=>{
             if(data.object) {
               this.currentObj = data.object;
-              console.log(data.object)
+              // console.log(data.object,'data.object')
               // State.viewObject = editor.copySObject(data.object);
-
+              // vm.$emit(operate.currentSobject,data.object)
               // vm.$emit(operate.hiddenOtypes);
               vm.$emit(operate.changeTab,{name:'objectDetail'});
             }else if(data.entityId){

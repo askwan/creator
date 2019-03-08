@@ -11,6 +11,7 @@ import versionServer from './api/versionServer'
 import sdomainServer from './api/sdomainServer'
 import dobjectServer from './api/dobjectServer'
 import hdfsServer from './api/hdfsServer'
+import relationServer from './api/relationServer'
 
 import {
   psdeBaseUrl,
@@ -40,7 +41,8 @@ export {
   sdomainServer,
   psdeBaseUrl,
   dobjectServer,
-  hdfsServer
+  hdfsServer,
+  relationServer
 }
 
 // const myEvent = new CustomEvent('hello',{

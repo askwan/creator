@@ -17,7 +17,8 @@ export const operate = {
   changeDomain:'changeDomain',
   hiddenOtypes:'hiddenOtypes',
   heightManager:'heightManager',
-  readyMap:'readyMap'
+  readyMap:'readyMap',
+  currentSobject:'currentSobject'
 }
 
 let vm = new Vue();

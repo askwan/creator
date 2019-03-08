@@ -162,7 +162,9 @@ export default class SObject extends DObject {
 
     let addAction = this.getAction(form.id, Action.ADDING | Action.FORM)
     if (addAction) {
-      this.deleteAction(addAction.id, addAction.operation)
+      this.deleteAction(addAction.id, addAction.operation);
+      let index = this.forms.findIndex(el => el.id == form.id);
+      this.forms.splice(index,1);
       return
     }
     let modifyAction = this.getAction(form.id, Action.MODIFY | Action.FORM)

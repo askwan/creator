@@ -4,8 +4,8 @@ import {psdeBaseUrl,token} from '../config'
 class ModelServer extends Base {
   constructor(){
     super();
-    this.url = psdeBaseUrl +'/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file';
-    // this.url = 'http://bt1.geosts.ac.cn/api/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file';
+    // this.url = psdeBaseUrl +'/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file';
+    this.url = 'http://bt1.geosts.ac.cn/api/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file';
   }
   getModel(option={}){
     return new Promise((resolve,reject)=>{

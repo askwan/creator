@@ -1,5 +1,5 @@
-import mercatorProj from '../m/mercatorProj'
-import make from '../c/make'
+import mercatorProj from '../mercatorProj/mercatorProj'
+import make from '../data/make'
 import UpdateFn from './UpdateFn'
 import MouseFn from './MouseFn'
 class OperationLayer {

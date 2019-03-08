@@ -21,7 +21,7 @@
       return {
         componentId:'searchList',
         title:'',
-        otypeName:''
+        otypeName:'',
       }
     },
     props:['sobject','entity'],
@@ -45,6 +45,7 @@
           this.title = '';
           this.otypeName = '';
         }else{
+          console.log(this.sobject,'ffffffffffff')
           this.title = this.sobject.name||'default';
           this.otypeName = this.sobject.otype.name;
         }
@@ -56,9 +57,16 @@
     },
     methods:{
       listenEvent(){
+        // console.log(7777777777)
         vm.$on(operate.changeTab,obj=>{
           this.componentId = obj.name;
-        })
+        });
+        // vm.$on(operate.currentSobject,object=>{
+        //   console.log(object,44444444444);
+        //   this.sobject = object;
+        //   this.title = this.sobject.name||'default';
+        //   this.otypeName = this.sobject.otype.name;
+        // })
       },
       cloneObject(){
         getEditor().cloneObject();

@@ -117,7 +117,11 @@ export default class Editor {
       }
 
       // this.changeLoc({entityId:'n1086762917686247425',lat:114.28745136686429,lng:9.714856337064521})
-
+      // setTimeout(() => {
+      //   console.log('select')
+      //   console.log(this.idContext.entity('n1087955353984880641'));
+      //   // this.relationOperate.positionEntity(this.idContext,'n1087955353984880641')
+      // }, 2000);
       if (this.currentSobject && this.currentForm) {
         let _form = this.currentSobject.forms.find(el => el.id == this.currentForm.id);
         if (_form) {
@@ -221,8 +225,9 @@ export default class Editor {
     this.currentGraph.updateSObject(sobject)
   }
   modifyOtype(sobject, otypeId) {
-    sobject.modyifyOtype(State.otypes[otypeId]);
+    sobject = sobject.modyifyOtype(State.otypes[otypeId]);
     this.modifySobject(sobject);
+    // dispatch.call('currentObject',this,{object:null,entityId:null});
     dispatch.call('currentObject', this, {
       object: sobject,
       entityId: this.currentEntity.id
@@ -242,7 +247,6 @@ export default class Editor {
     } catch (error) {
 
     }
-    console.log(attr,'2222')
     sobject.modifyAttr(attr)
     this.modifySobject(sobject);
   }
@@ -482,7 +486,6 @@ export default class Editor {
     this.currentSobject = newSobject;
     newSobject.forms.forEach(form => {
       if(form.geomref){
-        console.log(form.geomref,'sdfsdfsd')
         let entity = this.copyEntity(form.geomref);
         form.geom = entity.id;
         form.geomref = entity.id;
@@ -580,7 +583,8 @@ export default class Editor {
     let entity = this.idContext.entity(option.entityId);
     let lng = option.lng;
     let lat = option.lat;
-    this.idContext.perform(iD.actionMoveNode(option.entityId, [lng, lat]));
+    // console.log(option,[lng,lat])
+    this.idContext.perform(iD.actionMoveNode(option.entityId, [lng,lat]));
     let sobject = this.getSObjectByOsmEntity(option.entityId);
     sobject.geoBox.maxx = lng;
     sobject.geoBox.minx = lng;
@@ -599,7 +603,6 @@ export default class Editor {
     };
     this.modifyObjectForm(sobject, form);
 
-    // dispatch.call('currentObject',this,{object:sobject,entityId:entity.id});
 
   }
 
@@ -608,11 +611,5 @@ export default class Editor {
     State.viewObject = this.copySObject(sobject);
     dispatch.call('previewModel',this);
   }
-
-
-
-
-
-
 
 }

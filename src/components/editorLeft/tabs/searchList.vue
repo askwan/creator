@@ -122,8 +122,9 @@ export default {
       var obj = {
         names: this.searchNameVal,
         geoEdit:true,
-        uids:id,
-        sdomains:sdomain.id
+        uids:'',
+        sdomains:sdomain.id,
+        loadNetwork:true
       };
       this.loading = true;
       this.objectList = [];
@@ -176,11 +177,11 @@ export default {
             
             if(form.geom){
               if(form.geotype==21){
-                form.geom= 'n'+form.geom.id;
+                form.geom= 'n'+form.geom.uuid;
               }else if(form.geotype==22||form.geotype==23){
-                form.geom='w'+form.geom.id;
+                form.geom='w'+form.geom.uuid;
               }else if(form.geotype==24){
-                form.geom = 'r'+form.geom.id;
+                form.geom = 'r'+form.geom.uuid;
               }
             }else{
               this.$set(form,'geom',undefined)

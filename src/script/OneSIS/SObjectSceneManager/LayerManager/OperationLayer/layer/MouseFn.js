@@ -1,4 +1,4 @@
-import mercatorProj from '../m/mercatorProj'
+import mercatorProj from '../mercatorProj/mercatorProj'
 import {
   MapEvent,
   EventAll

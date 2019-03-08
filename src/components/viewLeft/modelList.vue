@@ -2,17 +2,18 @@
   <div class='modelist' v-loading='loading'>
     <!-- 搜索上传 -->
     <div class="search-box flex">
-      <!-- <el-input
+      <el-input
         class="search"
-        placeholder="搜索"
-        v-model="input1"
+        placeholder="请输入模型名称"
+        v-model="searchValue"
+        @change="startSearch"
         clearable>
       </el-input>
       <el-tooltip effect="dark" content="上传新模型" placement="bottom">
         <el-button class="mg-left-small" type="primary" size="mini" icon="el-icon-upload" circle @click="modelUploadFn"></el-button>
-      </el-tooltip> -->
+      </el-tooltip>
       <!-- <search-bar @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></search-bar> -->
-      <el-input suffix-icon="el-icon-search" v-model="searchValue" @change="startSearch" placeholder="请输入模型名称"></el-input>
+      <!-- <el-input suffix-icon="el-icon-search" v-model="searchValue" @change="startSearch" placeholder="请输入模型名称"></el-input> -->
     </div>
     <!-- 模型列表 -->
     <ul class="model-lis">

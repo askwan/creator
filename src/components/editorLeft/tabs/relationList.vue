@@ -3,27 +3,53 @@
     <div class="pd-left-small pd-right-small relation-header">
       <common-head title="关系列表" @back="back"></common-head>
     </div>
-    <div class='relation-list pd-big'>
+    <div class="mg-left-small mg-right-small object-search flex-center">
+      <common-search @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></common-search>
+    </div>
+    <div class='relation-list pd-big' v-if="relationsList.length>0" v-loading='loading'>
       <div v-for="relation in relationsList" :key="relation.id" class="relation-el radius-2 pointer-shadow pd-small mg-bottom-big" @click="selectRelation(relation)">
         <div class="relation-text flex mg-bottom-small">
           <div class="relation-icon font-white radius-2 flex-center font-14">{{relation.name|initialName}}</div>
           <p class="mg-left-small font-14">{{relation.name}}</p>
         </div>
         <div class="tags">
-          <el-tag size="mini">{{relation.mappingType|getName}}</el-tag>
+          <el-tag size="mini" disable-transitions>{{relation.mappingType|getName}}</el-tag>
         </div>
       </div>
+      
+    </div>
+    <div v-else class="relation-list pd-big" v-loading='loading'>
+      <div class="font-28 font-gray align-center">暂无关系</div>
+      <div class="align-center">
+        <el-button @click="getRelationList" type="text">查找全库...</el-button>
+      </div>
+    </div>
+    <div v-if="total>20" class="block flex-center">
+      <el-pagination
+        layout="prev, pager, next"
+        small
+        :total="total"
+        :pager-count="5"
+        :page-size="pageSize"
+        @current-change="loadMore">
+      </el-pagination>
     </div>
   </div>
 </template>
 <script>
   import {vm,operate,getEditor} from '@/script/operate'
   import {State} from '@/script/editor/utils/store'
+  import {relationServer} from '@/script/server'
   export default {
     data(){
       return {
         otype:{},
-        relationsList:[]
+        relationsList:[],
+        loading:false,
+        searchValue:'',
+        pageSize:10,
+        total:100,
+        pageNum:1
       }
     },
     props:{
@@ -33,7 +59,8 @@
       }
     },
     components:{
-      commonHead:()=>import('@/components/common/tabHead.vue')
+      commonHead:()=>import('@/components/common/tabHead.vue'),
+      commonSearch:()=>import('@/components/common/searchBar.vue')
     },
     computed:{},
     filters:{
@@ -82,6 +109,37 @@
       },
       back(){
         vm.$emit(operate.changeTab,{name:'objectDetail'})
+      },
+      startSearch(val){
+        console.log(this.searchValue,'serr');
+        this.loading = true;
+        relationServer.getRelationByName(val).then(res=>{
+          console.log(res,'res');
+          this.loading = false;
+          this.relationsList = res.list;
+          this.pageNum = res.pageNum;
+          this.pageSize = res.pageSize;
+          this.total = Number(res.total);
+        })
+      },
+      loadMore(page){
+        // console.log(page,'loadMore');
+        this.pageNum = page;
+        this.getRelationList();
+      },
+      getRelationList(){
+        let obj = {
+          pageNum:this.pageNum,
+          pageSize:this.pageSize
+        }
+        this.loading = true;
+        relationServer.getList(obj).then(res=>{
+          this.relationsList = res.list;
+          this.pageNum = res.pageNum;
+          this.pageSize = res.pageSize;
+          this.total = Number(res.total);
+          this.loading = false;
+        })
       }
     }
   }
@@ -94,8 +152,9 @@
     }
   }
   .relation-list{
-    height: calc(100% - 41px);
+    height: calc(100% - 121px);
     overflow-y: auto;
+    // background-color: red;
     .relation-el{
       border: 1px solid #ccc;
       .relation-text{
@@ -107,4 +166,9 @@
       }
     }
   }
+  .object-search{
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      height: 40px;
+    }
 </style>

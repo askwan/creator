@@ -808,10 +808,9 @@ export default {
         if (hadRequests && _isEmpty(_tileCache.inflight)) {
             dispatch.call('loaded');    // stop the spinner
         }
-
         // issue new requests..
         tiles.forEach(function(tile) {
-
+            
             if (_tileCache.loaded[tile.id] || _tileCache.inflight[tile.id]) return;
             if (_isEmpty(_tileCache.inflight)) {
                 dispatch.call('loading');   // start the spinner
@@ -832,8 +831,7 @@ export default {
                 geoEdit:true,
                 loadNetwork:true,
                 geoWkt:extbbox,
-                // uids:"'"+_id+"'",
-                sdomains:7065321308160
+                // uids:"'"+_id+"'"
             }
             let option = Object.assign(defaultOptions,context.loadOptions());
             for(let key in defaultOptions){

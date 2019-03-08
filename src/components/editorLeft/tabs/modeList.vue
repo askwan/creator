@@ -4,7 +4,7 @@
       <common-head title="模型列表" @back="back"></common-head>
     </div>
     <div class="mg-left-small mg-right-small object-search flex-center">
-      <common-search @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></common-search>
+      <common-search :typeList="typeList" @startSearch="startSearch" :searchValue="searchValue" :loading="loading"></common-search>
     </div>
     <div class="list-box pd-big">
       <div v-for="mode in modeLists" :key="mode.fid" class="list-el pointer-shadow radius-2 mg-bottom-big flex-align pd-left-small pd-right-small" @click="select(mode)">
@@ -51,7 +51,8 @@
         modeLists:[],
         showDiag:false,
         more:true,
-        noData:false
+        noData:false,
+        typeList:[{type:'全部',value:''},{type:'gltf',value:'gltf'},{type:'glb',value:'glb'},{type:'ive',value:'ive'},{type:'osgb',value:'osgb'}]
       }
     },
     props:['currentObject'],
@@ -76,10 +77,11 @@
       }
     },
     methods:{
-      startSearch(value){
+      startSearch(obj){
         this.pageNum = 1;
-        this.searchValue = value;
+        this.searchValue = obj.searchValue;
         this.modeLists = [];
+        this.type = obj.type.value;
         this.getList();
       },
       back(){
@@ -88,7 +90,7 @@
       getList(){
         this.loading = true;
         this.more = true;
-        modelServer.getModel({pageNum:this.pageNum,pageSize:this.pageSize,name:this.searchValue}).then(res=>{
+        modelServer.getModel({pageNum:this.pageNum,pageSize:this.pageSize,name:this.searchValue,extension:this.type}).then(res=>{
           if(res.data.list.length<20) this.more = false;
           let lists = res.data.list.filter(el=>el.name);
           this.modeLists = this.modeLists.concat(lists);
@@ -105,12 +107,26 @@
         vm.$emit(operate.changeTab,{name:'objectDetail'});
       },
       deleteObj(mode){
-        modelServer.deleteMode(mode._id).then(res=>{
-          if(res.status==200){
-            let index = this.modeLists.findIndex(el=>el._id==mode._id);
-            this.modeLists.splice(index,1);
-          }
-          
+        
+        this.$confirm('是否删除模型'+mode.name+"?",'提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type:'warning'
+        }).then(()=>{
+          modelServer.deleteMode(mode.fid).then(res=>{
+            if(res.status==200){
+              let index = this.modeLists.findIndex(el=>el._id==mode._id);
+              this.modeLists.splice(index,1);
+            }else{
+              this.$notify.error({
+                title: 'error',
+                message: res.message
+              });
+            }
+            
+          });
+        }).catch(err=>{
+          // console.log(err);
         })
       },
       loadMore(){

@@ -31,7 +31,7 @@ common.exitUser = { // 退出登陆
 
   },
   exitAddress: function (httpVal) {
-    window.location.href = `${common.newUcHttp}/#/uc/login?service=${window.location.protocol}//${window.location.host}${window.location.pathname}`
+    window.location.href = `${common.newUcHttp}/#/login?service=${window.location.protocol}//${window.location.host}${window.location.pathname}`
   }
 }
 common.getMine = function (id) { // 判断是否是我自己的

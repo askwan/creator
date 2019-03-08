@@ -59,7 +59,8 @@
 			return {
 				objectAttrLists: [], //添加属性列表
 				showproperty: false, //是否显示属性列表
-				time:''
+				time:'',
+				// objectDetail:{}
 			};
 		},
 		props: ["objectDetail"],
@@ -68,11 +69,17 @@
 		},
     activated() {},
     mounted(){
-      idEdit = getEditor();
+			idEdit = getEditor();
+			// console.log('mounted')
 			this.transformObj(this.objectDetail);
 			if(this.objectDetail.realTime){
 				this.time = new Date(this.objectDetail.realTime);
 			}
+			// vm.$on(operate.currentSobject,object=>{
+			// 	this.objectDetail = object;
+			// 	console.log(object,1111)
+			// 	this.transformObj(this.objectDetail);
+			// })
 			// setTimeout(() => {
 			// 	this.$refs.selectStyle.focus();
 			// 	console.log(123)
@@ -192,7 +199,7 @@
 				var find = this.objectDetail.otype.fields.fields.find(
 					item => item.id == fid
 				);
-				if(find) {
+				if(find && find.domain && find.domain != '') {
 					var arr = JSON.parse(find.domain);
 					if(arr.Range) {
 						return arr.Range;

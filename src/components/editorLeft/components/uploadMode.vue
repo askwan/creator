@@ -15,6 +15,11 @@
 					<el-form-item label="描述">
 						<el-input v-model="upData.desc"></el-input>
 					</el-form-item>
+					<el-form-item label="类型">
+						<el-select v-model="upData.type">
+							<el-option v-for="(item,i) in typeList" :key="i" :label="item.type" :value="item.value"></el-option>
+						</el-select>
+					</el-form-item>
 				</el-form>
 				<div class="btn">
 					<el-button :loading="loading" type="primary" @click="submitUpload">确定</el-button>
@@ -37,10 +42,12 @@
 				modelFileUpload:modelServer.uploadUrl(),
 				upData: {
 					name: "",
-					desc: ""
+					desc: "",
+					type:''
 				},
 				fileList: [],
 				file: "",
+				typeList:[{type:'gltf',value:'gltf'},{type:'glb',value:'glb'},{type:'ive',value:'ive'},{type:'osgb',value:'osgb'}],
 				// ---上传弹窗---------------------------
 
 				labelPosition: "right",

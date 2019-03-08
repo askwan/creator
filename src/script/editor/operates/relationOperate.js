@@ -87,8 +87,12 @@ export class RelationOperate {
     this.context.enter(modeSelect(this.context, arr));
   }
   positionEntity(context,id){
-    let entity = this.context.graph().hasEntity(id)
-    this.context.map().zoomTo(entity)
-    this.context.enter(modeSelect(this.context,[id]));
+    if(id){
+      let entity = this.context.graph().hasEntity(id)
+      this.context.map().zoomTo(entity)
+      this.context.enter(modeSelect(this.context,[id]));
+    }else{
+      this.context.enter(modeSelect(this.context,[]));
+    }
   }
 }

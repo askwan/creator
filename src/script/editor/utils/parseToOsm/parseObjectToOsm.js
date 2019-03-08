@@ -74,12 +74,15 @@ function parseObject (entities, sobject) {
   // 循环形态列表
   if (!sobject.forms) return [];
   // console.log(sobject)
+
+  // if(sobject.id==7849140314112){
+  //   console.log(JSON.stringify(sobject),'sobject')
+  // }
+
   if(!State.otypes[sobject.otype.id]){
     return [];
   }
   sobject.otype = State.otypes[sobject.otype.id];
-
-  // if(sobject.id==3031887691778) console.log(sobject)
 
 
   let otypeIds = State.otypeIds;

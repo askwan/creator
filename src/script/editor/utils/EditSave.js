@@ -1,6 +1,7 @@
 import osm from '../psde/form/osm'
 import SObject from '../psde/psdm/SObject';
 import {State} from './store';
+import { diff } from 'martinez-polygon-clipping';
 
 let flagType = {
   created: 1,
@@ -120,6 +121,9 @@ class EditSave {
   }
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
+    let difference = context.history();
+    console.log(difference,'changes');
+    console.log(difference.difference().summary())
     let _osmChange = [];
     let geomCollection = context.history().base();
     //created

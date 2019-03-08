@@ -116,8 +116,20 @@ export default {
             map.setCenter([position.lng, position.lat], position.zoom);
             map.setZoom(position.zoom);
             this.areaObj = mapposition.getArea();
+            let str = `${position.zoom},${position.lat},${position.lng}`;
+            let sdomain = JSON.parse(sessionStorage.getItem('sdomain'));
+            this.$router.replace({
+              path: "/view",
+              query: {
+                map: str,
+                sdomains:sdomain.id
+              }
+            });
           }
         }
+
+        
+
       });
       getMap(map);
     },
@@ -129,6 +141,7 @@ export default {
         }
         domain = domain || {};
         domain.id = domain.id || this.$route.query.sdomains;
+        console.log(77787)
         this.initMap({ sdomains: domain.id });
         
 

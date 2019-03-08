@@ -1,8 +1,9 @@
-import mercatorProj from './manage/mercatorProj'
 
-import Point from './Geometry/Point'
-import Line from './Geometry/Line'
-import Polygon from './Geometry/Polygon'
+import Line from './Geometry/Line';
+import MultiPolygon from './Geometry/MultiPolygon';
+import Point from './Geometry/Point';
+import Polygon from './Geometry/Polygon';
+import mercatorProj from './manage/mercatorProj';
 // import Model from './Geometry/Model'
 
 class PublicLayer {
@@ -13,17 +14,17 @@ class PublicLayer {
 
     this.camera = new THREE.Camera();
     this.scene = new THREE.Scene();
-    this.map = ''
-    this.renderer = ''
+    this.map = '';
+    this.renderer = '';
 
-    this.lonlat = []
-    this.group = '' //最外层的组
-    this.allSObjectGroup = {}
-    this.cGeometry = {} //所有的几何类型
-    this.show = true
+    this.lonlat = [];
+    this.group = ''; //最外层的组
+    this.allSObjectGroup = {};
+    this.cGeometry = {}; //所有的几何类型
+    this.show = true;
 
-    this.lamplight()
-    this.init()
+    this.lamplight();
+    this.init();
   }
 
   setShow(value) {
@@ -50,24 +51,26 @@ class PublicLayer {
     this.cGeometry.point = new Point()
     this.cGeometry.line = new Line()
     this.cGeometry.polygon = new Polygon()
+    this.cGeometry.multiPolygon = new MultiPolygon()
+
     // this.cGeometry.model = new Model()
   }
-  add(sobject, old) {
-    if (!this.allSObjectGroup[sobject.id]) {
-      this.allSObjectGroup[sobject.id] = new THREE.Group()
-      this.allSObjectGroup[sobject.id].name = sobject.id
-      this.group.add(this.allSObjectGroup[sobject.id])
-
-    } else {
+  add(sobject) {
+    if (this.allSObjectGroup[sobject.id]) {
       this.group.remove(this.allSObjectGroup[sobject.id])
-      this.allSObjectGroup[sobject.id] = new THREE.Group()
-      this.allSObjectGroup[sobject.id].name = sobject.id
-      this.group.add(this.allSObjectGroup[sobject.id])
     }
+    this.allSObjectGroup[sobject.id] = new THREE.Group()
+    this.allSObjectGroup[sobject.id].name = sobject.id
+    this.group.add(this.allSObjectGroup[sobject.id])
 
     let nodes = sobject.nodes
     for (let i in nodes) {
       let node = nodes[i]
+      // if (node.type == 'model'||node.type == 'multiPolygon') {
+      if (node.type == 'model') {
+        return
+      }
+      // console.log(node.type)
       this.allSObjectGroup[sobject.id].add(this.cGeometry[node.type].create(this.lonlat, sobject, node))
     }
 

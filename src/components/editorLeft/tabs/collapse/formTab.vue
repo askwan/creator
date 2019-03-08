@@ -77,6 +77,12 @@
 						<el-form-item label="最小像素:" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
 							<el-input type="number" placeholder="最小像素值" @change="modifyFormFn(item,index)" v-model="item.style[0].smallPX"></el-input>
 						</el-form-item>
+						<el-form-item label="经度:" :label-width="classNameWidth" v-if="item.geom&&(item.type===50 || item.type===40||item.type===21)">
+							<el-input type="number" placeholder="lng" @blur="changeLoc(item,index)" v-model="loc[0]"></el-input>
+						</el-form-item>
+						<el-form-item label="维度:" :label-width="classNameWidth" v-if="item.geom&&(item.type===50 || item.type===40 || item.type==21)">
+							<el-input type="number" placeholder="lat" @blur="changeLoc(item,index)" v-model="loc[1]"></el-input>
+						</el-form-item>
 						
 						<el-form-item label="x轴旋转：" :label-width="classNameWidth" v-if="item.type===50 || item.type===40">
 							<el-input type="number" placeholder="X轴旋转（角度）" @change="modifyFormFn(item,index)" v-model="item.style[0].x"></el-input>
@@ -144,7 +150,9 @@
 				currentFormId: null,//当前点击形态的id
         formList: [],
 				ifEdit:true,
-				showDiag:false
+				showDiag:false,
+				num:0,
+				loc:[0,0]
 			};
 		},
 		props: ["objectDetail"],
@@ -177,6 +185,7 @@
 					this.dimension = State.dimension;
 					this.styleServerType = State.styleServerType;
 					this.formstyleType = State.formstyleType;
+					
 				}
 			}
 		},
@@ -358,6 +367,7 @@
 				}
 			},
 			getData() {
+				
 				this.cloneObjectContent = [];
 				let val = this.objectDetail;
 				if(val.forms && val.forms.length > 0) {
@@ -375,6 +385,11 @@
 				);
 				// console.log(formList, this.formTypeList, "形态列表前后对比");
 				this.fromlistName = formCtrl.fromlist;
+				// console.log(IdEdit.currentEntity,'IdEdit.currentForm')
+				if(IdEdit.currentEntity.type=='node'){
+					this.loc = IdEdit.currentEntity.loc;
+					// this.changeLoc();
+				};
 				
 			},
 			//样式内容转为数组格式
@@ -474,6 +489,7 @@
 				this.curCollapse = activeNames;
 			},
 			placeTypeChange(value) {
+				this.loc = [0,0];
 				let style = formCtrl.geOtypeFromStyle(this.objectDetail.otype, value);
 				if(style != null) {
 
@@ -504,7 +520,7 @@
 
 			},
 			changePosi(item,index){
-				console.log(item,index,'changePosi');
+				// console.log(item,index,'changePosi');
 				// console.log(this.objectDetail,item);
 				
 				this.modifyForm(this.objectDetail, item);
@@ -535,6 +551,14 @@
 					let index = el.relationArr.findIndex(ev=>ev._relation==obj.member);
 					if(index>-1) el.relationArr.splice(index,1);
 				})
+			},
+			changeLoc(){
+				let obj = {
+					entityId:IdEdit.currentEntity.id,
+					lng:Number(this.loc[0]),
+					lat:Number(this.loc[1])
+				}
+				IdEdit.changeLoc(obj)
 			}
 		}
 	};

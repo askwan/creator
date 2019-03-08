@@ -96,9 +96,6 @@
         this.otype = this.currentObject.otype;
         this.getObjectByRelation();
       }else{
-        let net = this.currentObject.otype.connectors.connectors;
-        let parentNet = net.filter(el=>el.dType);
-        let netNames = parentNet.map(el=>el.dType.name);
         this.searchValue = ''
         this.otName = '';
         let parentOts = State.getParentOtypeById(this.currentObject.otype.id);
@@ -110,11 +107,11 @@
     methods:{
       queryObject(){
         this.$refs.list.scrollTop = 0;
-        if(this.parentIds.length==0) {
-          this.objectList = [];
-          this.total = 0;
-          return
-        }
+        // if(this.parentIds.length==0) {
+        //   this.objectList = [];
+        //   this.total = 0;
+        //   return
+        // }
         this.loading = true;
         // if(!this.searchValue) {
         //   this.pageNum = 1;
@@ -137,6 +134,9 @@
           uids:id,
           sdomains:sdomain.id
         };
+        if(this.searchValue){
+          obj.otIds = null;
+        }
         this.objectList = [];
         objectServer.ByNameAndOTName(obj).then(res=>{
           res.list = res.list.filter(el=>el.otype);

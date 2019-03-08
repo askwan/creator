@@ -70,6 +70,9 @@ export default {
   activated() {
     this.sobject = this.currentObject;
     // console.log(this.sobject);
+    // vm.$on(operate.currentSobject,object=>{
+    //   this.sobject = object;
+    // })
   },
   methods: {}
 };
