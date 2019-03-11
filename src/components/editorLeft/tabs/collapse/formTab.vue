@@ -386,11 +386,17 @@
 				// console.log(formList, this.formTypeList, "形态列表前后对比");
 				this.fromlistName = formCtrl.fromlist;
 				// console.log(IdEdit.currentEntity,'IdEdit.currentForm')
-				if(IdEdit.currentEntity.type=='node'){
-					this.loc = IdEdit.currentEntity.loc;
-					console.log(IdEdit.currentEntity,'current')
-					// this.changeLoc();
-				};
+				// if(IdEdit.currentEntity.type=='node'){
+				// 	this.loc = IdEdit.currentEntity.loc;
+				// 	console.log(IdEdit.currentEntity,'current')
+				// 	// this.changeLoc();
+				// };
+				if(IdEdit.currentEle){
+					let entity = IdEdit.idContext.entity(IdEdit.currentEle);
+					if(entity.type == 'node'){
+						this.loc = entity.loc;
+					}
+				}
 				
 			},
 			//样式内容转为数组格式

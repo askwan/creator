@@ -109,7 +109,7 @@ export default class Editor {
         });
         return
       }
-
+      this.currentEle = ele;
       if (ele) {
         let entity = this.idContext.entity(ele);
         // console.log(entity)
