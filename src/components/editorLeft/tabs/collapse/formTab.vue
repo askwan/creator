@@ -388,6 +388,7 @@
 				// console.log(IdEdit.currentEntity,'IdEdit.currentForm')
 				if(IdEdit.currentEntity.type=='node'){
 					this.loc = IdEdit.currentEntity.loc;
+					console.log(IdEdit.currentEntity,'current')
 					// this.changeLoc();
 				};
 				
