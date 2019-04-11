@@ -146,7 +146,7 @@
           editor.flush();
           let center = editor.getCenter(domain.geoBox);
           let zoom = editor.idContext.map().zoom();
-          editor.idContext.map().centerZoom([center.y,center.x],zoom);
+          editor.idContext.map().centerZoom([center.x,center.y],zoom);
         })
       },
       

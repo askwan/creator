@@ -67,23 +67,21 @@
 		components: {
 
 		},
-    activated() {},
+		computed: {
+			
+		},
     mounted(){
 			idEdit = getEditor();
-			// console.log('mounted')
+			// console.log('mountedffs')
 			this.transformObj(this.objectDetail);
-			if(this.objectDetail.realTime){
-				this.time = new Date(this.objectDetail.realTime);
-			}
+			// if(this.objectDetail.realTime){
+			// 	this.time = this.transformTime(this.objectDetail.realTime)
+			// }
 			// vm.$on(operate.currentSobject,object=>{
 			// 	this.objectDetail = object;
 			// 	console.log(object,1111)
 			// 	this.transformObj(this.objectDetail);
 			// })
-			// setTimeout(() => {
-			// 	this.$refs.selectStyle.focus();
-			// 	console.log(123)
-			// }, 1000);
 		},
 		deactivated(){
 			// console.log(this.$refs.selectStyle,'dffffff')
@@ -92,11 +90,12 @@
 		watch: {
 			objectDetail(val) {
 				this.transformObj(val);
-				if(val.realTime){
-					this.time = new Date(val.realTime);
-				}else{
-					this.time = ''
-				}
+				console.log(val,'val');
+				// if(val.realTime){
+				// 	this.time = this.transformTime(val.realTime);
+				// }else{
+				// 	this.time = ''
+				// }
 			}
 		},
 		methods: {
@@ -107,8 +106,19 @@
 				} else {
 					this.showproperty = false;
 				}
+				if(val.realTime){
+					this.time = this.transformTime(val.realTime);
+				}else{
+					this.time = '';
+				}
 			},
 			blurTime(){},
+			transformTime(time){
+				if(time.length<11){
+					time = time*1000;
+				}
+				return new Date(Number(time));
+			},
 			//删除私有属性
 			deleteAttr(item,index){
 				if (this.objectDetail.attributes && this.objectDetail.attributes.length>0) {
@@ -339,7 +349,7 @@
 				});
 			},
 			changeTime(time){
-				let realtime = Date.parse(time)/1000;
+				let realtime = Date.parse(time);
 				idEdit.modifyRealTime(this.objectDetail,realtime);
 				// console.log(realtime,'time')
 			}

@@ -57,7 +57,7 @@ class OsmNode extends OsmEntity {
   setOsmNode (node, flag) {
     this.refOb = node.orgData||{};
     this.id = node.id;
-    thid.uuid = node.uuid;
+    this.uuid = node.uuid;
     this.vid = node.vid;
     this.flag = flag | 0
     this.x = node.loc[0]

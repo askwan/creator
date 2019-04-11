@@ -109,6 +109,7 @@ export default class Editor {
         });
         return
       }
+      
       this.currentEle = ele;
       if (ele) {
         let entity = this.idContext.entity(ele);
@@ -142,7 +143,7 @@ export default class Editor {
         sobject = State.sobjects[id];
         sobject.otype = State.findOtypeById(sobject.otype.id);
         if (sobject.forms && sobject.forms instanceof Array) {
-          form = sobject.forms.find(el => el.geomref == ele);
+          form = sobject.forms.find(el => el.geom == ele);
           if (form) break;
         }
       };
@@ -584,7 +585,7 @@ export default class Editor {
     let lng = option.lng;
     let lat = option.lat;
     // console.log(option,[lng,lat])
-    this.idContext.perform(iD.actionMoveNode(option.entityId, [lng,lat]));
+    this.idContext.perform(iD.actionMoveNode(option.entityId, [lng,lat]),'move node '+option.entityId);
     let sobject = this.getSObjectByOsmEntity(option.entityId);
     sobject.geoBox.maxx = lng;
     sobject.geoBox.minx = lng;

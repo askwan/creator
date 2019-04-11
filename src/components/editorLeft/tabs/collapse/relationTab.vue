@@ -19,7 +19,7 @@
               <span class="font-14">{{node.label}}</span>
               <i class="el-icon-delete mg-left-big pointer font-danger font-16"></i>
             </div> -->
-            <common-connect :left="objectDetail.name|formateName" :right="node.label" :center="node.edge.relation.name" :id='node.id' @deleteIt="deleteIt"></common-connect>
+            <common-connect :left="objectDetail.name|formateName" :right="node|formateNameLabel" :center="node.edge.relation.name" :id='node.id' @deleteIt="deleteIt"></common-connect>
           </template>
           <div>
             <el-form size="mini" label-width="80px" v-if="node.edge.relation" >
@@ -35,6 +35,7 @@
 </template>
 <script>
   import {vm,operate,getEditor} from '@/script/operate';
+  import {State} from '@/script/editor/utils/store'
   export default {
     data(){
       return {
@@ -56,6 +57,21 @@
     filters:{
       formateName(str){
         return str?str:'defalut'
+      },
+      formateNameLabel(node){
+        let sobject = State.sobjects[node.relatedObjectId];
+        // console.log(sobject.attributes,999);
+        if(!sobject){
+          return node.label || 'default';
+        }
+        let nameObj = sobject.attributes.find(el=>el.name=='name'||el.name=='NAME');
+        // console.log(nameObj,'nameObj')
+        if(nameObj){
+          return nameObj.value
+        }else{
+          return 'default'
+        }
+        // return State.sobjects[id].name;
       }
     },
     watch:{
@@ -95,6 +111,9 @@
             }
           })
           this.nodes = this.objectDetail.network.nodes;
+          // console.log(State.sobjects[this.nodes[0].relatedObjectId]);
+          // relatedObjectId
+          // console.log(this.nodes);
         }else{
           this.nodes = [];
         }

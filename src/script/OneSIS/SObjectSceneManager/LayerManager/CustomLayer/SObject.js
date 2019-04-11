@@ -71,7 +71,6 @@ class SObject {
       if (!l) {
         return
       }
-      // console.log(otypeList,l,222)
       if (type.dType.id == id) {
         return
       }

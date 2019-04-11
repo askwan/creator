@@ -152,7 +152,8 @@
 				ifEdit:true,
 				showDiag:false,
 				num:0,
-				loc:[0,0]
+				loc:[0,0],
+				currentEntityId:''
 			};
 		},
 		props: ["objectDetail"],
@@ -384,20 +385,20 @@
 					form => form.value != 11 && form.value != 12 && form.value != 13
 				);
 				// console.log(formList, this.formTypeList, "形态列表前后对比");
-				this.fromlistName = formCtrl.fromlist;
-				// console.log(IdEdit.currentEntity,'IdEdit.currentForm')
-				// if(IdEdit.currentEntity.type=='node'){
-				// 	this.loc = IdEdit.currentEntity.loc;
-				// 	console.log(IdEdit.currentEntity,'current')
-				// 	// this.changeLoc();
-				// };
-				if(IdEdit.currentEle){
-					let entity = IdEdit.idContext.entity(IdEdit.currentEle);
-					if(entity.type == 'node'){
+				this.fromlistName = formCtrl.fromlist;	
+
+				let geom = IdEdit.currentEle;
+				this.currentEntityId = geom;
+				if(geom){
+					let entity = IdEdit.idContext.entity(geom);
+					if(entity.type=='node'){
 						this.loc = entity.loc;
+						this.changeLoc();
+					}else{
+						this.loc = [0,0];
 					}
 				}
-				
+
 			},
 			//样式内容转为数组格式
 			changeArr(list) {
@@ -494,6 +495,21 @@
 			},
 			handleChange(activeNames) {
 				this.curCollapse = activeNames;
+				// console.log(activeNames,'fff');
+				// console.log(this.formateList[activeNames].geom);
+				if(typeof activeNames != 'number') return
+				let geom = this.formateList[activeNames].geom;
+				this.currentEntityId = geom;
+				if(geom){
+					let entity = IdEdit.idContext.entity(geom);
+					if(entity.type=='node'){
+						this.loc = entity.loc;
+						this.changeLoc();
+					}else{
+						this.loc = [0,0];
+					}
+				}
+				
 			},
 			placeTypeChange(value) {
 				this.loc = [0,0];
@@ -561,11 +577,12 @@
 			},
 			changeLoc(){
 				let obj = {
-					entityId:IdEdit.currentEntity.id,
+					entityId:this.currentEntityId,
 					lng:Number(this.loc[0]),
 					lat:Number(this.loc[1])
-				}
-				IdEdit.changeLoc(obj)
+				};
+				IdEdit.changeLoc(obj);
+				IdEdit.changeLoc(obj);
 			}
 		}
 	};

@@ -198,7 +198,7 @@ export default {
         if(map&&typeof map.remove == 'function') map.remove();
         this.initMap({ sdomains: item.id }, () => {
           let center = this.getCenter(item.geoBox);
-          map.setCenter([center.y, center.x], map.getZoom());
+          map.setCenter([center.x, center.y], map.getZoom());
           let posi = this.$route.query.map
           this.$router.replace({
             path:'/view',

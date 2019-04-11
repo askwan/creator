@@ -182,7 +182,6 @@ export function modeDragNode(context) {
 
     function doMove(entity, nudge) {
         nudge = nudge || [0, 0];
-
         var currPoint = (d3_event && d3_event.point) || context.projection(_lastLoc);
         var currMouse = geoVecSubtract(currPoint, nudge);
         var loc = context.projection.invert(currMouse);
@@ -208,7 +207,6 @@ export function modeDragNode(context) {
                 }
             }
         }
-
         context.replace(
             actionMoveNode(entity.id, loc),
             moveAnnotation(entity)

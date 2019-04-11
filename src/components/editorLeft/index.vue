@@ -45,7 +45,6 @@
           this.title = '';
           this.otypeName = '';
         }else{
-          console.log(this.sobject,'ffffffffffff')
           this.title = this.sobject.name||'default';
           this.otypeName = this.sobject.otype.name;
         }

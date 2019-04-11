@@ -53,14 +53,15 @@
     methods:{
       changeSection(){
         let context = getEditor().idContext;
-        console.log(State.heights,'heights')
+        // console.log(State.heights,'heights')
         let enableList = [];
         for(let key in State.heights){
           let arr = key.split('_').map(el=>Number(el));
           // let bool = (this.section[0]>=arr[0]&&this.section[0]<=arr[1])||(this.section[1]>=arr[0]&&this.section[1]<=arr[1]);
           // let bool = (arr[0]<=this.section[1]&&arr[0]>=this.section[0])||(arr[1]<=this.section[1]&&arr[1]>=this.section[0]);
           // let bool = (this.section[0]<=arr[1]&&this.section[0]>=arr[0])||(this.section[1]<=arr[1]&&this.section[1]>=arr[0]);
-          let bool = (this.section[0]>=arr[0]&&this.section[0]<=arr[1])||(this.section[1]>=arr[0]&&this.section[1]<=arr[1]);
+          // let bool = (this.section[0]>=arr[0]&&this.section[0]<=arr[1])||(this.section[1]>=arr[0]&&this.section[1]<=arr[1]);
+          let bool = (this.section[0]>=arr[0]&&this.section[0]<=arr[1])||(this.section[1]>=arr[0]&&this.section[1]<=arr[1])||(this.section[0]<=arr[0]&&this.section[1]>=arr[1]);
           if(bool) enableList.push(key);
         };
         let lists = Object.keys(State.heights);

@@ -89,9 +89,10 @@
       }
       this.path = this.$route.path;
       sdomainServer.getList().then(res=>{
-        this.sdomains = res.list;
-        State.sdomainList = res.list;
-        if(res.list.length>0){
+        let list = res.list.sort((a,b)=>a.name.localeCompare(b.name,'zh'))
+        this.sdomains = list;
+        State.sdomainList = list;
+        if(list.length>0){
           let domain = sessionStorage.getItem('sdomain');
           if(domain||this.$route.query.sdomains){
             if(domain){
@@ -105,7 +106,7 @@
             this.isShow = true;
           }
         }
-        vm.$emit('sdomainReady',res.list);
+        vm.$emit('sdomainReady',list);
       })
     },
     created: function() {

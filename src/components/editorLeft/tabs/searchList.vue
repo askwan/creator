@@ -130,6 +130,7 @@ export default {
       this.objectList = [];
       objectServer.ByNameAndOTName(obj).then(response => {
         response.list.forEach((item, index) => {
+          console.log(item,'item')
           var findIndex = this.objectList.findIndex(it => it.id == item.id);
           // console.log(item.otype.id,State.otypes[item.otype.id]);
           if(State.otypes[item.otype.id]){

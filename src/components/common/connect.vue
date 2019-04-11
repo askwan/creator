@@ -66,7 +66,7 @@
       .relation-list{
         .relation-el{
           .r-obj{
-            width: 40px;
+            width: 80px;
           }
           height: 40px;
           .r-connector{
@@ -75,10 +75,10 @@
               margin-bottom: -5px;
             }
             .r-center{
-              margin: -33px 10px 0px; 
+              margin: -33px 0px 0px; 
               .underline{
                 display: inline-block;
-                width: 100px;
+                width: 80px;
                 border: 0.5px solid #333;
               }
               i{

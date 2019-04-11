@@ -121,9 +121,9 @@ class EditSave {
   }
   getOsmChanges1(context,Idedit){
     let changes = context.changes();
-    let difference = context.history();
-    console.log(difference,'changes');
-    console.log(difference.difference().summary())
+    // let difference = context.history();
+    // console.log(changes,'changes');
+    // console.log(difference.toIntroGraph())
     let _osmChange = [];
     let geomCollection = context.history().base();
     //created
@@ -183,6 +183,7 @@ class EditSave {
         
       }else if(el['@type']==='Way'){
         let entity = _osmChange.find(ev=>ev.refOb.id===el.refOb.id);
+        
         if(!entity) return;
         if(entity['@type']=='Relation'){
           let obj = {};

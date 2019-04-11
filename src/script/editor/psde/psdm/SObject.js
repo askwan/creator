@@ -30,7 +30,7 @@ export default class SObject extends DObject {
 
     this.defineProperty('compose', {});
 
-    this.defineProperty('realTime','');
+    // this.defineProperty('realTime','');
     this.realTime = '';
     this.sdomain = 0;
     this.children = [];
@@ -41,7 +41,7 @@ export default class SObject extends DObject {
     // Object.assign(this, obj);
     this.copyObject(obj);
     this.addAction(id, Action.ADDING | Action.BASE);
-    this.realTime = '';
+    // this.realTime = '';
     return this
   }
   copyObject (obj) {
@@ -90,7 +90,7 @@ export default class SObject extends DObject {
       el.show = true;
     })
     
-    this.realTime = '';
+    // this.realTime = ;
     return sobject
   }
   modifyObject (obj) {
@@ -169,8 +169,9 @@ export default class SObject extends DObject {
     }
     let modifyAction = this.getAction(form.id, Action.MODIFY | Action.FORM)
     if (modifyAction) {
-      return this.deleteAction(modifyAction.id, modifyAction.operation)
+      this.deleteAction(modifyAction.id, modifyAction.operation)
     }
+    
     this.addAction(form.id, Action.DELETE | Action.FORM)
     let index = this.forms.findIndex(el => el.id == form.id)
     if (index !== -1) this.forms.splice(index, 1)

@@ -104,7 +104,7 @@ function parseObject (entities, sobject) {
         let oNode = createOsmNode(geom, tags, sobject,'point');
         entities.push(oNode);
         form.geom = oNode.id;
-        form.geomref = 'n'+form.geomref;
+        form.geomref = form.geom;
       }
     } else if ((form.geotype == osm.SORTINDEX_EXT_WAY)) {
       let nodeids = []
@@ -115,12 +115,13 @@ function parseObject (entities, sobject) {
         nodeids.push(oNode.id)
         entities.push(oNode)
       }
-      let way = createWay(nodeids, geom.uuid, tags, sobject);
+      let way = createWay(nodeids, geom.id, tags, sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
       form.geom = way.id;
-      form.geomref = 'w'+form.geomref;
+      // form.geomref = 'w'+form.geomref;
+      form.geomref = form.geom
     }else if ((form.geotype == osm.SORTINDEX_EXT_AREA)) {
       let nodeids = []
       if(geom.nodes.length==0) continue;
@@ -131,20 +132,23 @@ function parseObject (entities, sobject) {
         entities.push(oNode)
         form.geom = oNode.id;
         // form.geomref = "n"+form.geomref
+        form.geomref = form.geom;
       }
-      let way = createWay(nodeids, geom.uuid, Object.assign({area: 'yes'},tags), sobject);
+      let way = createWay(nodeids, geom.id, Object.assign({area: 'yes'},tags), sobject);
       way.uuid = geom.uuid;
       way.vid = geom.vid;
       entities.push(way)
       form.geom = way.id;
-      form.geomref = "w"+form.geomref
+      // form.geomref = "w"+form.geomref
+      form.geomref = form.geom;
     }else if (form.geotype == osm.SORTINDEX_EXT_RELATION) {
       let obj = createOsmRelation(form.geom,tags,sobject,entities);
       entities = obj.lists;
 
       entities.push(obj.entity)
       form.geom = obj.entity.id;
-      form.geomref = 'r'+form.geomref;
+      // form.geomref = 'r'+form.geomref;
+      form.geomref = form.geom;
       State.cacheRelation(obj.entity);
     }
   }

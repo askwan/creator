@@ -1,6 +1,6 @@
 
 
-// const psdeBaseUrl = 'http://192.168.1.179:8001';
+// const psdeBaseUrl = 'http://192.168.1.177:8001';
 // const psdeHost = psdeBaseUrl;
 
 const psdeBaseUrl = 'http://bt1.geosts.ac.cn/api';

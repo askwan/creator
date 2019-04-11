@@ -22,7 +22,14 @@ class ModelLayer extends PublicLayer {
       fids: id
     }).then(res => {
       if (res.status == 200) {
-        fn(res.data.list[0].extension)
+        console.log(222, res)
+        if (res.data.list.length > 0) {
+          fn(res.data.list[0].extension)
+
+        } else {
+          fn()
+
+        }
       } else {
         fn()
       }
@@ -45,31 +52,25 @@ class ModelLayer extends PublicLayer {
 
     this.g.name = form.geomref
     this.g.geom = form.geom
-
+    console.log(1111, form)
     this.getModel(form.formref.refid, data => {
-      if (data == "osgb") {
+      if (data == "osgb" || data == "OSGB") {
         this.addOsgb(form, style)
       } else if (data == "glb" || data == "gltf") {
         this.addGltf(form, style)
-      } else {}
+      } else {
+        console.log(4444, data)
+      }
     })
 
 
   }
   addGltf(form, style) {
+    console.log(5555,form)
     let loader = new THREE.GLTFLoader();
     loader.load('http://bt1.geosts.ac.cn/api/dae/model-service/model/rest/v0.1.0/datastore/slave/model/file/download/' + form.formref.refid, gltf => {
       gltf.scene.rotation.x += Math.PI / 2
-      // if (style) {
-      //   gltf.scene.scale.x = style.scale ? style.scale : 1
-      //   gltf.scene.scale.y = style.scale ? style.scale : 1
-      //   gltf.scene.scale.z = style.scale ? style.scale : 1
-      //   gltf.scene.rotation.x += (style.x / 180) * Math.PI
-      //   gltf.scene.rotation.y += (style.y / 180) * Math.PI
-      //   gltf.scene.rotation.z += (style.z / 180) * Math.PI
-      //   gltf.scene.position.z = style.h ? style.h : 0
-      // }
-
+      console.log(gltf)
       if (this.mesh) {
         this.g.remove(this.mesh);
       }
@@ -91,7 +92,7 @@ class ModelLayer extends PublicLayer {
         this.g.remove(this.mesh);
       }
       this.mesh = ''
-      console.log('模型错误,不是2.0', e);
+      console.log('模型错误', e);
     });
   }
   addOsgb(form, style) {
@@ -102,15 +103,15 @@ class ModelLayer extends PublicLayer {
       })
       .then((response) => {
         let osgbData = osg.readBuffer(response.data)
-        let arr = []
-        console.log(osgbData)
+        let arr = [];
+        console.log(osgbData,'osg')
         if (this.mesh) {
           this.g.remove(this.mesh);
         }
         this.lookGeometry(osgbData, arr)
         for (let i = 0; i < arr.length; i++) {
           let Geometry = arr[i]
-          this.createOsgb(Geometry,style)
+          this.createOsgb(Geometry, style)
         }
       })
       .catch(function (error) {
@@ -130,7 +131,7 @@ class ModelLayer extends PublicLayer {
       }
     }
   }
-  createOsgb(data,style) {
+  createOsgb(data, style) {
     let VertexArray = data.VertexArray
     let indexes = data.PrimitiveSetList[0].data
     let Vertex = []
@@ -151,9 +152,9 @@ class ModelLayer extends PublicLayer {
     let material = new THREE.MeshPhongMaterial({
       color: this.randomColor()
     });
- 
+
     this.mesh = new THREE.Mesh(geometry, material);
-   
+
     this.g.add(this.mesh)
     if (style) {
       this.g.scale.x = style.scale ? style.scale : 1
@@ -169,8 +170,8 @@ class ModelLayer extends PublicLayer {
       this.g.rotation.z = (style.y / 180) * Math.PI
     }
   }
-  randomColor(){
-    return '#'+Math.floor(Math.random()*0xffffff).toString(16);
-}
+  randomColor() {
+    return '#' + Math.floor(Math.random() * 0xffffff).toString(16);
+  }
 }
 export default ModelLayer

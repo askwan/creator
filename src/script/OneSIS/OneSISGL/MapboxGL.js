@@ -137,14 +137,12 @@ class MapboxGL {
     for (let i = 0; i < list.length; i++) {
       let object = list[i]
       // console.log('-----------------------------')
-      // console.log(object, this.selectData)
       let sobject
       if (onece) {
         sobject = new SObject(object, this.selectData)
       } else {
         sobject = new SObject(object)
       }
-      // console.log(sobject,'end')
       let lonlat = []
       let have = false
       for (let t = 0; t < sobject.layer.length; t++) {

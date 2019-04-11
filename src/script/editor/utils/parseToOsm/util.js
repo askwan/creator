@@ -5,7 +5,7 @@ import osm from '../../psde/form/osm'
 function createOsmNode (geom, tags, org,_t) {
   org = org || {}
   _t = _t || 'vertex';
-  let nid = 'n' + geom.uuid;
+  let nid = 'n' + geom.id;
   // console.log(geom,'geom');
   let node = new osmNode({
     id: nid,
@@ -35,7 +35,7 @@ function createOsmWay (geom,tags,org,collection){
     nodes.push(node.id);
   });
 
-  let _way = createWay(nodes,geom.uuid,tags,org);
+  let _way = createWay(nodes,geom.id,tags,org);
   _way.uuid = geom.uuid;
   collection.push(_way);
   return {
@@ -132,7 +132,7 @@ function getAttributeTag (sobject) {
     attributes.forEach(attr => {
       tags[attr.name] = attr.value
     })
-    tags.name = sobject.name
+    // tags.name = sobject.name
   // tags[sobject.name] = "*"
   }
 

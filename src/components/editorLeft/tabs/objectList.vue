@@ -131,7 +131,7 @@
 					pageNum: this.pageNum,
           pageSize: this.pageSize,
           otIds:this.parentIds,
-          uids:id,
+          uids:'',
           sdomains:sdomain.id
         };
         if(this.searchValue){

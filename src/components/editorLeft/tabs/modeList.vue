@@ -26,13 +26,21 @@
       <div class="up-load">
         <el-button type="primary" size="mini" icon="el-icon-upload" circle @click="showDiag=true"></el-button>
       </div>
-      <div class="block flex-center" v-show="more&&!noData">
-        <el-button v-loading="loading" @click="loadMore">加载更多</el-button>
-      </div>
+     
       <div class="flex-center" v-if="noData">
         <span class="font-24 font-gray">没有数据</span>
       </div>
     </div>
+     <div class="block flex-center" v-show="pageSize<total">
+        <!-- <el-button v-loading="loading" @click="loadMore">加载更多</el-button> -->
+        <el-pagination
+          small
+          layout="prev, pager, next"
+          :page-size="pageSize"
+          @current-change="changePage"
+          :total="total">
+        </el-pagination>
+      </div>
     <upload-mode v-show="showDiag" @close="showDiag = false" :centerDialogVisible="showDiag" @successFn="changeMode"></upload-mode>
   </div>
 </template>
@@ -46,6 +54,7 @@
         loading:false,
         searchValue:'',
         pageNum:1,
+        total:0,
         pageSize:20,
         name:'dsff',
         modeLists:[],
@@ -93,8 +102,10 @@
         modelServer.getModel({pageNum:this.pageNum,pageSize:this.pageSize,name:this.searchValue,extension:this.type}).then(res=>{
           if(res.data.list.length<20) this.more = false;
           let lists = res.data.list.filter(el=>el.name);
-          this.modeLists = this.modeLists.concat(lists);
+          // this.modeLists = this.modeLists.concat(lists);
+          this.modeLists = lists;
           this.pageNum = res.data.pageNum;
+          this.total = Number(res.data.total);
           this.loading = false;
         })
       },
@@ -142,6 +153,10 @@
       },
       downloadUrl(mode){
         return modelServer.downloadUrl(mode._id);
+      },
+      changePage(page){
+        this.pageNum = page;
+        this.getList();
       }
     },
     filters:{
@@ -171,7 +186,7 @@
       height: 40px;
     }
     .list-box{
-      height: calc(100% - 91px);
+      height: calc(100% - 120px);
       overflow-y: auto;
       .list-el{
         height: 80px;
@@ -194,7 +209,7 @@
     .up-load{
       position: absolute;
       right: 20px;
-      bottom: 20px;
+      bottom: 30px;
     }
   }
 </style>

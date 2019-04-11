@@ -241,7 +241,7 @@ function changeSdomain(sdomain){
   
   let center = getCenter(sdomain.geoBox);
 
-  mapboxMap.setCenter([center.y, center.x], mapboxMap.getZoom());
+  mapboxMap.setCenter([center.x, center.y], mapboxMap.getZoom());
   // mapboxMap.setStyle(style);
   mapboxMap.remove();
   mapboxMap.setStyle(style);

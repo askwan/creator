@@ -65,9 +65,9 @@ export function uiSave(context) {
             var background = getBackground(numChanges);
 
             button
-                .classed('disabled', numChanges === 0)
-                .classed('has-count', numChanges > 0)
-                .style('background', background);
+                // .classed('disabled', numChanges === 0)
+                // .classed('has-count', numChanges > 0)
+                // .style('background', background);
 
             button.select('span.count')
                 .text(numChanges);
@@ -82,8 +82,9 @@ export function uiSave(context) {
         var button = selection
             .append('button')
             .attr('class', 'save')
+            .classed('has-count',true)
             .attr('tabindex', -1)
-            .style('width','90px')
+            // .style('width','90px')
             .on('click', save)
             .call(tooltipBehavior);
 
